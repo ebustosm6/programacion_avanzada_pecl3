@@ -32,17 +32,19 @@ public class LockerRoomActivity extends Activity {
         this.zonaActividadAdultos = new ArrayBlockingQueue<>(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_ADULT_CAPACITY, true);
     }
     
+    @Override
     public long getActivityTime() {
         return ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_MILISECONDS;
     }
     
+    @Override
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new LockerRoomLifeGuard("VigilanteVestuarios", getColaEspera(), getRegistro());
     	getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
-        
     }
 
+    @Override
     public List<String> getActivitySubareas() {
     	ArrayList<String> areas = new ArrayList<>();
     	areas.add(WAITING_LINE);
@@ -51,6 +53,7 @@ public class LockerRoomActivity extends Activity {
     	return areas;
     }
     
+    @Override
     public void imprimirColas() {
     	System.out.println("******************************");
     	System.out.println(getIdentificator() + " - cola de espera: " + getColaEspera().toString());
@@ -59,9 +62,12 @@ public class LockerRoomActivity extends Activity {
     	System.out.println("******************************");
     }
 
+    @Override
     public boolean goIn(ChildUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             encolarNinio(visitante);
@@ -81,19 +87,24 @@ public class LockerRoomActivity extends Activity {
 
             resultado = true;
         } catch (SecurityException e) {
-            System.out.println("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
             desencolarNinioColaEspera(visitante);
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
-            imprimirColas();
+            
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
+            
 
         }
         return resultado;
     }
 
+    @Override
     public boolean goIn(AdultUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
         	
             visitante.setPermisoActividad(Permission.NONE);
@@ -114,17 +125,22 @@ public class LockerRoomActivity extends Activity {
         } catch (SecurityException e) {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
-            imprimirColas();
+            
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
     
+    @Override
     public boolean goIn(YoungUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
         	
             visitante.setPermisoActividad(Permission.NONE);
@@ -145,20 +161,26 @@ public class LockerRoomActivity extends Activity {
         } catch (SecurityException e) {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
-            imprimirColas();
+            
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
+    
 
     private void imprimirZonaActividadAdultos() {
         System.out.println("La actividad: " + getIdentificator() + " tiene una cola de adultos: " + zonaActividadAdultos.toString());
     }
 
+    @Override
     public void goOut(AdultUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
     	getZonaActividadAdultos().remove(visitante);
         getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getIdentificator());
         
@@ -167,6 +189,7 @@ public class LockerRoomActivity extends Activity {
 //        imprimirColas();
 //        visitante.setCurrentActivity("ParqueAcuatico");
     }
+    
     
 //    public void goOut(YoungUser visitante) {
 //        getRegistro().comprobarDetenerReanudar();
@@ -193,9 +216,11 @@ public class LockerRoomActivity extends Activity {
     public ArrayBlockingQueue<User> getZonaActividadAdultos() {
         return zonaActividadAdultos;
     }
+    
 
     public void setZonaActividadAdultos(ArrayBlockingQueue<User> zonaActividadAdultos) {
         this.zonaActividadAdultos = zonaActividadAdultos;
     }
+    
 
 }

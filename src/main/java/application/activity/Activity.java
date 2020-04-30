@@ -139,10 +139,16 @@ public class Activity implements ActivityInterface, Serializable {
     		user.sleep(500);
         }
     }
+    
+    public void waitIfProgramIsStopped() {
+    	getRegistro().comprobarDetenerReanudar();
+    }
 
     public boolean goIn(ChildUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+    	waitIfProgramIsStopped();
+        
         int espaciosOcupados = 2;
         try {
             visitante.setPermisoActividad(Permission.NONE);
@@ -165,19 +171,23 @@ public class Activity implements ActivityInterface, Serializable {
             }
             resultado = true;
         } catch (SecurityException e) {
-            System.out.println("|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
             desencolarNinioColaEspera(visitante);
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
-            imprimirColas();
+            
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
+            
 
         }
         return resultado;
     }
 
     public boolean goIn(AdultUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+    	waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
@@ -201,17 +211,20 @@ public class Activity implements ActivityInterface, Serializable {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
 
-            visitante.setPermisoActividad(Permission.NONE);
-            imprimirColas();
-            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
 
     public boolean goIn(YoungUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+    	waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
@@ -235,28 +248,46 @@ public class Activity implements ActivityInterface, Serializable {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
 
-            visitante.setPermisoActividad(Permission.NONE);
-            imprimirColas();
-            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
 
+    public void onDoActivityFail(User visitante) {
+    	if (visitante instanceof ChildUser) {
+            getZonaActividad().remove(visitante);
+            getZonaActividad().remove(visitante.getSupervisor());
+        } else {
+            getZonaActividad().remove(visitante);
+        }
+        visitante.setCurrentActivity("ParqueAcuatico");
+    }
+    
     public void doActivity(User visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
         try {
             imprimirColas();
             visitante.sleep(getActivityTime());
         } catch (InterruptedException e) {
-            if (visitante instanceof ChildUser) {
-                getZonaActividad().remove(visitante);
-                getZonaActividad().remove(visitante.getSupervisor());
-            } else {
-                getZonaActividad().remove(visitante);
-            }
-            visitante.setCurrentActivity("ParqueAcuatico");
+        	onDoActivityFail(visitante);
+//            if (visitante instanceof ChildUser) {
+//                getZonaActividad().remove(visitante);
+//                getZonaActividad().remove(visitante.getSupervisor());
+//            } else {
+//                getZonaActividad().remove(visitante);
+//            }
+//            visitante.setCurrentActivity("ParqueAcuatico");
         }
+    }
+    
+    public void onTryGoOut(User visitante) {
+    	getZonaActividad().remove(visitante);
+        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
     }
     
     public void onGoOutSuccess(User visitante) {
@@ -264,12 +295,30 @@ public class Activity implements ActivityInterface, Serializable {
         imprimirColas();
         visitante.setCurrentActivity("ParqueAcuatico");
     }
+    
+    public void goOut(User visitante) {
+//      getRegistro().comprobarDetenerReanudar();
+      waitIfProgramIsStopped();
+      try {
+      	onTryGoOut(visitante);
+//          getZonaActividad().remove(visitante);
+//          getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
 
+          onGoOutSuccess(visitante);
+//          visitante.setPermisoActividad(Permission.NONE);
+//          imprimirColas();
+//          visitante.setCurrentActivity("ParqueAcuatico");
+      } catch (Exception e) {
+      }
+  }
+    
     public void goOut(AdultUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
         try {
-            getZonaActividad().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+        	onTryGoOut(visitante);
+//            getZonaActividad().remove(visitante);
+//            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
 
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);
@@ -280,10 +329,13 @@ public class Activity implements ActivityInterface, Serializable {
     }
 
     public void goOut(YoungUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
-            getZonaActividad().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+        	onTryGoOut(visitante);
+//            getZonaActividad().remove(visitante);
+//            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
 
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);
@@ -294,7 +346,9 @@ public class Activity implements ActivityInterface, Serializable {
     }
 
     public void goOut(ChildUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             if (visitante.getPermisoActividad() == Permission.SUPERVISED) {
                 desencolarNinio(visitante);

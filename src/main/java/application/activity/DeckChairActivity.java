@@ -18,11 +18,13 @@ public class DeckChairActivity extends Activity {
         super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, IS_FAIR_QUEUE, userRegistry);
     }
 
+    @Override
     public long getActivityTime() {
     	return (long) ((ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_MIN_MILISECONDS) + 
         		(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_MIN_MILISECONDS * Math.random()));
     }
 
+    @Override
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new DeckChairLifeGuard("VigilanteTumbonas", getColaEspera(), getRegistro());
         getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());

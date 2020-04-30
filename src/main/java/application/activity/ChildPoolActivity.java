@@ -21,11 +21,13 @@ public class ChildPoolActivity extends Activity {
         super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_CAPACITY, userRegistry);
     }
     
+    @Override
     public long getActivityTime() {
     	return (long) ((ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_MIN_MILISECONDS) + 
         		(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_MIN_MILISECONDS * Math.random()));
     }
 
+    @Override
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new ChildPoolLifeGuard("VigilantePiscinaNinos", getColaEspera(), getRegistro());
     	getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());

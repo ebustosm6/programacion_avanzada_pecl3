@@ -28,17 +28,20 @@ public class WavePoolActivity extends Activity {
 
     }
     
+    @Override
     public long getActivityTime() {
     	return (long) ((ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MIN_MILISECONDS) + 
         		(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MIN_MILISECONDS * Math.random()));
     }
     
+    @Override
     public LifeGuard initActivityLifeguard() {
     	LifeGuard guard = new WavePoolLifeGuard("VigilantePisinaOlas", getColaEspera(), getRegistro());
     	getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
     
+    @Override
     public List<String> getActivitySubareas() {
     	ArrayList<String> areas = new ArrayList<>();
     	areas.add(WAITING_LINE);
@@ -47,10 +50,12 @@ public class WavePoolActivity extends Activity {
     	return areas;
     }
 
+    @Override
     public boolean goIn(ChildUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
-        int espaciosOcupados = 2;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             encolarNinio(visitante);
@@ -63,7 +68,6 @@ public class WavePoolActivity extends Activity {
             } else if (visitante.getPermisoActividad() == Permission.SUPERVISED) {
                 encolarNinioActividad(visitante);
             } else if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                espaciosOcupados = 1;
                 barrera.await();
                 desencolarNinioColaEspera(visitante);
                 getZonaActividad().offer(visitante);
@@ -75,17 +79,23 @@ public class WavePoolActivity extends Activity {
             resultado = true;
         } catch (SecurityException | InterruptedException | BrokenBarrierException e) {
             desencolarNinioColaEspera(visitante);
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
-            imprimirColas();
+            
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
+            
 
         }
         return resultado;
     }
 
+    @Override
     public boolean goIn(AdultUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
@@ -111,16 +121,21 @@ public class WavePoolActivity extends Activity {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
             
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
-            imprimirColas();
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
+            
         }
         return resultado;
     }
     
+    @Override
     public boolean goIn(YoungUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
@@ -146,9 +161,11 @@ public class WavePoolActivity extends Activity {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
             
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
-            imprimirColas();
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
+            
         }
         return resultado;
     }

@@ -39,17 +39,20 @@ public class SlideActivity extends Activity {
         initOtherLifeguards();
     }
     
+    @Override
     public long getActivityTime() {
     	return (long) ((ApplicationGlobalConfig.ACTIVITY_SLIDE_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_SLIDE_MIN_MILISECONDS) + 
         		(ApplicationGlobalConfig.ACTIVITY_SLIDE_MIN_MILISECONDS * Math.random()));
     }
     
+    @Override
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new SlideLifeGuard("VigilanteToboganA", getColaEspera(), getRegistro());
         getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
 
+    @Override
     public List<String> getActivitySubareas() {
         ArrayList<String> areas = new ArrayList<>();
         areas.add(COLA_ESPERA);
@@ -71,9 +74,12 @@ public class SlideActivity extends Activity {
         vigilante3.start();
     }
 
+    @Override
     public boolean goIn(ChildUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
 
@@ -100,16 +106,20 @@ public class SlideActivity extends Activity {
             getPiscinaGrande().getZonaEsperaAcompanante().remove(visitante.getSupervisor());
             getRegistro().eliminarVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ESPERA, visitante.getSupervisor().getIdentificator());
 
-            imprimirColas();
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
         }
         return resultado;
     }
 
+    @Override
     public boolean goIn(AdultUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
@@ -128,17 +138,21 @@ public class SlideActivity extends Activity {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
 
-            imprimirColas();
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
 
+    @Override
     public boolean goIn(YoungUser visitante) throws InterruptedException {
-        getRegistro().comprobarDetenerReanudar();
-        boolean resultado = false;
+    	boolean resultado = false;
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
@@ -157,16 +171,30 @@ public class SlideActivity extends Activity {
             getColaEspera().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
 
-            imprimirColas();
-            visitante.setPermisoActividad(Permission.NONE);
-            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(visitante);
+//            visitante.setPermisoActividad(Permission.NONE);
+//            imprimirColas();
+//            visitante.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
+    
+    @Override
+    public void onGoOutSuccess(User visitante) {
+        visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
+        getPiscinaGrande().getZonaActividad().offer(visitante);
+        getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
+        getPiscinaGrande().doActivity(visitante);
+        getPiscinaGrande().goOut(visitante);
+        visitante.setCurrentActivity("ParqueAcuatico");
+    }
 
+    @Override
     public void goOut(ChildUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
+        
         try {
             if (visitante.getSlideTicket() == SlideTicket.SLIDE_A) {
                 getZonaActividad().remove(visitante); //Tobogan A
@@ -175,35 +203,43 @@ public class SlideActivity extends Activity {
                 getToboganB().remove(visitante);
                 getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ZONA_ACTIVIDAD_B, visitante.getIdentificator());
             }
-            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
             imprimirColas();
-            getPiscinaGrande().getZonaActividad().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
-            getPiscinaGrande().doActivity(visitante);
-            getPiscinaGrande().goOut(visitante);
-            visitante.setCurrentActivity("ParqueAcuatico");
+            
+            onGoOutSuccess(visitante);
+//            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
+//            getPiscinaGrande().getZonaActividad().offer(visitante);
+//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
+//            getPiscinaGrande().doActivity(visitante);
+//            getPiscinaGrande().goOut(visitante);
+//            visitante.setCurrentActivity("ParqueAcuatico");
         } catch (Exception e) {
         }
     }
 
+    @Override
     public void goOut(AdultUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
         try {
             getToboganC().remove(visitante);
             getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ZONA_ACTIVIDAD_C, visitante.getIdentificator());
             imprimirColas();
-            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
-            getPiscinaGrande().getZonaActividad().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
-            getPiscinaGrande().doActivity(visitante);
-            getPiscinaGrande().goOut(visitante);
-            visitante.setCurrentActivity("ParqueAcuatico");
+            
+            onGoOutSuccess(visitante);
+//            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
+//            getPiscinaGrande().getZonaActividad().offer(visitante);
+//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
+//            getPiscinaGrande().doActivity(visitante);
+//            getPiscinaGrande().goOut(visitante);
+//            visitante.setCurrentActivity("ParqueAcuatico");
         } catch (Exception e) {
         }
     }
 
+    @Override
     public void goOut(YoungUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+//        getRegistro().comprobarDetenerReanudar();
+        waitIfProgramIsStopped();
         try {
             if (visitante.getSlideTicket() == SlideTicket.SLIDE_A) {
                 getZonaActividad().remove(visitante); //Tobogan A
@@ -213,12 +249,14 @@ public class SlideActivity extends Activity {
                 getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ZONA_ACTIVIDAD_B, visitante.getIdentificator());
             }
             imprimirColas();
-            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
-            getPiscinaGrande().getZonaActividad().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
-            getPiscinaGrande().doActivity(visitante);
-            getPiscinaGrande().goOut(visitante);
-            visitante.setCurrentActivity("ParqueAcuatico");
+            
+            onGoOutSuccess(visitante);
+//            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
+//            getPiscinaGrande().getZonaActividad().offer(visitante);
+//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
+//            getPiscinaGrande().doActivity(visitante);
+//            getPiscinaGrande().goOut(visitante);
+//            visitante.setCurrentActivity("ParqueAcuatico");
         } catch (Exception e) {
         }
     }
@@ -258,7 +296,6 @@ public class SlideActivity extends Activity {
         System.out.println(getIdentificator() + " - zona de espera de actividad: " + getPiscinaGrande().getZonaEsperaAcompanante().toString());
         System.out.println("******************************");
     }
-
 
     public SlideTicket getTicket() {
         return ticket;
