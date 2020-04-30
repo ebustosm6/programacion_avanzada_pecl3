@@ -26,9 +26,9 @@ public class ControlCliente {
 		this.controlador =(ControladorServidorRMI) Naming.lookup("//127.0.0.1/ObjetoControlador");
 	}
 	
-	public ArrayList<String> controlUbicacion(String identificadorUsuario) throws RemoteException {
+	public ArrayList<String> controlUbicacion(String identificatorUsuario) throws RemoteException {
 		// returns [id_usuario, ubicacion, actividades
-                ArrayList<String> res = (ArrayList<String>) controlador.buscarVisitanteLista(identificadorUsuario);
+                ArrayList<String> res = (ArrayList<String>) controlador.buscarVisitanteLista(identificatorUsuario);
 		return (ArrayList<String>) res;
 	}
 	

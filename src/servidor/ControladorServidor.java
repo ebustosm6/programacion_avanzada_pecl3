@@ -17,18 +17,18 @@ import prueba1.Visitante;
  */
 public class ControladorServidor extends UnicastRemoteObject implements ControladorServidorRMI {
     
-    RegistroVisitantes registro;
+    RegistroVisitantes userRegistry;
 
-    public ControladorServidor(RegistroVisitantes registro)throws RemoteException{
-        this.registro = registro;
+    public ControladorServidor(RegistroVisitantes userRegistry)throws RemoteException{
+        this.userRegistry = userRegistry;
     }
 
     @Override
-    public List<String> buscarVisitanteLista(String identificador) {
+    public List<String> buscarVisitanteLista(String identificator) {
         List<String> resultado = new ArrayList<>();
-        Visitante visitante = registro.buscarVisitante(identificador);
+        Visitante visitante = userRegistry.buscarVisitante(identificator);
         if (visitante != null) {
-            resultado.add(visitante.getIdentificador());
+            resultado.add(visitante.getIdentificator());
             resultado.add(visitante.getActividadActual());
             resultado.add(String.valueOf(visitante.getConteoActividades()));
         }
@@ -39,30 +39,30 @@ public class ControladorServidor extends UnicastRemoteObject implements Controla
 
     @Override
     public int getNumeroAdultos() {
-        return registro.getNumeroAdultos();
+        return userRegistry.getNumeroAdultos();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getNumeroNinios() {
-        return registro.getNumeroNinios();
+        return userRegistry.getNumeroNinios();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int getVisitantesActualesEnZona(String identificador) {
-        return registro.getVisitantesActualesEnZona(identificador);
+    public int getVisitantesActualesEnZona(String identificator) {
+        return userRegistry.getVisitantesActualesEnZona(identificator);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public int getVisitantesAcumuladoEnZona(String identificador) {
-         return registro.getVisitantesAcumuladoEnZona(identificador);
+    public int getVisitantesAcumuladoEnZona(String identificator) {
+         return userRegistry.getVisitantesAcumuladoEnZona(identificator);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public List<String> getIdentificadoresUsuariosEnActividad(String identificadorActividad, String identificadorArea){
-        return registro.getIdentificadoresUsuariosEnActividad(identificadorActividad, identificadorArea);
+    public List<String> getIdentificadoresUsuariosEnActividad(String identificatorActividad, String identificatorArea){
+        return userRegistry.getIdentificadoresUsuariosEnActividad(identificatorActividad, identificatorArea);
     }
 }

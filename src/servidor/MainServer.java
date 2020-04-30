@@ -27,16 +27,16 @@ public class MainServer {
 
     public static void main(String[] args) throws Exception {
         
-        ControlUsuariosJFrame controlUsuarios = new ControlUsuariosJFrame();
-        RegistroVisitantes registro = new RegistroVisitantes(controlUsuarios);
-        ParqueAcuatico parque = new ParqueAcuatico(registro);
-        ControladorServidor controlador = new ControladorServidor(registro);
+        ControlUsuariosJFrame userControl = new ControlUsuariosJFrame();
+        RegistroVisitantes userRegistry = new RegistroVisitantes(userControl);
+        ParqueAcuatico parque = new ParqueAcuatico(userRegistry);
+        ControladorServidor controlador = new ControladorServidor(userRegistry);
         iniciarServidor(controlador);
         GeneradorVisitantes generadorVisitantes = new GeneradorVisitantes(parque);
         generadorVisitantes.start();
         
 //        try { //special exception handler for registry creation
-//        	RegistroVisitantesRMI stub = (RegistroVisitantesRMI) UnicastRemoteObject.exportObject(registro,0);
+//        	RegistroVisitantesRMI stub = (RegistroVisitantesRMI) UnicastRemoteObject.exportObject(userRegistry,0);
 //            Registry reg;
 //            try {
 //            	reg = LocateRegistry.createRegistry(1099);
@@ -54,7 +54,7 @@ public class MainServer {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                 controlUsuarios.setVisible(true);
+                 userControl.setVisible(true);
             }
         });
     }
