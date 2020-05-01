@@ -40,7 +40,7 @@ public class LockerRoomActivity extends Activity {
     @Override
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new LockerRoomLifeGuard("VigilanteVestuarios", getColaEspera(), getRegistro());
-    	getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
+    	getRegistro().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
 
@@ -80,9 +80,9 @@ public class LockerRoomActivity extends Activity {
             } else if (visitante.getPermisoActividad() == Permission.ALLOWED) {
             	desencolarNinioColaEspera(visitante);
             	getZonaActividad().offer(visitante);
-                getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
             	getZonaActividadAdultos().offer(visitante.getSupervisor());
-                getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+                getRegistro().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
             }
 
             resultado = true;
@@ -110,21 +110,21 @@ public class LockerRoomActivity extends Activity {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             imprimirColas();
 
             waitForLifeGuardPermission(visitante);
             
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             getZonaActividadAdultos().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getIdentificator());
             imprimirZonaActividadAdultos();
             resultado = true;
 
         } catch (SecurityException e) {
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);
@@ -146,21 +146,21 @@ public class LockerRoomActivity extends Activity {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             imprimirColas();
             
             waitForLifeGuardPermission(visitante);
             
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             getZonaActividad().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
             imprimirZonaActividadAdultos();
             resultado = true;
 
         } catch (SecurityException e) {
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);
@@ -182,7 +182,7 @@ public class LockerRoomActivity extends Activity {
         waitIfProgramIsStopped();
         
     	getZonaActividadAdultos().remove(visitante);
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getIdentificator());
         
         onGoOutSuccess(visitante);
 //        visitante.setPermisoActividad(Permission.NONE);

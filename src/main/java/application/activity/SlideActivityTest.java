@@ -13,11 +13,11 @@ public class SlideActivityTest {
 
     public static void main(String[] args) {
         AquaticPark parque = new AquaticPark();
-        MainPoolActivity piscinaGrande = new MainPoolActivity(parque.getRegistro());
+        MainPoolActivity piscinaGrande = new MainPoolActivity(parque.getRegistry());
         List<Activity> actividades = new ArrayList<>();
-        SlideActivity actividadTobogan = new SlideActivity(parque.getRegistro(), piscinaGrande);
+        SlideActivity actividadTobogan = new SlideActivity(parque.getRegistry(), piscinaGrande);
         actividades.add(actividadTobogan);
-        parque.setActividades(actividades);
+        parque.setActivities(actividades);
 
         UserGenerator generadorVisitantes = new UserGenerator(parque);
         AdultUser adulto1 = generadorVisitantes.createAdultUser(1, 30);

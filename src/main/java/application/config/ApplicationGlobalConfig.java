@@ -3,6 +3,7 @@ package application.config;
 public class ApplicationGlobalConfig {
 	// users
 	public static final int TOTAL_CREATED_USERS = 5000;
+	public static final int TOTAL_USERS_IN_PARK = 100;
 	public static final int USER_MIN_NUM_ACTIVITIES = 5;
 	public static final int USER_MAX_NUM_ACTIVITIES = 15;
 	public static final int USER_ADULT_AGE = 18;

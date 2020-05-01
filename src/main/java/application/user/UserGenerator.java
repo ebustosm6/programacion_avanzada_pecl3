@@ -11,7 +11,7 @@ public class UserGenerator extends Thread {
 
     public UserGenerator(AquaticPark park) {
         this.park = park;
-        this.userRegistry = park.getRegistro();
+        this.userRegistry = park.getRegistry();
     }
 
     private boolean needsSupervisor(int age) {
@@ -81,7 +81,7 @@ public class UserGenerator extends Thread {
                 User visitor;
                 SupervisorUser supervisor = null;
                 
-                userRegistry.comprobarDetenerReanudar();
+                userRegistry.waitIfProgramIsStopped();
                 sleepStepGeneration();
 
                 int randomAge = randomAge();
@@ -103,12 +103,12 @@ public class UserGenerator extends Thread {
                 }
                 
                 System.out.println("Starting visitor: " + visitor.toString());
-                userRegistry.aniadirVisitante(visitor);
+                userRegistry.addUser(visitor);
                 visitor.start();
                 
                 if (supervisor != null) {
                 	System.out.println("Starting supervisor: " + supervisor.toString());
-                    userRegistry.aniadirVisitante(supervisor);
+                    userRegistry.addUser(supervisor);
                     supervisor.start();
                 }
                 

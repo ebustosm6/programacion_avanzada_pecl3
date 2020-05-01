@@ -55,7 +55,7 @@ public class MainPoolLifeGuard extends LifeGuard {
         while (true) {
             try {
                 for (User visitante : getColaEspera()) { 
-                    getRegistro().comprobarDetenerReanudar();
+                    getRegistro().waitIfProgramIsStopped();
                     sleep(getTiempoVigilancia());
                     Permission permiso = tipoPermiso(visitante);
                     visitante.setPermisoActividad(permiso);

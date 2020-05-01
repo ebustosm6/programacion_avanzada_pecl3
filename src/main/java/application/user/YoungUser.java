@@ -12,12 +12,12 @@ public class YoungUser extends User {
 	public void run() {
 		try {
 			System.out.println("Entrando al parque: " + toString());
-			boolean dentroParque = getPark().entrar(this);
+			boolean dentroParque = getPark().goIn(this);
 			
 			if (dentroParque) {
 				int cantidadActividades = getRandomActivities();
 				System.out.println("Escogiendo actividade del parque: " + cantidadActividades);
-				setActividades(getPark().escogerActividades(cantidadActividades));
+				setActividades(getPark().selectActivities(cantidadActividades));
 				
 				for (Activity actividad: getActivities()) {
 					System.out.println("Entrando a la actividad "+getIdentificator()+": " + actividad.toString());
@@ -30,7 +30,7 @@ public class YoungUser extends User {
 				}
 				
 				System.out.println("Saliendo del parque: " + toString());
-				getPark().salir(this);
+				getPark().goOut(this);
 			}
 			
 		} catch (InterruptedException e) {

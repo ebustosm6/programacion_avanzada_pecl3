@@ -37,7 +37,7 @@ public class WavePoolActivity extends Activity {
     @Override
     public LifeGuard initActivityLifeguard() {
     	LifeGuard guard = new WavePoolLifeGuard("VigilantePisinaOlas", getColaEspera(), getRegistro());
-    	getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
+    	getRegistro().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
     
@@ -71,9 +71,9 @@ public class WavePoolActivity extends Activity {
                 barrera.await();
                 desencolarNinioColaEspera(visitante);
                 getZonaActividad().offer(visitante);
-                getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
                 getZonaEsperaAcompanante().offer(visitante.getSupervisor());
-                getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+                getRegistro().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
             }
 
             resultado = true;
@@ -100,7 +100,7 @@ public class WavePoolActivity extends Activity {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             imprimirColas();
 
             waitForLifeGuardPermission(visitante);
@@ -110,16 +110,16 @@ public class WavePoolActivity extends Activity {
             }
             barrera.await();
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
             getZonaActividad().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY,visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY,visitante.getIdentificator());
 
 
             resultado = true;
 
         } catch (SecurityException | BrokenBarrierException e) {
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
             
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);
@@ -140,7 +140,7 @@ public class WavePoolActivity extends Activity {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             imprimirColas();
 
             waitForLifeGuardPermission(visitante);
@@ -150,16 +150,16 @@ public class WavePoolActivity extends Activity {
             }
             barrera.await();
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
             getZonaActividad().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY,visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY,visitante.getIdentificator());
 
 
             resultado = true;
 
         } catch (SecurityException | BrokenBarrierException e) {
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
             
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);

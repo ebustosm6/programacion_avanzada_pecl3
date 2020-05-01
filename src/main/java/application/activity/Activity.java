@@ -61,7 +61,7 @@ public class Activity implements ActivityInterface, Serializable {
     
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new LifeGuard(ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_IDENTIFICATOR, getColaEspera(), userRegistry);
-        userRegistry.aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
+        userRegistry.registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
     
@@ -70,8 +70,8 @@ public class Activity implements ActivityInterface, Serializable {
     }
     
     public void initActivityArea() {
-        this.userRegistry.registrarZonaActividad(getIdentificator());
-        this.userRegistry.registrarZonasActividad(getIdentificator(), getActivitySubareas());
+        this.userRegistry.registerActivity(getIdentificator());
+        this.userRegistry.registerActivityAreas(getIdentificator(), getActivitySubareas());
 
     }
     
@@ -95,43 +95,43 @@ public class Activity implements ActivityInterface, Serializable {
         while (!getColaEspera().offer(visitante)) {
             //espera
         }
-        getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+        getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
         while (!getColaEspera().offer(visitante.getSupervisor())) {
             //espera
         }
 
-        getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
+        getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
         visitante.setCurrentActivity(getIdentificator());
         visitante.getSupervisor().setCurrentActivity(getIdentificator());
     }
 
     public synchronized void desencolarNinioColaEspera(ChildUser visitante) {
         getColaEspera().remove(visitante);
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
         getColaEspera().remove(visitante.getSupervisor());
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
     }
 
     public synchronized void encolarNinioActividad(ChildUser visitante) {
         getColaEspera().remove(visitante);
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
         getColaEspera().remove(visitante.getSupervisor());
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
         while (!getZonaActividad().offer(visitante)) {
             //espera
         }
-        getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+        getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
         while (!getZonaActividad().offer(visitante.getSupervisor())) {
             //espera
         }
-        getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
+        getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
     }
 
     public synchronized void desencolarNinio(ChildUser visitante) {
         getZonaActividad().remove(visitante);
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
         getZonaActividad().remove(visitante.getSupervisor());
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
     }
     
     public void waitForLifeGuardPermission(User user) throws InterruptedException {
@@ -141,7 +141,7 @@ public class Activity implements ActivityInterface, Serializable {
     }
     
     public void waitIfProgramIsStopped() {
-    	getRegistro().comprobarDetenerReanudar();
+    	getRegistro().waitIfProgramIsStopped();
     }
 
     public boolean goIn(ChildUser visitante) throws InterruptedException {
@@ -165,9 +165,9 @@ public class Activity implements ActivityInterface, Serializable {
                 espaciosOcupados = 1;
                 desencolarNinioColaEspera(visitante);
                 getZonaActividad().offer(visitante);
-                getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
                 getZonaEsperaAcompanante().offer(visitante.getSupervisor());
-                getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+                getRegistro().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
             }
             resultado = true;
         } catch (SecurityException e) {
@@ -192,16 +192,16 @@ public class Activity implements ActivityInterface, Serializable {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             imprimirColas();
 
             waitForLifeGuardPermission(visitante);
 
             if (visitante.getPermisoActividad() == Permission.ALLOWED) {
                 getColaEspera().remove(visitante);
-                getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+                getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
                 getZonaActividad().offer(visitante);
-                getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
                 resultado = true;
             } else {
                 throw new SecurityException();
@@ -209,7 +209,7 @@ public class Activity implements ActivityInterface, Serializable {
 
         } catch (SecurityException e) {
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
 
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);
@@ -229,7 +229,7 @@ public class Activity implements ActivityInterface, Serializable {
             visitante.setPermisoActividad(Permission.NONE);
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             imprimirColas();
 
             waitForLifeGuardPermission(visitante);
@@ -239,14 +239,14 @@ public class Activity implements ActivityInterface, Serializable {
             }
 
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
             getZonaActividad().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
             resultado = true;
 
         } catch (SecurityException e) {
             getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
 
             onGoOutSuccess(visitante);
 //            visitante.setPermisoActividad(Permission.NONE);
@@ -287,7 +287,7 @@ public class Activity implements ActivityInterface, Serializable {
     
     public void onTryGoOut(User visitante) {
     	getZonaActividad().remove(visitante);
-        getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
     }
     
     public void onGoOutSuccess(User visitante) {
@@ -354,9 +354,9 @@ public class Activity implements ActivityInterface, Serializable {
                 desencolarNinio(visitante);
             } else {
                 getZonaActividad().remove(visitante);
-                getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+                getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
                 getZonaEsperaAcompanante().remove(visitante.getSupervisor());
-                getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+                getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
 
             }
             

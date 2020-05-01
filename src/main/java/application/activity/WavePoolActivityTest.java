@@ -14,8 +14,8 @@ public class WavePoolActivityTest {
 	public static void main(String[] args) {
 		AquaticPark parque = new AquaticPark();
 		List<Activity> actividades = new ArrayList<>();
-		actividades.add(new WavePoolActivity(parque.getRegistro()));
-		parque.setActividades(actividades);
+		actividades.add(new WavePoolActivity(parque.getRegistry()));
+		parque.setActivities(actividades);
 		
 		UserGenerator generadorVisitantes = new UserGenerator(parque);
 		AdultUser adulto1 = generadorVisitantes.createAdultUser(1, 30);

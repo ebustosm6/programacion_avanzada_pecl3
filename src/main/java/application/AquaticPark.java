@@ -9,6 +9,7 @@ import java.util.concurrent.Semaphore;
 
 import application.activity.MainPoolActivity;
 import application.activity.WavePoolActivity;
+import application.config.ApplicationGlobalConfig;
 import application.activity.SlideActivity;
 import application.activity.DeckChairActivity;
 import application.activity.Activity;
@@ -21,205 +22,255 @@ import application.user.ChildUser;
 
 public class AquaticPark implements Serializable {
 
-    private String identificator = "ParqueAcuatico";
-    private static int NUM_VISITANTES = 100;
-    private Semaphore semaforo = new Semaphore(NUM_VISITANTES, true);
-    private List<Activity> actividades = new ArrayList<>();
-    private BlockingQueue<User> colaEspera = new ArrayBlockingQueue<>(5000, true);
-    private static final String COLA_ESPERA = "-colaEspera";
+	private String identificator = "ParqueAcuatico";
+//    private static int NUM_VISITANTES = ApplicationGlobalConfig.TOTAL_USERS_IN_PARK;
+    private Semaphore semaphore = new Semaphore(ApplicationGlobalConfig.TOTAL_USERS_IN_PARK, true);
+    private List<Activity> activities = new ArrayList<>();
+    private BlockingQueue<User> waitingLine = new ArrayBlockingQueue<>(5000, true);
+    private static final String WAITING_LINE = "-colaEspera";
+    private static final String OUTSIDE = "Fuera";
     private UserRegistry userRegistry;
-    private MainPoolActivity piscinaGrande;
+//    private MainPoolActivity piscinaGrande;
 
     public AquaticPark(UserRegistry userRegistry) {
         this.userRegistry = userRegistry;
-        iniciarActividades();
-        registrarZonaActividad();
+        initActivities();
+        registerActivity();
     }
 
-    public void iniciarActividades() {
-        this.actividades.add(new LockerRoomActivity(userRegistry));
-        this.actividades.add(new DeckChairActivity(userRegistry));
-        this.actividades.add(new WavePoolActivity(userRegistry));
-        this.actividades.add(new ChildPoolActivity(userRegistry));
-        this.piscinaGrande = new MainPoolActivity(userRegistry);
-        this.actividades.add(piscinaGrande);
-        this.actividades.add(new SlideActivity(userRegistry, piscinaGrande));
+    public void initActivities() {
+    	MainPoolActivity mainPool = new MainPoolActivity(userRegistry);
+    	this.activities.add(new LockerRoomActivity(userRegistry));
+    	this.activities.add(mainPool);
+    	this.activities.add(new SlideActivity(userRegistry, mainPool));
+        this.activities.add(new DeckChairActivity(userRegistry));
+        this.activities.add(new ChildPoolActivity(userRegistry));
+        this.activities.add(new WavePoolActivity(userRegistry));
     }
 
-    public UserRegistry getRegistro() {
+    public UserRegistry getRegistry() {
         return userRegistry;
     }
 
-    public List<String> getAreasActividad() {
+    public List<String> getActivityAreas() {
         ArrayList<String> areas = new ArrayList<>();
-        areas.add(COLA_ESPERA);
+        areas.add(WAITING_LINE);
         return areas;
     }
 
-    public void registrarZonaActividad() {
-        this.userRegistry.registrarZonaActividad(identificator);
-        this.userRegistry.registrarZonasActividad(identificator, getAreasActividad());
+    public void registerActivity() {
+        this.userRegistry.registerActivity(identificator);
+        this.userRegistry.registerActivityAreas(identificator, getActivityAreas());
+    }
+    
+    private void randomActivities(int n, List<Activity> activitiesToDo) {
+		while (n > 0) {
+            int i = (int) (((activities.size()-1) * Math.random()) + 1);  // skip locker room;
+//            if (i == 0) { 
+//                i = 1;
+//            }
+            activitiesToDo.add(activities.get(i));
+            n--;
+        }
+	}
 
+    public List<Activity> selectActivities(int n) {
+        List<Activity> activitiesToDo = new ArrayList<>();
+        if (n < ApplicationGlobalConfig.USER_MIN_NUM_ACTIVITIES || n > ApplicationGlobalConfig.USER_MAX_NUM_ACTIVITIES) {
+            n = activities.size();
+        }
+        activitiesToDo.add(activities.get(0)); // LockerRoom
+        randomActivities(n, activitiesToDo);
+        activitiesToDo.add(activities.get(0)); // LockerRoom
+        return activitiesToDo;
     }
 
-    public List<Activity> escogerActividades(int cantidad) {
-        List<Activity> actividadesEscogidas = new ArrayList<>();
-        if (cantidad <= 0) {
-            cantidad = actividades.size();
-        }
-        actividadesEscogidas.add(actividades.get(0));
-        //actividadesEscogidas.add(actividades.get(5));
-
-        while (cantidad > 0) {
-            int indice_random = (int) (actividades.size() * Math.random());
-            if (indice_random == 0) { // vestuario
-                indice_random = 1;
-            }
-            actividadesEscogidas.add(actividades.get(indice_random));
-            cantidad--;
-        }
-        actividadesEscogidas.add(actividades.get(0));
-
-        return actividadesEscogidas;
-
+    public synchronized void goIntoWaitingLine(ChildUser user) {
+        getWaitingLine().offer(user);
+        getRegistry().registerUserInActivity(identificator, WAITING_LINE, user.getIdentificator());
+        user.setCurrentActivity(identificator);
+        getWaitingLine().offer(user.getSupervisor());
+        getRegistry().registerUserInActivity(identificator, WAITING_LINE, user.getSupervisor().getIdentificator());
+    }
+    
+    public synchronized void goOutWaitingLine(User user) {
+        getWaitingLine().remove(user);
+        getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getIdentificator());
     }
 
-    public boolean entrar(ChildUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+    public synchronized void goOutWaitingLine(ChildUser user) {
+        getWaitingLine().remove(user);
+        getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getIdentificator());
+        getWaitingLine().remove(user.getSupervisor());
+        getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getSupervisor().getIdentificator());
+    }
+    
+    public boolean passFromWaitingLineToActivity(User user) throws InterruptedException {
+    	boolean success = true;
+    	semaphore.acquire();
+        goOutWaitingLine(user);
+    	return success;
+    }
+    
+    public boolean passFromWaitingLineToActivity(ChildUser user) throws InterruptedException {
+    	boolean success = true;
+    	semaphore.acquire(2);
+        goOutWaitingLine(user);
+    	return success;
+    }
+
+    public boolean goIn(ChildUser visitante) {
+        getRegistry().waitIfProgramIsStopped();
         boolean resultado = false;
         try {
-            encolarNinio(visitante);
-            visitante.setCurrentActivity(identificator);
-            imprimirColaEspera();
-            //visitante.sleep(500);
-            semaforo.acquire(2);
-            desencolarNinioColaEspera(visitante);
-            resultado = true;
+            goIntoWaitingLine(visitante);
+//            visitante.setCurrentActivity(identificator);
+            resultado = passFromWaitingLineToActivity(visitante);
+//            semaphore.acquire(2);
+//            goOutWaitingLine(visitante);
+//            resultado = true;
+            
         } catch (Exception e) {
-            e.printStackTrace();
-            desencolarNinioColaEspera(visitante);
-            visitante.setCurrentActivity("Fuera");
+            goOutWaitingLine(visitante);
+            visitante.setCurrentActivity(OUTSIDE);
         }
         return resultado;
     }
 
-    public boolean entrar(AdultUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+    public boolean goIn(AdultUser visitante) {
+        getRegistry().waitIfProgramIsStopped();
         boolean resultado = false;
         try {
-            getColaEspera().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-            visitante.setCurrentActivity(identificator);
-            imprimirColaEspera();
-            //visitante.sleep(500);
-            semaforo.acquire();
-            getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-            resultado = true;
+        	goIntoWaitingLine(visitante);
+//            getColaEspera().offer(visitante);
+//            getRegistry().registerUserInActivity(identificator, WAITING_LINE, visitante.getIdentificator());
+//            visitante.setCurrentActivity(identificator);
+            resultado = passFromWaitingLineToActivity(visitante);
+//            semaphore.acquire();
+//            goOutWaitingLine(visitante);
+////            getColaEspera().remove(visitante);
+////            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
+//            resultado = true;
+            
         } catch (Exception e) {
-            e.printStackTrace();
-            getRegistro().eliminarVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-            visitante.setCurrentActivity("Fuera");
+        	goOutWaitingLine(visitante);
+//            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
+            visitante.setCurrentActivity(OUTSIDE);
         }
         return resultado;
     }
 
-    public boolean entrar(YoungUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
+    public boolean goIn(YoungUser visitante) {
+        getRegistry().waitIfProgramIsStopped();
         boolean resultado = false;
         try {
-            getColaEspera().offer(visitante);
-            getRegistro().aniadirVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-            visitante.setCurrentActivity(identificator);
-            imprimirColaEspera();
-            //visitante.sleep(500);
-            semaforo.acquire();
-            getColaEspera().remove(visitante);
-            getRegistro().eliminarVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-            resultado = true;
+        	goIntoWaitingLine(visitante);
+//            getColaEspera().offer(visitante);
+//            getRegistry().registerUserInActivity(identificator, WAITING_LINE, visitante.getIdentificator());
+//            visitante.setCurrentActivity(identificator);
+            resultado = passFromWaitingLineToActivity(visitante);
+//            semaphore.acquire();
+//            goOutWaitingLine(visitante);
+////            getColaEspera().remove(visitante);
+////            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
+//            resultado = true;
+            
         } catch (Exception e) {
-            e.printStackTrace();
-            getRegistro().eliminarVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-            visitante.setCurrentActivity("Fuera");
+        	goOutWaitingLine(visitante);
+//            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
+            visitante.setCurrentActivity(OUTSIDE);
         }
         return resultado;
     }
-
-    public void salir(AdultUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
-        getColaEspera().remove(visitante);
-        imprimirColaEspera();
-        semaforo.release();
-        visitante.setCurrentActivity("Fuera");
-        getRegistro().eliminarVisitante(visitante);
+    
+    public void onTryGoOut(User user) {
+    	getWaitingLine().remove(user);
+        semaphore.release();
+    }
+    
+    public void onTryGoOut(ChildUser user) {
+    	getWaitingLine().remove(user);
+        semaphore.release(2);
+    }
+    
+    public void onGoOutSuccess(User user) {
+    	user.setCurrentActivity(OUTSIDE);
+        getRegistry().removeUser(user);
+    }
+    
+    public void onGoOutSuccess(ChildUser user) {
+    	user.setCurrentActivity(OUTSIDE);
+        getRegistry().removeUser(user);
+        getRegistry().removeUser(user.getSupervisor());
     }
 
-    public void salir(YoungUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
-        getColaEspera().remove(visitante);
-        imprimirColaEspera();
-        semaforo.release();
-        visitante.setCurrentActivity("Fuera");
-        getRegistro().eliminarVisitante(visitante);
+    public void goOut(AdultUser visitante) {
+        getRegistry().waitIfProgramIsStopped();
+        onTryGoOut(visitante);
+//        getColaEspera().remove(visitante);
+//        semaphore.release();
+        onGoOutSuccess(visitante);
+//        visitante.setCurrentActivity("Fuera");
+//        getRegistry().removeUser(visitante);
     }
 
-    public void salir(ChildUser visitante) {
-        getRegistro().comprobarDetenerReanudar();
-        desencolarNinioColaEspera(visitante);
-        imprimirColaEspera();
-        semaforo.release(2);
-        visitante.setCurrentActivity("Fuera");
-        getRegistro().eliminarVisitante(visitante);
+    public void goOut(YoungUser visitante) {
+        getRegistry().waitIfProgramIsStopped();
+        onTryGoOut(visitante);
+//        getColaEspera().remove(visitante);
+//        semaphore.release();
+        onGoOutSuccess(visitante);
+//        visitante.setCurrentActivity("Fuera");
+//        getRegistry().removeUser(visitante);
     }
 
-    public synchronized void encolarNinio(ChildUser visitante) {
-        getColaEspera().offer(visitante);
-        getRegistro().aniadirVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-        getColaEspera().offer(visitante.getSupervisor());
-        getRegistro().aniadirVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getSupervisor().getIdentificator());
+    public void goOut(ChildUser visitante) {
+        getRegistry().waitIfProgramIsStopped();
+        onTryGoOut(visitante);
+//        goOutWaitingLine(visitante);
+//        semaphore.release(2);
+        onGoOutSuccess(visitante);
+//        visitante.setCurrentActivity("Fuera");
+//        getRegistry().removeUser(visitante);
+//        getRegistry().removeUser(visitante.getSupervisor());
+    }
+    
+    public synchronized void goIntoWaitingLine(User user) {
+        getWaitingLine().offer(user);
+        getRegistry().registerUserInActivity(identificator, WAITING_LINE, user.getIdentificator());
+        user.setCurrentActivity(identificator);
     }
 
-    public synchronized void desencolarNinioColaEspera(ChildUser visitante) {
-        getColaEspera().remove(visitante);
-        getRegistro().eliminarVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getIdentificator());
-        getColaEspera().remove(visitante.getSupervisor());
-        getRegistro().eliminarVisitanteZonaActividad(identificator, COLA_ESPERA, visitante.getSupervisor().getIdentificator());
+//    public static int getNUM_VISITANTES() {
+//        return NUM_VISITANTES;
+//    }
+//
+//    public static void setNUM_VISITANTES(int NUM_VISITANTES) {
+//        AquaticPark.NUM_VISITANTES = NUM_VISITANTES;
+//    }
+
+    public Semaphore getSemaphore() {
+        return semaphore;
     }
 
-    private void imprimirColaEspera() {
+//    public void setSemaforo(Semaphore semaforo) {
+//        this.semaphore = semaforo;
+//    }
 
+//    public List<Activity> getActividades() {
+//        return activities;
+//    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
     }
 
-    public static int getNUM_VISITANTES() {
-        return NUM_VISITANTES;
+    public BlockingQueue<User> getWaitingLine() {
+        return waitingLine;
     }
 
-    public static void setNUM_VISITANTES(int NUM_VISITANTES) {
-        AquaticPark.NUM_VISITANTES = NUM_VISITANTES;
-    }
-
-    public Semaphore getSemaforo() {
-        return semaforo;
-    }
-
-    public void setSemaforo(Semaphore semaforo) {
-        this.semaforo = semaforo;
-    }
-
-    public List<Activity> getActividades() {
-        return actividades;
-    }
-
-    public void setActividades(List<Activity> actividades) {
-        this.actividades = actividades;
-    }
-
-    public BlockingQueue<User> getColaEspera() {
-        return colaEspera;
-    }
-
-    public void setColaEspera(BlockingQueue<User> colaEspera) {
-        this.colaEspera = colaEspera;
-    }
+//    public void setColaEspera(BlockingQueue<User> colaEspera) {
+//        this.waitingLine = colaEspera;
+//    }
 
 }

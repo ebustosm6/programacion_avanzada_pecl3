@@ -51,7 +51,7 @@ public class LifeGuard extends Thread {
         while (true) {
             try {
                 for (User visitante : colaEspera) {
-                    getRegistro().comprobarDetenerReanudar();
+                    getRegistro().waitIfProgramIsStopped();
                     sleep(getTiempoVigilancia());
                     Permission permiso = tipoPermiso(visitante);
                     visitante.setPermisoActividad(permiso);

@@ -3,7 +3,6 @@ package server;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import javax.swing.JOptionPane;
 
 import application.AquaticPark;
 import application.UserRegistry;

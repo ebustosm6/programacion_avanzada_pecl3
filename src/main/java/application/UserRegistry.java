@@ -13,13 +13,14 @@ import application.user.ChildUser;
 
 public class UserRegistry implements Serializable{
 
-    private Map<String, User> visitantes = new HashMap<>();
-    private Map<String, String> monitoresEnZonaActual = new ConcurrentHashMap<>();
-    private Map<String, Integer> usuariosEnZonaActual = new ConcurrentHashMap<>();
-    private Map<String, Integer> usuariosEnZonaAcumulado = new ConcurrentHashMap<>();
-    private Map<String, ArrayList<String>> usuariosEnZonaActualIds = new ConcurrentHashMap<>();
-    private int numeroAdultos = 0;
-    private int numeroNinios = 0;
+	private static final long serialVersionUID = 1L;
+	private Map<String, User> users = new HashMap<>();
+    private Map<String, String> lifeguardsInAreas = new ConcurrentHashMap<>();
+    private Map<String, Integer> usersInAreas = new ConcurrentHashMap<>();
+    private Map<String, Integer> totalUsersInAreas = new ConcurrentHashMap<>();
+    private Map<String, ArrayList<String>> usersIdsInAreas = new ConcurrentHashMap<>();
+    private int adultUsersCount = 0;
+    private int underAgeUsersCount = 0;
     private UserControlJFrame userControl;
 
 
@@ -27,12 +28,12 @@ public class UserRegistry implements Serializable{
         this.userControl = userControl;
     }
     
-    public void comprobarDetenerReanudar(){
+    public void waitIfProgramIsStopped(){
         try {
             userControl.getL().lock();
             while (userControl.getDetenerReanudar()) {
                 try {
-                    userControl.getC().await(); // espera a que le manden una señal
+                    userControl.getC().await();
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
@@ -42,140 +43,124 @@ public class UserRegistry implements Serializable{
         } 
     }
     
-    public Map<String, Integer> getUsuariosEnZonaActual() {
-        return usuariosEnZonaActual;
-    }
+//    public Map<String, Integer> getUsersInAreas() {
+//        return usersInAreas;
+//    }
 
-    public void setUsuariosEnZonaActual(Map<String, Integer> usuariosEnZonaActual) {
-        this.usuariosEnZonaActual = usuariosEnZonaActual;
-    }
+//    public void setUsuariosEnZonaActual(Map<String, Integer> users) {
+//        this.usersInAreas = users;
+//    }
 
-    public Map<String, Integer> getUsuariosEnZonaAcumulado() {
-        return usuariosEnZonaAcumulado;
-    }
+//    public Map<String, Integer> getUsuariosEnZonaAcumulado() {
+//        return totalUsersInAreas;
+//    }
 
-    public void setUsuariosEnZonaAcumulado(Map<String, Integer> usuariosEnZonaAcumulado) {
-        this.usuariosEnZonaAcumulado = usuariosEnZonaAcumulado;
-    }
+//    public void setUsuariosEnZonaAcumulado(Map<String, Integer> users) {
+//        this.totalUsersInAreas = users;
+//    }
 
-    public ArrayList<String> getColaParque() {
-        return colaParque;
-    }
-
-    public void setColaParque(ArrayList<String> colaParque) {
-        this.colaParque = colaParque;
-    }
-    private ArrayList<String> colaParque = new ArrayList<String>();
-
-    public void registrarZonaActividad(String identificatorActividad) {
-        this.usuariosEnZonaActual.put(identificatorActividad, 0);
-        this.usuariosEnZonaAcumulado.put(identificatorActividad, 0);
+    public void registerActivity(String activityId) {
+        this.usersInAreas.put(activityId, 0);
+        this.totalUsersInAreas.put(activityId, 0);
 
     }
 
-    public void registrarZonasActividad(String identificatorActividad, List<String> identificatoresAreas) {
-        for (String identificatorArea : identificatoresAreas) {
-            this.usuariosEnZonaActualIds.put(identificatorActividad + identificatorArea, new ArrayList<String>());
+    public void registerActivityAreas(String activityId, List<String> areasIds) {
+        for (String areaId : areasIds) {
+            this.usersIdsInAreas.put(activityId + areaId, new ArrayList<String>());
         }
-
     }
 
-    public List<String> getIdentificadoresUsuariosEnActividad(String identificatorActividad, String identificatorArea) {
-        return this.usuariosEnZonaActualIds.get(identificatorActividad + identificatorArea);
+    public List<String> getUserIdsInActivity(String activityId, String areaId) {
+        return this.usersIdsInAreas.get(activityId + areaId);
     }
 
-    public void aniadirMonitorEnZona(String identificatorActividad, String identificatorAreaMonitor, String identificatorMonitor) {
-        monitoresEnZonaActual.put(identificatorActividad, identificatorMonitor);
-        userControl.setDatos(identificatorActividad+identificatorAreaMonitor, identificatorMonitor);
+    public void registerLifeguard(String activityId, String areaId, String lifeguardId) {
+        lifeguardsInAreas.put(activityId, lifeguardId);
+        userControl.setDatos(activityId + areaId, lifeguardId);
     }
 
-    public void eliminarMonitorDeZona(String identificatorActividad) {
-        monitoresEnZonaActual.put(identificatorActividad, "");
+//    public void eliminarMonitorDeZona(String identificatorActividad) {
+//        lifeguardsInAreas.put(identificatorActividad, "");
+//    }
+
+    public synchronized void registerUserInActivity(String activityId, String areaId, String userId) {
+        int countNow = this.usersInAreas.get(activityId) + 1;
+        this.usersInAreas.put(activityId, countNow);
+        int countTotal = this.totalUsersInAreas.get(activityId) + 1;
+        this.totalUsersInAreas.put(activityId, countTotal);
+        ArrayList<String> usersInActivity = this.usersIdsInAreas.get(activityId + areaId);
+        usersInActivity.add(userId);
+        usersInActivity.remove(null);
+        this.usersIdsInAreas.put(activityId + areaId, usersInActivity);
+        userControl.setDatos(activityId+areaId ,usersInActivity.toString());
     }
 
-    public synchronized void aniadirVisitanteZonaActividad(String identificatorActividad, String identificatorArea, String identificatorUsuario) {
-        int cantidadActual = this.usuariosEnZonaActual.get(identificatorActividad) + 1;
-        this.usuariosEnZonaActual.put(identificatorActividad, cantidadActual);
-        int cantidadAcumulado = this.usuariosEnZonaAcumulado.get(identificatorActividad) + 1;
-        this.usuariosEnZonaAcumulado.put(identificatorActividad, cantidadAcumulado);
-        ArrayList<String> usuariosEnZonaActualIdsArray = this.usuariosEnZonaActualIds.get(identificatorActividad + identificatorArea);
-        if (identificatorActividad.equals("ActividadTobogan")) {
-        	// fantasia
-        	System.out.println("asdasd");
-        }
-        usuariosEnZonaActualIdsArray.add(identificatorUsuario);
-        usuariosEnZonaActualIdsArray.remove(null);
-        this.usuariosEnZonaActualIds.put(identificatorActividad + identificatorArea,usuariosEnZonaActualIdsArray);
-        userControl.setDatos(identificatorActividad+identificatorArea,usuariosEnZonaActualIdsArray.toString());
-    }
-
-    public synchronized void eliminarVisitanteZonaActividad(String identificatorActividad, String identificatorArea, String identificatorUsuario) {
-        int cantidadActual = this.usuariosEnZonaActual.get(identificatorActividad) - 1;
-        this.usuariosEnZonaActual.put(identificatorActividad, cantidadActual);
-        ArrayList<String> usuariosEnZonaActualIdsArray = this.usuariosEnZonaActualIds.get(identificatorActividad + identificatorArea);
-        usuariosEnZonaActualIdsArray.remove(identificatorUsuario);
-        this.usuariosEnZonaActualIds.put(identificatorActividad + identificatorArea,usuariosEnZonaActualIdsArray);
-        userControl.setDatos(identificatorActividad+identificatorArea,usuariosEnZonaActualIdsArray.toString());
+    public synchronized void unregisterUserFromActivity(String identificatorActividad, String identificatorArea, String identificatorUsuario) {
+        int countNow = this.usersInAreas.get(identificatorActividad) - 1;
+        this.usersInAreas.put(identificatorActividad, countNow);
+        ArrayList<String> usersInActivity = this.usersIdsInAreas.get(identificatorActividad + identificatorArea);
+        usersInActivity.remove(identificatorUsuario);
+        this.usersIdsInAreas.put(identificatorActividad + identificatorArea,usersInActivity);
+        userControl.setDatos(identificatorActividad+identificatorArea,usersInActivity.toString());
         
-    
-    
     }
 
-    public User buscarVisitante(String identificator) {
-        User visitanteEncontrado = null;
-        if (this.visitantes.containsKey(identificator)) {
-            visitanteEncontrado = this.visitantes.get(identificator);
+    public User searchUser(String userId) {
+        User user = null;
+        if (this.users.containsKey(userId)) {
+        	user = this.users.get(userId);
         }
-        return visitanteEncontrado;
+        return user;
     }
     
-    public List<String> buscarVisitanteLista(String identificator) {
-        ArrayList<String> resultado = new ArrayList<>();
-        User visitante = buscarVisitante(identificator);
-        if (visitante != null) {
-            resultado.add(visitante.getIdentificator());
-        resultado.add(visitante.getCurrentActivity());
-        resultado.add(String.valueOf(visitante.getTotalActivitiesDone()));
-        }
-        return resultado;
-    }
+//    public List<String> buscarVisitanteLista(String identificator) {
+//        ArrayList<String> resultado = new ArrayList<>();
+//        User visitante = buscarVisitante(identificator);
+//        if (visitante != null) {
+//            resultado.add(visitante.getIdentificator());
+//        resultado.add(visitante.getCurrentActivity());
+//        resultado.add(String.valueOf(visitante.getTotalActivitiesDone()));
+//        }
+//        return resultado;
+//    }
 
-    public Map<String, User> getVisitantes() {
-        return visitantes;
-    }
+//    public Map<String, User> getVisitantes() {
+//        return users;
+//    }
 
-    public void aniadirVisitante(User visitante) {
-        this.visitantes.put(visitante.getIdentificator(), visitante);
-        if (visitante instanceof ChildUser|| visitante instanceof YoungUser) {
-            numeroNinios++;
+    public void addUser(User user) {
+        this.users.put(user.getIdentificator(), user);
+        if (user instanceof ChildUser|| user instanceof YoungUser) {
+            underAgeUsersCount++;
         } else {
-            numeroAdultos++;
+            adultUsersCount++;
         }
     }
     
-    public void eliminarVisitante(User visitante) {
-        this.visitantes.put(visitante.getIdentificator(), visitante);
-        if (visitante instanceof ChildUser || visitante instanceof YoungUser) {
-            numeroNinios--;
+    public void removeUser(User user) {
+        this.users.put(user.getIdentificator(), user);
+        if (user instanceof ChildUser || user instanceof YoungUser) {
+            underAgeUsersCount--;
         } else {
-            numeroAdultos--;
+            adultUsersCount--;
         }
     }
 
-    public int getNumeroAdultos() {
-        return numeroAdultos;
+    public int getAdultsCount() {
+        return adultUsersCount;
     }
 
-    public int getNumeroNinios() {
-        return numeroNinios;
+    public int getUnderAgeCount() {
+        return underAgeUsersCount;
     }
 
-    public int getVisitantesActualesEnZona(String identificator) {
-        return this.usuariosEnZonaActual.get(identificator);
+    public int getUsersInActivity(String activityId) {
+        return this.usersInAreas.get(activityId);
     }
 
-    public int getVisitantesAcumuladoEnZona(String identificator) {
-        return this.usuariosEnZonaAcumulado.get(identificator);
+    public int getUsersInActivityTotal(String activityId) {
+        return this.totalUsersInAreas.get(activityId);
     }
 
 }

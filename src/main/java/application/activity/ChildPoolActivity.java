@@ -30,7 +30,7 @@ public class ChildPoolActivity extends Activity {
     @Override
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new ChildPoolLifeGuard("VigilantePiscinaNinos", getColaEspera(), getRegistro());
-    	getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
+    	getRegistro().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
 

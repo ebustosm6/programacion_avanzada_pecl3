@@ -14,8 +14,8 @@ public class ChildPoolActivityTest {
                 
 		AquaticPark parque = new AquaticPark();
 		List<Activity> actividades = new ArrayList<>();
-		actividades.add(new ChildPoolActivity(parque.getRegistro()));
-		parque.setActividades(actividades);
+		actividades.add(new ChildPoolActivity(parque.getRegistry()));
+		parque.setActivities(actividades);
 		
 		UserGenerator generadorVisitantes = new UserGenerator(parque);
 		AdultUser adulto1 = generadorVisitantes.createAdultUser(1, 30);

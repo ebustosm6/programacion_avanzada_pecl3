@@ -21,7 +21,7 @@ public class ServerController extends UnicastRemoteObject implements ServerContr
     @Override
     public List<String> lookForUserAsList(String identificator) {
         List<String> result = new ArrayList<>();
-        User visitante = userRegistry.buscarVisitante(identificator);
+        User visitante = userRegistry.searchUser(identificator);
         if (visitante != null) {
         	result.add(visitante.getIdentificator());
         	result.add(visitante.getCurrentActivity());
@@ -33,30 +33,30 @@ public class ServerController extends UnicastRemoteObject implements ServerContr
 
     @Override
     public int getAdultsCount() {
-        return userRegistry.getNumeroAdultos();
+        return userRegistry.getAdultsCount();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getChildCount() {
-        return userRegistry.getNumeroNinios();
+        return userRegistry.getUnderAgeCount();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getUserCountInArea(String identificator) {
-        return userRegistry.getVisitantesActualesEnZona(identificator);
+        return userRegistry.getUsersInActivity(identificator);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getUserTotalCountInArea(String identificator) {
-         return userRegistry.getVisitantesAcumuladoEnZona(identificator);
+         return userRegistry.getUsersInActivityTotal(identificator);
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
     public List<String> getUserIdsInArea(String identificatorActividad, String identificatorArea){
-        return userRegistry.getIdentificadoresUsuariosEnActividad(identificatorActividad, identificatorArea);
+        return userRegistry.getUserIdsInActivity(identificatorActividad, identificatorArea);
     }
 }

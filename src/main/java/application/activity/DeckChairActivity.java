@@ -27,7 +27,7 @@ public class DeckChairActivity extends Activity {
     @Override
     public LifeGuard initActivityLifeguard() {
         LifeGuard guard = new DeckChairLifeGuard("VigilanteTumbonas", getColaEspera(), getRegistro());
-        getRegistro().aniadirMonitorEnZona(getIdentificator(), "-monitor", guard.getIdentificator());
+        getRegistro().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
     
