@@ -72,7 +72,7 @@ public class MainPoolActivity extends Activity {
         try {
             visitante.setPermisoActividad(Permission.NONE);
             encolarNinio(visitante);
-            imprimirColas();
+            printStatus();
 
             waitForLifeGuardPermission(visitante);
 
@@ -112,7 +112,7 @@ public class MainPoolActivity extends Activity {
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
             getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            imprimirColas();
+            printStatus();
 
             waitForLifeGuardPermission(visitante);
 
@@ -151,7 +151,7 @@ public class MainPoolActivity extends Activity {
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
             getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            imprimirColas();
+            printStatus();
 
             waitForLifeGuardPermission(visitante);
 

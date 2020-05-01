@@ -54,7 +54,7 @@ public class LockerRoomActivity extends Activity {
     }
     
     @Override
-    public void imprimirColas() {
+    public void printStatus() {
     	System.out.println("******************************");
     	System.out.println(getIdentificator() + " - cola de espera: " + getColaEspera().toString());
     	System.out.println(getIdentificator() + " - zona de actividad: " + getZonaActividad().toString());
@@ -71,7 +71,7 @@ public class LockerRoomActivity extends Activity {
         try {
             visitante.setPermisoActividad(Permission.NONE);
             encolarNinio(visitante);
-            imprimirColas();
+            printStatus();
             
             waitForLifeGuardPermission(visitante);
             
@@ -111,7 +111,7 @@ public class LockerRoomActivity extends Activity {
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
             getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            imprimirColas();
+            printStatus();
 
             waitForLifeGuardPermission(visitante);
             
@@ -147,7 +147,7 @@ public class LockerRoomActivity extends Activity {
             getColaEspera().offer(visitante);
             visitante.setCurrentActivity(getIdentificator());
             getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            imprimirColas();
+            printStatus();
             
             waitForLifeGuardPermission(visitante);
             

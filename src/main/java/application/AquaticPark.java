@@ -16,29 +16,26 @@ import application.activity.Activity;
 import application.activity.ChildPoolActivity;
 import application.activity.LockerRoomActivity;
 import application.user.User;
-import application.user.AdultUser;
-import application.user.YoungUser;
 import application.user.ChildUser;
 
-public class AquaticPark implements Serializable {
+public class AquaticPark implements AquaticParkInterface, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String identificator = "ParqueAcuatico";
-//    private static int NUM_VISITANTES = ApplicationGlobalConfig.TOTAL_USERS_IN_PARK;
     private Semaphore semaphore = new Semaphore(ApplicationGlobalConfig.TOTAL_USERS_IN_PARK, true);
     private List<Activity> activities = new ArrayList<>();
     private BlockingQueue<User> waitingLine = new ArrayBlockingQueue<>(5000, true);
     private static final String WAITING_LINE = "-colaEspera";
     private static final String OUTSIDE = "Fuera";
     private UserRegistry userRegistry;
-//    private MainPoolActivity piscinaGrande;
 
-    public AquaticPark(UserRegistry userRegistry) {
+	public AquaticPark(UserRegistry userRegistry) {
         this.userRegistry = userRegistry;
         initActivities();
         registerActivity();
     }
 
-    public void initActivities() {
+    private void initActivities() {
     	MainPoolActivity mainPool = new MainPoolActivity(userRegistry);
     	this.activities.add(new LockerRoomActivity(userRegistry));
     	this.activities.add(mainPool);
@@ -48,27 +45,20 @@ public class AquaticPark implements Serializable {
         this.activities.add(new WavePoolActivity(userRegistry));
     }
 
-    public UserRegistry getRegistry() {
-        return userRegistry;
-    }
-
-    public List<String> getActivityAreas() {
+    private List<String> getActivityAreas() {
         ArrayList<String> areas = new ArrayList<>();
         areas.add(WAITING_LINE);
         return areas;
     }
 
-    public void registerActivity() {
-        this.userRegistry.registerActivity(identificator);
-        this.userRegistry.registerActivityAreas(identificator, getActivityAreas());
+    private void registerActivity() {
+        getRegistry().registerActivity(getIdentificator());
+        getRegistry().registerActivityAreas(getIdentificator(), getActivityAreas());
     }
     
     private void randomActivities(int n, List<Activity> activitiesToDo) {
 		while (n > 0) {
-            int i = (int) (((activities.size()-1) * Math.random()) + 1);  // skip locker room;
-//            if (i == 0) { 
-//                i = 1;
-//            }
+            int i = (int) (((getActivities().size()-1) * Math.random()) + 1);  // skip locker room;
             activitiesToDo.add(activities.get(i));
             n--;
         }
@@ -77,200 +67,137 @@ public class AquaticPark implements Serializable {
     public List<Activity> selectActivities(int n) {
         List<Activity> activitiesToDo = new ArrayList<>();
         if (n < ApplicationGlobalConfig.USER_MIN_NUM_ACTIVITIES || n > ApplicationGlobalConfig.USER_MAX_NUM_ACTIVITIES) {
-            n = activities.size();
+            n = getActivities().size();
         }
-        activitiesToDo.add(activities.get(0)); // LockerRoom
+        activitiesToDo.add(getActivities().get(0)); // LockerRoom
         randomActivities(n, activitiesToDo);
-        activitiesToDo.add(activities.get(0)); // LockerRoom
+        activitiesToDo.add(getActivities().get(0)); // LockerRoom
         return activitiesToDo;
     }
 
-    public synchronized void goIntoWaitingLine(ChildUser user) {
+    private synchronized void goIntoWaitingLine(ChildUser user) {
         getWaitingLine().offer(user);
-        getRegistry().registerUserInActivity(identificator, WAITING_LINE, user.getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
         user.setCurrentActivity(identificator);
         getWaitingLine().offer(user.getSupervisor());
-        getRegistry().registerUserInActivity(identificator, WAITING_LINE, user.getSupervisor().getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
     }
     
-    public synchronized void goOutWaitingLine(User user) {
+    private synchronized void goOutWaitingLine(User user) {
         getWaitingLine().remove(user);
         getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getIdentificator());
     }
 
-    public synchronized void goOutWaitingLine(ChildUser user) {
+    private synchronized void goOutWaitingLine(ChildUser user) {
         getWaitingLine().remove(user);
-        getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
         getWaitingLine().remove(user.getSupervisor());
-        getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getSupervisor().getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
     }
     
-    public boolean passFromWaitingLineToActivity(User user) throws InterruptedException {
+    private boolean passFromWaitingLineToActivity(User user) throws InterruptedException {
     	boolean success = true;
-    	semaphore.acquire();
+    	getSemaphore().acquire();
         goOutWaitingLine(user);
     	return success;
     }
     
-    public boolean passFromWaitingLineToActivity(ChildUser user) throws InterruptedException {
+    private boolean passFromWaitingLineToActivity(ChildUser user) throws InterruptedException {
     	boolean success = true;
-    	semaphore.acquire(2);
+    	getSemaphore().acquire(2);
         goOutWaitingLine(user);
     	return success;
     }
-
-    public boolean goIn(ChildUser visitante) {
-        getRegistry().waitIfProgramIsStopped();
-        boolean resultado = false;
-        try {
-            goIntoWaitingLine(visitante);
-//            visitante.setCurrentActivity(identificator);
-            resultado = passFromWaitingLineToActivity(visitante);
-//            semaphore.acquire(2);
-//            goOutWaitingLine(visitante);
-//            resultado = true;
-            
-        } catch (Exception e) {
-            goOutWaitingLine(visitante);
-            visitante.setCurrentActivity(OUTSIDE);
-        }
-        return resultado;
-    }
-
-    public boolean goIn(AdultUser visitante) {
-        getRegistry().waitIfProgramIsStopped();
-        boolean resultado = false;
-        try {
-        	goIntoWaitingLine(visitante);
-//            getColaEspera().offer(visitante);
-//            getRegistry().registerUserInActivity(identificator, WAITING_LINE, visitante.getIdentificator());
-//            visitante.setCurrentActivity(identificator);
-            resultado = passFromWaitingLineToActivity(visitante);
-//            semaphore.acquire();
-//            goOutWaitingLine(visitante);
-////            getColaEspera().remove(visitante);
-////            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
-//            resultado = true;
-            
-        } catch (Exception e) {
-        	goOutWaitingLine(visitante);
-//            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
-            visitante.setCurrentActivity(OUTSIDE);
-        }
-        return resultado;
-    }
-
-    public boolean goIn(YoungUser visitante) {
-        getRegistry().waitIfProgramIsStopped();
-        boolean resultado = false;
-        try {
-        	goIntoWaitingLine(visitante);
-//            getColaEspera().offer(visitante);
-//            getRegistry().registerUserInActivity(identificator, WAITING_LINE, visitante.getIdentificator());
-//            visitante.setCurrentActivity(identificator);
-            resultado = passFromWaitingLineToActivity(visitante);
-//            semaphore.acquire();
-//            goOutWaitingLine(visitante);
-////            getColaEspera().remove(visitante);
-////            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
-//            resultado = true;
-            
-        } catch (Exception e) {
-        	goOutWaitingLine(visitante);
-//            getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, visitante.getIdentificator());
-            visitante.setCurrentActivity(OUTSIDE);
-        }
-        return resultado;
-    }
     
-    public void onTryGoOut(User user) {
+    public boolean goIn(User user) {
+        getRegistry().waitIfProgramIsStopped();
+        boolean success = false;
+        try {
+            goIntoWaitingLine(user);
+            success = passFromWaitingLineToActivity(user);
+            
+        } catch (Exception e) {
+            goOutWaitingLine(user);
+            user.setCurrentActivity(OUTSIDE);
+        }
+        return success;
+    }
+
+    public boolean goIn(ChildUser user) {
+        getRegistry().waitIfProgramIsStopped();
+        boolean success = false;
+        try {
+            goIntoWaitingLine(user);
+            success = passFromWaitingLineToActivity(user);
+            
+        } catch (Exception e) {
+            goOutWaitingLine(user);
+            user.setCurrentActivity(OUTSIDE);
+        }
+        return success;
+    }
+
+    private void onTryGoOut(User user) {
     	getWaitingLine().remove(user);
-        semaphore.release();
+    	getSemaphore().release();
     }
     
-    public void onTryGoOut(ChildUser user) {
+    private void onTryGoOut(ChildUser user) {
     	getWaitingLine().remove(user);
-        semaphore.release(2);
+    	getSemaphore().release(2);
     }
     
-    public void onGoOutSuccess(User user) {
+    private void onGoOutSuccess(User user) {
     	user.setCurrentActivity(OUTSIDE);
         getRegistry().removeUser(user);
     }
     
-    public void onGoOutSuccess(ChildUser user) {
+    private void onGoOutSuccess(ChildUser user) {
     	user.setCurrentActivity(OUTSIDE);
         getRegistry().removeUser(user);
         getRegistry().removeUser(user.getSupervisor());
     }
 
-    public void goOut(AdultUser visitante) {
+    public void goOut(User user) {
         getRegistry().waitIfProgramIsStopped();
-        onTryGoOut(visitante);
-//        getColaEspera().remove(visitante);
-//        semaphore.release();
-        onGoOutSuccess(visitante);
-//        visitante.setCurrentActivity("Fuera");
-//        getRegistry().removeUser(visitante);
+        onTryGoOut(user);
+        onGoOutSuccess(user);
     }
 
-    public void goOut(YoungUser visitante) {
+    public void goOut(ChildUser user) {
         getRegistry().waitIfProgramIsStopped();
-        onTryGoOut(visitante);
-//        getColaEspera().remove(visitante);
-//        semaphore.release();
-        onGoOutSuccess(visitante);
-//        visitante.setCurrentActivity("Fuera");
-//        getRegistry().removeUser(visitante);
-    }
-
-    public void goOut(ChildUser visitante) {
-        getRegistry().waitIfProgramIsStopped();
-        onTryGoOut(visitante);
-//        goOutWaitingLine(visitante);
-//        semaphore.release(2);
-        onGoOutSuccess(visitante);
-//        visitante.setCurrentActivity("Fuera");
-//        getRegistry().removeUser(visitante);
-//        getRegistry().removeUser(visitante.getSupervisor());
+        onTryGoOut(user);
+        onGoOutSuccess(user);
     }
     
-    public synchronized void goIntoWaitingLine(User user) {
+    private synchronized void goIntoWaitingLine(User user) {
         getWaitingLine().offer(user);
-        getRegistry().registerUserInActivity(identificator, WAITING_LINE, user.getIdentificator());
-        user.setCurrentActivity(identificator);
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        user.setCurrentActivity(getIdentificator());
     }
-
-//    public static int getNUM_VISITANTES() {
-//        return NUM_VISITANTES;
-//    }
-//
-//    public static void setNUM_VISITANTES(int NUM_VISITANTES) {
-//        AquaticPark.NUM_VISITANTES = NUM_VISITANTES;
-//    }
-
+    
+    public String getIdentificator() {
+    	return this.identificator;
+    }
+    
+    public UserRegistry getRegistry() {
+        return userRegistry;
+    }
+    
     public Semaphore getSemaphore() {
         return semaphore;
     }
 
-//    public void setSemaforo(Semaphore semaforo) {
-//        this.semaphore = semaforo;
-//    }
+    public List<Activity> getActivities() {
+        return activities;
+    }
 
-//    public List<Activity> getActividades() {
-//        return activities;
-//    }
-
-    public void setActivities(List<Activity> activities) {
+    public void setActivities(List<Activity> activities) { // TODO: delete this method when tests deleted
         this.activities = activities;
     }
 
     public BlockingQueue<User> getWaitingLine() {
         return waitingLine;
     }
-
-//    public void setColaEspera(BlockingQueue<User> colaEspera) {
-//        this.waitingLine = colaEspera;
-//    }
 
 }

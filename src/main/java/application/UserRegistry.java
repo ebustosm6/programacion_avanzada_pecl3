@@ -42,27 +42,10 @@ public class UserRegistry implements Serializable{
             userControl.getL().unlock();
         } 
     }
-    
-//    public Map<String, Integer> getUsersInAreas() {
-//        return usersInAreas;
-//    }
-
-//    public void setUsuariosEnZonaActual(Map<String, Integer> users) {
-//        this.usersInAreas = users;
-//    }
-
-//    public Map<String, Integer> getUsuariosEnZonaAcumulado() {
-//        return totalUsersInAreas;
-//    }
-
-//    public void setUsuariosEnZonaAcumulado(Map<String, Integer> users) {
-//        this.totalUsersInAreas = users;
-//    }
 
     public void registerActivity(String activityId) {
         this.usersInAreas.put(activityId, 0);
         this.totalUsersInAreas.put(activityId, 0);
-
     }
 
     public void registerActivityAreas(String activityId, List<String> areasIds) {
@@ -79,10 +62,6 @@ public class UserRegistry implements Serializable{
         lifeguardsInAreas.put(activityId, lifeguardId);
         userControl.setDatos(activityId + areaId, lifeguardId);
     }
-
-//    public void eliminarMonitorDeZona(String identificatorActividad) {
-//        lifeguardsInAreas.put(identificatorActividad, "");
-//    }
 
     public synchronized void registerUserInActivity(String activityId, String areaId, String userId) {
         int countNow = this.usersInAreas.get(activityId) + 1;
@@ -103,7 +82,6 @@ public class UserRegistry implements Serializable{
         usersInActivity.remove(identificatorUsuario);
         this.usersIdsInAreas.put(identificatorActividad + identificatorArea,usersInActivity);
         userControl.setDatos(identificatorActividad+identificatorArea,usersInActivity.toString());
-        
     }
 
     public User searchUser(String userId) {
@@ -114,21 +92,6 @@ public class UserRegistry implements Serializable{
         return user;
     }
     
-//    public List<String> buscarVisitanteLista(String identificator) {
-//        ArrayList<String> resultado = new ArrayList<>();
-//        User visitante = buscarVisitante(identificator);
-//        if (visitante != null) {
-//            resultado.add(visitante.getIdentificator());
-//        resultado.add(visitante.getCurrentActivity());
-//        resultado.add(String.valueOf(visitante.getTotalActivitiesDone()));
-//        }
-//        return resultado;
-//    }
-
-//    public Map<String, User> getVisitantes() {
-//        return users;
-//    }
-
     public void addUser(User user) {
         this.users.put(user.getIdentificator(), user);
         if (user instanceof ChildUser|| user instanceof YoungUser) {
