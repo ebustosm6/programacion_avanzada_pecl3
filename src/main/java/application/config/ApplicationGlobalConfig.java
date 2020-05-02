@@ -13,6 +13,10 @@ public class ApplicationGlobalConfig {
 	public static final int USER_GENERATION_MAX_MILISECONDS = 700;
 	// activities
 	public static final String ACTIVITY_DEFAULT_LIFEGUARD_IDENTIFICATOR = "DefaultLifeguard";
+	public static final String ACTIVITY_AREA_WAITING_LINE = "-colaEspera";
+	public static final String ACTIVITY_AREA_ACTIVITY = "-zonaActividad";
+	public static final String ACTIVITY_AREA_WAITING_AREA_SUPERVISORS = "-zonaEsperaAcompaniante";
+	public static final String ACTIVITY_AREA_LIFEGUARD = "-monitor";
 	public static final int ACTIVITY_DEFAULT_CAPACITY = 20;
 	public static final int ACTIVITY_MIN_MILISECONDS = 100;
 	public static final int ACTIVITY_MAX_MILISECONDS = 1000;

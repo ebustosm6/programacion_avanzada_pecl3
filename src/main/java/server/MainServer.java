@@ -16,8 +16,8 @@ public class MainServer {
 
     public static void main(String[] args) throws Exception {
         
-        UserControlJFrame userControl = new UserControlJFrame();
-        UserRegistry userRegistry = new UserRegistry(userControl);
+        UserControlJFrame userControlUI = new UserControlJFrame();
+        UserRegistry userRegistry = new UserRegistry(userControlUI);
         AquaticPark park = new AquaticPark(userRegistry);
         ServerController serverController = new ServerController(userRegistry);
         startServer(serverController);
@@ -26,22 +26,20 @@ public class MainServer {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                 userControl.setVisible(true);
+            	userControlUI.setVisible(true);
             }
         });
     }
-        public static void startServer(ServerController controlador){
+        public static void startServer(ServerController controller){
         try
         {
-            ServerController obj = controlador; 
+            ServerController controllerObj = controller; 
             Registry registry = LocateRegistry.createRegistry(NetworkConfig.PORT);
-            Naming.rebind(NetworkConfig.SERVER_CONTROLLER_URI, obj);
+            Naming.rebind(NetworkConfig.SERVER_CONTROLLER_URI, controllerObj);
             System.out.println("Started server");
-        }catch (Exception e)
-        {
-            System.out.println(" Error: " + e.getMessage());
+        }catch (Exception e) {
             e.printStackTrace();
         }
-        }
+    }
 }
 

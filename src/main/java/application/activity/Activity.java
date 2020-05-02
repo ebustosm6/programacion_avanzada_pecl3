@@ -16,15 +16,16 @@ import application.user.ChildUser;
 
 public class Activity implements ActivityInterface, Serializable {
 
+	private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
+    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
+    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
+	
     private String identificator;
     private int capacityActivity = ApplicationGlobalConfig.ACTIVITY_DEFAULT_CAPACITY;
     private int capacityUseActivity = ApplicationGlobalConfig.ACTIVITY_DEFAULT_CAPACITY;
     private ArrayBlockingQueue<User> waitingLine;
-    private static final String WAITING_LINE = "-colaEspera"; // AreaActivity.WAITING_LINE
     private ArrayBlockingQueue<User> activityArea;
-    private static final String ACTIVITY = "-zonaActividad"; // AreaActivity.ACTIVITY
     private ArrayBlockingQueue<User> waitingAreaSupervisor;
-    private static final String WAITING_AREA_SUPERVISORS = "-zonaEsperaAcompaniante"; // AreaActivity.WAITING_AREA_SUPERVISORS
     private LifeGuard lifeguard;
     private UserRegistry userRegistry;
     
@@ -61,7 +62,7 @@ public class Activity implements ActivityInterface, Serializable {
     
     protected LifeGuard initActivityLifeguard() {
         LifeGuard guard = new LifeGuard(ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), userRegistry);
-        userRegistry.registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
+        userRegistry.registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
     
@@ -101,7 +102,6 @@ public class Activity implements ActivityInterface, Serializable {
         getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
         while (!getWaitingLine().offer(user.getSupervisor())) {
         }
-
         getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
         user.setCurrentActivity(getIdentificator());
         user.getSupervisor().setCurrentActivity(getIdentificator());
@@ -133,6 +133,15 @@ public class Activity implements ActivityInterface, Serializable {
         getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
     }
     
+    protected synchronized void goIntoActivityAreaWithoutSupervisor(ChildUser user) {
+    	while (!getActivityArea().offer(user)) {
+        }
+        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        while (!getWaitingAreaSupervisor().offer(user.getSupervisor())) {
+        }
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+    }
+    
     protected synchronized boolean passFromWaitingLineToActivity(User user) throws InterruptedException {
     	boolean success = true;
     	goOutWaitingLine(user);
@@ -152,6 +161,13 @@ public class Activity implements ActivityInterface, Serializable {
         getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
         getActivityArea().remove(user.getSupervisor());
         getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
+    }
+    
+    protected synchronized void goOutActivityAreaWithoutSupervisor(ChildUser user) {
+        getActivityArea().remove(user);
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        getWaitingAreaSupervisor().remove(user.getSupervisor());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
     
     protected void waitForLifeGuardPermission(User user) throws InterruptedException {
@@ -182,10 +198,11 @@ public class Activity implements ActivityInterface, Serializable {
                 passFromWaitingLineToActivity(user);
             } else if (user.getPermisoActividad() == Permission.ALLOWED) {
                 goOutWaitingLine(user);
-                getActivityArea().offer(user);
-                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
-                getWaitingAreaSupervisor().offer(user.getSupervisor());
-                getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+                goIntoActivityAreaWithoutSupervisor(user);
+//                getActivityArea().offer(user);
+//                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+//                getWaitingAreaSupervisor().offer(user.getSupervisor());
+//                getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
             resultado = true;
         } catch (SecurityException e) {
@@ -194,7 +211,7 @@ public class Activity implements ActivityInterface, Serializable {
         }
         return resultado;
     }
-
+    
     public boolean goIn(AdultUser user) throws InterruptedException {
     	boolean resultado = false;
     	waitIfProgramIsStopped();
@@ -297,10 +314,11 @@ public class Activity implements ActivityInterface, Serializable {
     	if (user.getPermisoActividad() == Permission.SUPERVISED) {
             goOutActivityArea(user);
         } else {
-            getActivityArea().remove(user);
-            getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
-            getWaitingAreaSupervisor().remove(user.getSupervisor());
-            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+        	goOutActivityAreaWithoutSupervisor(user);
+//            getActivityArea().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+//            getWaitingAreaSupervisor().remove(user.getSupervisor());
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
         }
     }
     

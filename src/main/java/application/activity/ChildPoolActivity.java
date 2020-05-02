@@ -13,8 +13,8 @@ import application.lifeguard.ChildPoolLifeGuard;
 
 public class ChildPoolActivity extends Activity {
 
-//    private static int CAPACITY = ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_CAPACITY;
     private static String IDENTIFICATOR = "ActividadPiscinaNinos";
+    private static String LIFEGUARD_IDENTIFICATOR = "VigilantePiscinaNinos";
     
 
     public ChildPoolActivity(UserRegistry userRegistry) {
@@ -29,8 +29,8 @@ public class ChildPoolActivity extends Activity {
 
     @Override
     public LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new ChildPoolLifeGuard("VigilantePiscinaNinos", getWaitingLine(), getRegistry());
-    	getRegistry().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
+        LifeGuard guard = new ChildPoolLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
+    	getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
 

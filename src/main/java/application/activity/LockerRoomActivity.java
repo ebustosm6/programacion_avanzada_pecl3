@@ -16,14 +16,12 @@ import application.user.YoungUser;
 
 public class LockerRoomActivity extends Activity {
 
-//    private static int CAPACIDAD_TOTAL = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_CAPACITY;
-//    private static int CAPACIDAD_ADULTOS = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_ADULT_CAPACITY;
-//    private static int CAPACIDAD_NINIOS = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_CHILD_CAPACITY;
     private static String IDENTIFICATOR = "ActividadVestuario";
+    private static String LIFEGUARD_IDENTIFICATOR = "VigilanteVestuarios";
     private ArrayBlockingQueue<User> zonaActividadAdultos;
     private static boolean IS_FAIR_QUEUE = true;
-    private static final String WAITING_LINE = "-colaEspera"; 
-    private static final String ACTIVITY = "-zonaActividad";
+    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE;
+    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
     private static final String WAITING_AREA_SUPERVISORS = "-zonaActividadAdultos"; 
 
     public LockerRoomActivity(UserRegistry userRegistry) {
@@ -39,8 +37,8 @@ public class LockerRoomActivity extends Activity {
     
     @Override
     public LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new LockerRoomLifeGuard("VigilanteVestuarios", getWaitingLine(), getRegistry());
-    	getRegistry().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
+        LifeGuard guard = new LockerRoomLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
+    	getRegistry().registerLifeguard(getIdentificator(),  ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
 
