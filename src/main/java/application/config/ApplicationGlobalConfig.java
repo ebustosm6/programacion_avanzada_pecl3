@@ -39,6 +39,7 @@ public class ApplicationGlobalConfig {
 	public static final int ACTIVITY_WAVE_POOL_CAPACITY = 20;
 	public static final int ACTIVITY_WAVE_POOL_MIN_MILISECONDS = 2000;
 	public static final int ACTIVITY_WAVE_POOL_MAX_MILISECONDS = 5000;
+	public static final int ACTIVITY_WAVE_POOL_ENTRANCE_USERS = 2;
 	
 
 }

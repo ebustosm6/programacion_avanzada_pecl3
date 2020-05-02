@@ -18,14 +18,13 @@ public class WavePoolActivity extends Activity {
 
     private static String IDENTIFICATOR = "ActividadPiscinaOlas";
     private static String LIFEGUARD_IDENTIFICATOR = "VigilantePisinaOlas";
-    private CyclicBarrier enteringBarrier = new CyclicBarrier(2);
-    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
-    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
-    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
+    private CyclicBarrier enteringBarrier = new CyclicBarrier(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_ENTRANCE_USERS);
+//	private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
+//    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
+//    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
 
     public WavePoolActivity(UserRegistry userRegistry) {
         super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_CAPACITY, userRegistry);
-
     }
     
     @Override
@@ -41,14 +40,14 @@ public class WavePoolActivity extends Activity {
         return guard;
     }
     
-    @Override
-    public List<String> getActivitySubareas() {
-    	ArrayList<String> areas = new ArrayList<>();
-    	areas.add(WAITING_LINE);
-    	areas.add(ACTIVITY);
-    	areas.add(WAITING_AREA_SUPERVISORS);
-    	return areas;
-    }
+//    @Override
+//    public List<String> getActivitySubareas() {
+//    	ArrayList<String> areas = new ArrayList<>();
+//    	areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE);
+//    	areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY);
+//    	areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS);
+//    	return areas;
+//    }
 
     @Override
     public boolean goIn(ChildUser user) {
@@ -67,13 +66,13 @@ public class WavePoolActivity extends Activity {
             } else if (user.getPermisoActividad() == Permission.SUPERVISED) {
                 passFromWaitingLineToActivity(user);
             } else if (user.getPermisoActividad() == Permission.ALLOWED) {
-                enteringBarrier.await();
+            	getEnteringBarrier().await();
                 goOutWaitingLine(user);
                 goIntoActivityAreaWithoutSupervisor(user);
 //                getActivityArea().offer(user);
-//                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+//                getRegistry().registerUserInActivity(getIdentificator(),  ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
 //                getWaitingAreaSupervisor().offer(user.getSupervisor());
-//                getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+//                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
 
             resultado = true;
@@ -101,7 +100,7 @@ public class WavePoolActivity extends Activity {
             goIntoWaitingLine(user);
 //            getWaitingLine().offer(user);
 //            user.setCurrentActivity(getIdentificator());
-//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             
             printStatus();
 
@@ -110,20 +109,20 @@ public class WavePoolActivity extends Activity {
             if (user.getPermisoActividad() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
-            enteringBarrier.await();
+            getEnteringBarrier().await();
             resultado = passFromWaitingLineToActivity(user);
 //            goOutWaitingLine(user);
 ////            getWaitingLine().remove(user);
-////            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
+////            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE,user.getIdentificator());
 //            goIntoActivityArea(user);
 ////            getActivityArea().offer(user);
-////            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY,user.getIdentificator());
+////            getRegistry().registerUserInActivity(getIdentificator(),  ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY,user.getIdentificator());
 //            resultado = true;
 
         } catch (SecurityException | BrokenBarrierException e) {
         	goOutWaitingLine(user);
 //            getWaitingLine().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE,user.getIdentificator());
             
             onGoOutSuccess(user);
 //            user.setPermisoActividad(Permission.NONE);
@@ -146,7 +145,7 @@ public class WavePoolActivity extends Activity {
             goIntoWaitingLine(user);
 //            getWaitingLine().offer(user);
 //            user.setCurrentActivity(getIdentificator());
-//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             
             printStatus();
 
@@ -155,18 +154,18 @@ public class WavePoolActivity extends Activity {
             if (user.getPermisoActividad() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
-            enteringBarrier.await();
+            getEnteringBarrier().await();
             resultado = passFromWaitingLineToActivity(user);
 //            getWaitingLine().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE,user.getIdentificator());
 //            getActivityArea().offer(user);
-//            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY,user.getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(),  ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY,user.getIdentificator());
 //            resultado = true;
 
         } catch (SecurityException | BrokenBarrierException e) {
         	goOutWaitingLine(user);
 //            getWaitingLine().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE,user.getIdentificator());
             
             onGoOutSuccess(user);
 //            user.setPermisoActividad(Permission.NONE);
@@ -176,5 +175,9 @@ public class WavePoolActivity extends Activity {
         }
         return resultado;
     }
+    
+    public CyclicBarrier getEnteringBarrier() {
+		return enteringBarrier;
+	}
 
 }

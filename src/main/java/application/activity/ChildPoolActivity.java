@@ -28,7 +28,7 @@ public class ChildPoolActivity extends Activity {
     }
 
     @Override
-    public LifeGuard initActivityLifeguard() {
+    protected LifeGuard initActivityLifeguard() {
         LifeGuard guard = new ChildPoolLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
     	getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;

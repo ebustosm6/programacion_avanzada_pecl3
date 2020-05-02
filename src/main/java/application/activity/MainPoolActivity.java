@@ -16,9 +16,9 @@ public class MainPoolActivity extends Activity {
     private static String IDENTIFICATOR = "ActividadPiscinaGrande";
     private static String LIFEGUARD_IDENTIFICATOR = "VigilantePiscinaGrande";
     private Semaphore semaphore;
-    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
-    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
-    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
+//    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
+//    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
+//    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
 
     public MainPoolActivity(UserRegistry userRegistry) {
         super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_CAPACITY, userRegistry);
@@ -32,45 +32,45 @@ public class MainPoolActivity extends Activity {
     }
 
     @Override
-    public LifeGuard initActivityLifeguard() {
+    protected LifeGuard initActivityLifeguard() {
         LifeGuard guard = new MainPoolLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getActivityArea(), getRegistry());
         getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
 
-    public synchronized void encolarNinioActividadSemaforo(ChildUser user) throws InterruptedException{
+    protected synchronized void encolarNinioActividadSemaforo(ChildUser user) throws InterruptedException{
         getWaitingLine().remove(user);
-        getSemaforo().acquire(2);
-        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getSemaphore().acquire(2);
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         getWaitingLine().remove(user.getSupervisor());
-        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getSupervisor().getIdentificator());
         while (!getActivityArea().offer(user)) {
             //espera
         }
-        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
         while (!getActivityArea().offer(user.getSupervisor())) {
             //espera
         }
-        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getSupervisor().getIdentificator());
     }
     
     @Override
     protected synchronized void goOutActivityArea(ChildUser user) {
         getActivityArea().remove(user);
         semaphore.release();
-        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
         getActivityArea().remove(user.getSupervisor());
         semaphore.release();
-        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getSupervisor().getIdentificator());
     }
     
     @Override
     protected synchronized void goOutActivityAreaWithoutSupervisor(ChildUser user) {
         getActivityArea().remove(user);
         semaphore.release();
-        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
         getWaitingAreaSupervisor().remove(user.getSupervisor());
-        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
 
     @Override
@@ -94,9 +94,9 @@ public class MainPoolActivity extends Activity {
                 goOutWaitingLine(user);
                 semaphore.acquire();
                 getActivityArea().offer(user);
-                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
                 getWaitingAreaSupervisor().offer(user.getSupervisor());
-                getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
             resultado = true;
         } catch (SecurityException e) {
@@ -110,7 +110,7 @@ public class MainPoolActivity extends Activity {
         }
         return resultado;
     }
-
+    
     @Override
     public boolean goIn(AdultUser user) throws InterruptedException {
     	boolean resultado = false;
@@ -122,7 +122,7 @@ public class MainPoolActivity extends Activity {
             goIntoWaitingLine(user);
 //            getWaitingLine().offer(user);
 //            user.setCurrentActivity(getIdentificator());
-//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             
             printStatus();
 
@@ -131,9 +131,11 @@ public class MainPoolActivity extends Activity {
             if (user.getPermisoActividad() == Permission.ALLOWED) {
                 getWaitingLine().remove(user);
                 semaphore.acquire();
-                getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
-                getActivityArea().offer(user);
-                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
+                goIntoActivityArea(user);
+//                getActivityArea().offer(user);
+//                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
+                
                 resultado = true;
             } else {
                 throw new SecurityException();
@@ -142,7 +144,7 @@ public class MainPoolActivity extends Activity {
         } catch (SecurityException e) {
         	goOutWaitingLine(user);
 //            getWaitingLine().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
 
             onGoOutSuccess(user);
 //            user.setPermisoActividad(Permission.NONE);
@@ -165,7 +167,7 @@ public class MainPoolActivity extends Activity {
             goIntoWaitingLine(user);
 //            getWaitingLine().offer(user);
 //            user.setCurrentActivity(getIdentificator());
-//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             
             printStatus();
 
@@ -177,15 +179,16 @@ public class MainPoolActivity extends Activity {
 
             getWaitingLine().remove(user);
             semaphore.acquire();
-            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
-            getActivityArea().offer(user);
-            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
+            goIntoActivityArea(user);
+//            getActivityArea().offer(user);
+//            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
             resultado = true;
 
         } catch (SecurityException e) {
         	goOutWaitingLine(user);
 //            getWaitingLine().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
 
             onGoOutSuccess(user);
 //            user.setPermisoActividad(Permission.NONE);
@@ -197,7 +200,7 @@ public class MainPoolActivity extends Activity {
     }
 
     @Override
-    public void onDoActivityFail(User user) {
+    protected void onDoActivityFail(User user) {
     	if (user instanceof ChildUser) {
             getActivityArea().remove(user);
             getActivityArea().remove(user.getSupervisor());
@@ -227,10 +230,10 @@ public class MainPoolActivity extends Activity {
 //        }
 //    }
 
-    public void onTryGoOut(User user) {
+    protected void onTryGoOut(User user) {
     	getActivityArea().remove(user);
     	semaphore.release();
-    	getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+    	getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
     }
     
 //    public void goOut(AdultUser user) {
@@ -240,7 +243,7 @@ public class MainPoolActivity extends Activity {
 //        	onTryGoOut(user);
 ////            getZonaActividad().remove(user);
 ////            semaforo.release();
-////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, user.getIdentificator());
+////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
 //            
 //            onGoOutSuccess(user);
 ////            user.setPermisoActividad(Permission.NONE);
@@ -257,7 +260,7 @@ public class MainPoolActivity extends Activity {
 //        	onTryGoOut(user);
 ////            getZonaActividad().remove(user);
 ////            semaforo.release();
-////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, user.getIdentificator());
+////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
 //            
 //            onGoOutSuccess(user);
 ////            user.setPermisoActividad(Permission.NONE);
@@ -277,9 +280,9 @@ public class MainPoolActivity extends Activity {
 //            	goOutActivityAreaWithoutSupervisor(user);
 ////                getActivityArea().remove(user);
 ////            	  semaphore.release();
-////                getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+////                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
 ////                getWaitingAreaSupervisor().remove(user.getSupervisor());
-////                getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+////                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
 //
 //            }
 //            
@@ -291,12 +294,12 @@ public class MainPoolActivity extends Activity {
 //        }
 //    }
 
-    public Semaphore getSemaforo() {
+    public Semaphore getSemaphore() {
         return semaphore;
     }
 
-    public void setSemaforo(Semaphore semaforo) {
-        this.semaphore = semaforo;
-    }
+//    public void setSemaforo(Semaphore semaforo) {
+//        this.semaphore = semaforo;
+//    }
 
 }

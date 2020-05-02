@@ -22,8 +22,8 @@ public class SlideActivity extends Activity {
     private static String LIFEGUARD_B_IDENTIFICATOR = "VigilanteToboganB";
     private static String LIFEGUARD_C_IDENTIFICATOR = "VigilanteToboganC";
     private SlideTicket ticket;
-    private ArrayBlockingQueue<User> toboganC = new ArrayBlockingQueue<User>(ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, true);
-    private ArrayBlockingQueue<User> toboganB = new ArrayBlockingQueue<User>(ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, true);
+    private ArrayBlockingQueue<User> slideB = new ArrayBlockingQueue<User>(ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, true);
+    private ArrayBlockingQueue<User> slideC = new ArrayBlockingQueue<User>(ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, true);
     private MainPoolActivity mainPool;
     private LifeGuard lifeguardB;
     private LifeGuard lifeguardC;
@@ -226,7 +226,7 @@ public class SlideActivity extends Activity {
                 getActivityArea().remove(user); //Tobogan A
                 getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_A, user.getIdentificator());
             } else {
-                getToboganB().remove(user);
+                getSlideB().remove(user);
                 getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_B, user.getIdentificator());
             }
             printStatus();
@@ -246,7 +246,7 @@ public class SlideActivity extends Activity {
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         try {
-            getToboganC().remove(user);
+            getSlideC().remove(user);
             getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_C, user.getIdentificator());
             printStatus();
             
@@ -269,7 +269,7 @@ public class SlideActivity extends Activity {
                 getActivityArea().remove(user); //Tobogan A
                 getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_A, user.getIdentificator());
             } else {
-                getToboganB().remove(user);
+                getSlideB().remove(user);
                 getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_B, user.getIdentificator());
             }
             printStatus();
@@ -286,25 +286,22 @@ public class SlideActivity extends Activity {
     }
 
     public void goIntoSlide(User user) throws InterruptedException{
-        getPiscinaGrande().getSemaforo().acquire();
+        getPiscinaGrande().getSemaphore().acquire();
         getWaitingLine().remove(user);
         getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
         if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
             while (!getActivityArea().offer(user)) {
-                // esperar al tobogan vacio
             }
             user.setCurrentActivity("ToboganA");
             getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_A, user.getIdentificator());
 
         } else if (user.getSlideTicket() == SlideTicket.SLIDE_B) {
-            while (!getToboganB().offer(user)) {
-                // esperar al tobogan vacio
+            while (!getSlideB().offer(user)) {
             }
             user.setCurrentActivity("ToboganB");
             getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_B, user.getIdentificator());
         } else {
-            while (!getToboganC().offer(user)) {
-                // esperar al tobogan vacio
+            while (!getSlideC().offer(user)) {
             }
             user.setCurrentActivity("ToboganC");
             getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_C, user.getIdentificator());
@@ -313,9 +310,9 @@ public class SlideActivity extends Activity {
 
     public void printStatus() {
         System.out.println(getIdentificator() + " - cola de espera: " + getWaitingLine().toString());
-        System.out.println(getIdentificator() + " - TOBOGAN A: " + getActivityArea().toString());  //Tobogan A
-        System.out.println(getIdentificator() + " - TOBOGAN B: " + getToboganB().toString());       //Tobogan B
-        System.out.println(getIdentificator() + " - TOBOGAN C: " + getToboganC().toString());       //Tobogan C
+        System.out.println(getIdentificator() + " - TOBOGAN A: " + getActivityArea().toString());
+        System.out.println(getIdentificator() + " - TOBOGAN B: " + getSlideB().toString());
+        System.out.println(getIdentificator() + " - TOBOGAN C: " + getSlideC().toString());
         System.out.println(getIdentificator() + " - zona de espera de actividad: " + getPiscinaGrande().getWaitingAreaSupervisor().toString());
     }
 
@@ -323,32 +320,32 @@ public class SlideActivity extends Activity {
         return ticket;
     }
 
-    public void setTicket(SlideTicket ticket) {
-        this.ticket = ticket;
+//    public void setTicket(SlideTicket ticket) {
+//        this.ticket = ticket;
+//    }
+
+    public ArrayBlockingQueue<User> getSlideC() {
+        return slideC;
     }
 
-    public ArrayBlockingQueue<User> getToboganC() {
-        return toboganC;
+//    public void setToboganC(ArrayBlockingQueue<User> toboganC) {
+//        this.slideC = toboganC;
+//    }
+
+    public ArrayBlockingQueue<User> getSlideB() {
+        return slideB;
     }
 
-    public void setToboganC(ArrayBlockingQueue<User> toboganC) {
-        this.toboganC = toboganC;
-    }
-
-    public ArrayBlockingQueue<User> getToboganB() {
-        return toboganB;
-    }
-
-    public void setToboganB(ArrayBlockingQueue<User> toboganB) {
-        this.toboganB = toboganB;
-    }
+//    public void setToboganB(ArrayBlockingQueue<User> toboganB) {
+//        this.slideB = toboganB;
+//    }
 
     public MainPoolActivity getPiscinaGrande() {
         return mainPool;
     }
 
-    public void setPiscinaGrande(MainPoolActivity piscinaGrande) {
-        this.mainPool = piscinaGrande;
-    }
+//    public void setPiscinaGrande(MainPoolActivity piscinaGrande) {
+//        this.mainPool = piscinaGrande;
+//    }
 
 }
