@@ -7,12 +7,13 @@ import application.lifeguard.DeckChairLifeGuard;
 
 public class DeckChairActivity extends Activity {
 
-    private static String IDENTIFICATOR = "ActividadTumbonas";
-    private static String LIFEGUARD_IDENTIFICATOR = "VigilanteTumbonas";
-    private static boolean IS_FAIR_QUEUE = false;
+//    private static String IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME; //"ActividadTumbonas";
+//    private static String LIFEGUARD_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_LIFEGUARD_IDENTIFICATOR;// "VigilanteTumbonas";
+//    private static boolean IS_FAIR_QUEUE = false;
     
     public DeckChairActivity(UserRegistry userRegistry) {
-        super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, IS_FAIR_QUEUE, userRegistry);
+        super(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, 
+        		ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_QUEUE_IS_FAIR, userRegistry);
     }
 
     @Override
@@ -23,7 +24,7 @@ public class DeckChairActivity extends Activity {
 
     @Override
     protected LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new DeckChairLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
+        LifeGuard guard = new DeckChairLifeGuard(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
         getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }

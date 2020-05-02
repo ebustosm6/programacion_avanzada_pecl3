@@ -446,7 +446,7 @@ public class ClientControlJFrame extends javax.swing.JFrame {
 
     private void jButtonControlUbicacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonControlUbicacionActionPerformed
         try {
-            ArrayList<String> resultado = controladorCliente.controlUbicacion(jTextFieldUsuario.getText());
+            ArrayList<String> resultado = controladorCliente.locationCheck(jTextFieldUsuario.getText());
             if (resultado.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "El usuario introducido no esta en el parque", "Error en la busqueda", JOptionPane.ERROR_MESSAGE);
             }else{
@@ -460,7 +460,7 @@ public class ClientControlJFrame extends javax.swing.JFrame {
 
     private void jButtonControlMenoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonControlMenoresActionPerformed
         try {
-            jTextFieldNumeroMenores.setText(controladorCliente.controlMenores() + "");
+            jTextFieldNumeroMenores.setText(controladorCliente.underAgeCheck() + "");
         } catch (RemoteException ex) {
             Logger.getLogger(ClientControlJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -470,7 +470,7 @@ public class ClientControlJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             // TODO add your handling code here:
-            ArrayList<String> resultado = controladorCliente.controlToboganes();
+            ArrayList<String> resultado = controladorCliente.slidesCheck();
             jTextFieldToboganA.setText(resultado.get(0));
             jTextFieldToboganB.setText(resultado.get(1));
             jTextFieldToboganC.setText(resultado.get(2));
@@ -486,7 +486,7 @@ public class ClientControlJFrame extends javax.swing.JFrame {
     private void jButtonControlAforoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonControlAforoActionPerformed
         try {
             // TODO add your handling code here:
-            ArrayList<String> resultado = controladorCliente.controlAforo();
+            ArrayList<String> resultado = controladorCliente.countPeopleCheck();
             jTextFieldVestuarios.setText(resultado.get(0));
             jTextFieldPiscinaOlas.setText(resultado.get(1));
             jTextFieldPiscinaNinios.setText(resultado.get(2));

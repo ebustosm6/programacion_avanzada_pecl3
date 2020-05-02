@@ -13,15 +13,15 @@ import application.user.ChildUser;
 
 public class MainPoolActivity extends Activity {
 
-    private static String IDENTIFICATOR = "ActividadPiscinaGrande";
-    private static String LIFEGUARD_IDENTIFICATOR = "VigilantePiscinaGrande";
+//    private static String IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME; //"ActividadPiscinaGrande";
+//    private static String LIFEGUARD_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_IDENTIFICATOR; //"VigilantePiscinaGrande";
     private Semaphore semaphore;
 //    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
 //    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
 //    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
 
     public MainPoolActivity(UserRegistry userRegistry) {
-        super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_CAPACITY, userRegistry);
+        super(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME, ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_CAPACITY, userRegistry);
         this.semaphore = new Semaphore(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_CAPACITY, true);
     }
     
@@ -33,7 +33,7 @@ public class MainPoolActivity extends Activity {
 
     @Override
     protected LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new MainPoolLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getActivityArea(), getRegistry());
+        LifeGuard guard = new MainPoolLifeGuard(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getActivityArea(), getRegistry());
         getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }

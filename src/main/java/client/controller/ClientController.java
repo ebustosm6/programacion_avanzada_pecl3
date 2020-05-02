@@ -6,50 +6,48 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import application.config.ApplicationGlobalConfig;
 import common.config.NetworkConfig;
 import server.controller.ServerControllerRMI;
 
 
 public class ClientController {
         
-	ServerControllerRMI controlador;
+	ServerControllerRMI controllerRmi;
 	
 	public ClientController() throws RemoteException, NotBoundException, MalformedURLException {
 		
-		this.controlador = (ServerControllerRMI) Naming.lookup(NetworkConfig.CLIENT_CONTROLLER_URI);
+		this.controllerRmi = (ServerControllerRMI) Naming.lookup(NetworkConfig.CLIENT_CONTROLLER_URI);
 	}
 	
-	public ArrayList<String> controlUbicacion(String identificatorUsuario) throws RemoteException {
-		// returns [id_usuario, ubicacion, actividades
-                ArrayList<String> res = (ArrayList<String>) controlador.lookForUserAsList(identificatorUsuario);
+	public ArrayList<String> locationCheck(String userId) throws RemoteException {
+		// returns userId, location, activitiesCout
+                ArrayList<String> res = (ArrayList<String>) controllerRmi.lookForUserAsList(userId);
 		return (ArrayList<String>) res;
 	}
 	
-	public int controlMenores() throws RemoteException {
-		return controlador.getChildCount();
+	public int underAgeCheck() throws RemoteException {
+		return controllerRmi.getChildCount();
 	}
 	
-	public ArrayList<String> controlToboganes() throws RemoteException {
-		// returns [tobogan_a, tobogan_b, tobogan_c]
+	public ArrayList<String> slidesCheck() throws RemoteException {
+		// array returned in the following order
 		ArrayList<String> resultado = new ArrayList<>();
-		resultado.add(controlador.getUserIdsInArea("ActividadTobogan", "-zonaActividad").toString());
-		resultado.add(controlador.getUserIdsInArea("ActividadTobogan", "-zonaActividadB").toString());
-		resultado.add(controlador.getUserIdsInArea("ActividadTobogan", "-zonaActividadC").toString());
+		resultado.add(controllerRmi.getUserIdsInArea(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME, ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY).toString());
+		resultado.add(controllerRmi.getUserIdsInArea(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME, ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B).toString());
+		resultado.add(controllerRmi.getUserIdsInArea(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME, ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C).toString());
 		return resultado;
 	}
 	
-	public ArrayList<String> controlAforo() throws RemoteException {
-		// returns [vestuarios, piscina_olas, piscina_ninios, tumbonas, toboganes, piscina_grande]
+	public ArrayList<String> countPeopleCheck() throws RemoteException {
+		// array returned in the following order
 		ArrayList<String> resultado = new ArrayList<>();
-		resultado.add(String.valueOf(controlador.getUserCountInArea("ActividadVestuario")));
-		resultado.add(String.valueOf(controlador.getUserCountInArea("ActividadPiscinaOlas")));
-		resultado.add(String.valueOf(controlador.getUserCountInArea("ActividadPiscinaNinos")));
-		resultado.add(String.valueOf(controlador.getUserCountInArea("ActividadTumbonas")));
-		resultado.add(String.valueOf(controlador.getUserCountInArea("ActividadTobogan")));
-		resultado.add(String.valueOf(controlador.getUserCountInArea("ActividadPiscinaGrande")));
-//                resultado.add("0");
-//                resultado.add("0");
-//                resultado.add("0");
+		resultado.add(String.valueOf(controllerRmi.getUserCountInArea(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME)));
+		resultado.add(String.valueOf(controllerRmi.getUserCountInArea(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME)));
+		resultado.add(String.valueOf(controllerRmi.getUserCountInArea(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME)));
+		resultado.add(String.valueOf(controllerRmi.getUserCountInArea(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME)));
+		resultado.add(String.valueOf(controllerRmi.getUserCountInArea(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME)));
+		resultado.add(String.valueOf(controllerRmi.getUserCountInArea(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME)));
 		return resultado;
 	}
 

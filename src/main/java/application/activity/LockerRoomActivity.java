@@ -16,17 +16,17 @@ import application.user.YoungUser;
 
 public class LockerRoomActivity extends Activity {
 
-    private static String IDENTIFICATOR = "ActividadVestuario";
-    private static String LIFEGUARD_IDENTIFICATOR = "VigilanteVestuarios";
+//    private static String IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME;// "ActividadVestuario";
+//    private static String LIFEGUARD_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_LIFEGUARD_IDENTIFICATOR;// "VigilanteVestuarios";
     private ArrayBlockingQueue<User> activityAreaAdultUsers;
-    private static boolean IS_FAIR_QUEUE = true;
+//    private static boolean IS_FAIR_QUEUE = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_QUEUE_IS_FAIR;
 //    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE;
 //    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
-    private static final String ACTIVITY_AREA_ADULT_USERS = "-zonaActividadAdultos"; 
+//    private static final String ACTIVITY_AREA_ADULT_USERS = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_ADULT_USERS; //"-zonaActividadAdultos"; 
 
     public LockerRoomActivity(UserRegistry userRegistry) {
-        super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_CAPACITY,
-        		ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_CHILD_CAPACITY, IS_FAIR_QUEUE, userRegistry);
+        super(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME, ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_CAPACITY,
+        		ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_CHILD_CAPACITY, ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_QUEUE_IS_FAIR, userRegistry);
         this.activityAreaAdultUsers = new ArrayBlockingQueue<>(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_ADULT_CAPACITY, true);
     }
     
@@ -37,7 +37,7 @@ public class LockerRoomActivity extends Activity {
     
     @Override
     protected LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new LockerRoomLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
+        LifeGuard guard = new LockerRoomLifeGuard(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
     	getRegistry().registerLifeguard(getIdentificator(),  ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
@@ -47,27 +47,27 @@ public class LockerRoomActivity extends Activity {
     	ArrayList<String> areas = new ArrayList<>();
     	areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE);
     	areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY);
-    	areas.add(ACTIVITY_AREA_ADULT_USERS);
+    	areas.add(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS);
     	return areas;
     }
     
     @Override
     public void printStatus() {
-    	System.out.println(getIdentificator() + " - cola de espera: " + getWaitingLine().toString());
-    	System.out.println(getIdentificator() + " - zona de actividad: " + getActivityArea().toString());
-    	System.out.println(getIdentificator() + " - zona de actividad adultos: " + getActivityAreaAdultUsers().toString());
+    	System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE + " - " + getWaitingLine().toString());
+    	System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY + " - " + getActivityArea().toString());
+    	System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS + " - " + getActivityAreaAdultUsers().toString());
     }
     
     protected synchronized void goIntoActivityAreaWithoutSupervisor(ChildUser user) {
     	getActivityArea().offer(user);
         getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
     	getActivityAreaAdultUsers().offer(user.getSupervisor());
-        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_ADULT_USERS, user.getSupervisor().getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS, user.getSupervisor().getIdentificator());
     }
     
     protected synchronized void goIntoActivityArea(AdultUser user) {
     	getActivityAreaAdultUsers().offer(user);
-        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_ADULT_USERS, user.getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS, user.getIdentificator());
     }
 
     @Override
@@ -191,7 +191,7 @@ public class LockerRoomActivity extends Activity {
     
     protected void onTryGoOut(AdultUser user) {
     	getActivityAreaAdultUsers().remove(user);
-        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_ADULT_USERS, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS, user.getIdentificator());
     }
     
     public void goOut(AdultUser user) {

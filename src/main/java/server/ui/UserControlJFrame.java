@@ -4,6 +4,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import application.config.ApplicationGlobalConfig;
+
 public class UserControlJFrame extends javax.swing.JFrame {
 
     private boolean detenerReanudar = false;
@@ -47,58 +49,58 @@ public class UserControlJFrame extends javax.swing.JFrame {
         this.detenerReanudar = detenerReanudar;
     }
 
-    public void setDatos(String lugar, String datos) {
+    public void setData(String place, String data) {
 
-        if (lugar.equals("ParqueAcuatico-colaEspera")) {
-            jParqueCola.setText(datos);
-        } else if (lugar.equals("ActividadVestuario-colaEspera")) {
-            jVestuarioCola.setText(datos);
-        } else if (lugar.equals("ActividadVestuario-monitor")) {
-            jVestuarioMonitor.setText(datos);
-        } else if (lugar.equals("ActividadVestuario-zonaActividadAdultos")) {
-            jVestuarioAdultos.setText(datos);
-        } else if (lugar.equals("ActividadVestuario-zonaActividad")) {
-            jVestuarioNinios.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaNinos-colaEspera")) {
-            jPiscinaNiniosCola.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaNinos-monitor")) {
-            jPiscinaNiniosMonitor.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaNinos-zonaActividad")) {
-            jPiscinaNiniosNinios.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaNinos-zonaEsperaAcompaniante")) {
-            jPiscinaNiniosEspera.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaOlas-colaEspera")) {
-            jPiscinaOlasCola.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaOlas-monitor")) {
-            jPiscinaOlasMonitor.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaOlas-zonaActividad")) {
-            jPiscinaOlas.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaGrande-colaEspera")) {
-            jPiscinaGrandeCola.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaGrande-monitor")) {
-            jPiscinaGrandeMonitor.setText(datos);
-        } else if (lugar.equals("ActividadPiscinaGrande-zonaActividad")) {
-            jPiscinaGrande.setText(datos);
-        } else if (lugar.equals("ActividadTumbonas-colaEspera")) {
-            jTumbonasCola.setText(datos);
-        } else if (lugar.equals("ActividadTumbonas-monitor")) {
-            jTumbonasMonitor.setText(datos);
-        } else if (lugar.equals("ActividadTumbonas-zonaActividad")) {
-            jTumbonas.setText(datos);
-        } else if (lugar.equals("ActividadTobogan-colaEspera")) {
-            jToboganesCola.setText(datos);
-        } else if (lugar.equals("ActividadTobogan-monitor")) {
-            jToboganMonitorA.setText(datos);
-        } else if (lugar.equals("ActividadTobogan-zonaActividad")) {
-            jToboganA.setText(datos);
-        } else if (lugar.equals("ActividadToboganB-monitor")) {
-            jToboganMonitorB.setText(datos);
-        } else if (lugar.equals("ActividadTobogan-zonaActividadB")) {
-            jToboganB.setText(datos);
-        } else if (lugar.equals("ActividadToboganC-monitor")) {
-            jToboganMonitorC.setText(datos);
-        } else if (lugar.equals("ActividadTobogan-zonaActividadC")) {
-            jToboganC.setText(datos);
+        if (place.equals(ApplicationGlobalConfig.PARK_IDENTIFICATOR+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jParqueCola.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jVestuarioCola.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jVestuarioMonitor.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS)) {
+            jVestuarioAdultos.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jVestuarioNinios.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jPiscinaNiniosCola.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jPiscinaNiniosMonitor.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jPiscinaNiniosNinios.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS)) {
+            jPiscinaNiniosEspera.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jPiscinaOlasCola.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jPiscinaOlasMonitor.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jPiscinaOlas.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jPiscinaGrandeCola.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jPiscinaGrandeMonitor.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jPiscinaGrande.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jTumbonasCola.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jTumbonasMonitor.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jTumbonas.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jToboganesCola.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jToboganMonitorA.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jToboganA.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_B_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jToboganMonitorB.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B)) {
+            jToboganB.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jToboganMonitorC.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C)) {
+            jToboganC.setText(data);
         }
     }
 

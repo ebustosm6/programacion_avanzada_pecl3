@@ -85,9 +85,9 @@ public class Activity implements ActivityInterface, Serializable {
     }
 
     protected void printStatus() {
-        System.out.println(getIdentificator() + " - cola de espera: " + getWaitingLine().toString());
-        System.out.println(getIdentificator() + " - zona de actividad: " + getActivityArea().toString());
-        System.out.println(getIdentificator() + " - zona de espera de actividad: " + getWaitingAreaSupervisor().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE + " - " + getWaitingLine().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY + " - " + getActivityArea().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS + " - " + getWaitingAreaSupervisor().toString());
     }
 
     protected synchronized void goIntoWaitingLine(User user) {

@@ -60,7 +60,7 @@ public class UserRegistry implements Serializable{
 
     public void registerLifeguard(String activityId, String areaId, String lifeguardId) {
         lifeguardsInAreas.put(activityId, lifeguardId);
-        userControl.setDatos(activityId + areaId, lifeguardId);
+        userControl.setData(activityId + areaId, lifeguardId);
     }
 
     public synchronized void registerUserInActivity(String activityId, String areaId, String userId) {
@@ -72,7 +72,7 @@ public class UserRegistry implements Serializable{
         usersInActivity.add(userId);
         usersInActivity.remove(null);
         this.usersIdsInAreas.put(activityId + areaId, usersInActivity);
-        userControl.setDatos(activityId+areaId ,usersInActivity.toString());
+        userControl.setData(activityId+areaId ,usersInActivity.toString());
     }
 
     public synchronized void unregisterUserFromActivity(String identificatorActividad, String identificatorArea, String identificatorUsuario) {
@@ -81,7 +81,7 @@ public class UserRegistry implements Serializable{
         ArrayList<String> usersInActivity = this.usersIdsInAreas.get(identificatorActividad + identificatorArea);
         usersInActivity.remove(identificatorUsuario);
         this.usersIdsInAreas.put(identificatorActividad + identificatorArea,usersInActivity);
-        userControl.setDatos(identificatorActividad+identificatorArea,usersInActivity.toString());
+        userControl.setData(identificatorActividad+identificatorArea,usersInActivity.toString());
     }
 
     public User searchUser(String userId) {

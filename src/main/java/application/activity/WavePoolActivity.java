@@ -1,7 +1,5 @@
 package application.activity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -16,15 +14,15 @@ import application.user.YoungUser;
 
 public class WavePoolActivity extends Activity {
 
-    private static String IDENTIFICATOR = "ActividadPiscinaOlas";
-    private static String LIFEGUARD_IDENTIFICATOR = "VigilantePisinaOlas";
+//    private static String IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME; //"ActividadPiscinaOlas";
+//    private static String LIFEGUARD_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_LIFEGUARD_IDENTIFICATOR; //"VigilantePisinaOlas";
     private CyclicBarrier enteringBarrier = new CyclicBarrier(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_ENTRANCE_USERS);
 //	private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
 //    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
 //    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
 
     public WavePoolActivity(UserRegistry userRegistry) {
-        super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_CAPACITY, userRegistry);
+        super(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME, ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_CAPACITY, userRegistry);
     }
     
     @Override
@@ -35,7 +33,7 @@ public class WavePoolActivity extends Activity {
     
     @Override
     protected LifeGuard initActivityLifeguard() {
-    	LifeGuard guard = new WavePoolLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
+    	LifeGuard guard = new WavePoolLifeGuard(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
     	getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }

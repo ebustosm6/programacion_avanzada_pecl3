@@ -17,27 +17,27 @@ import application.user.YoungUser;
 
 public class SlideActivity extends Activity {
 
-    private static String IDENTIFICATOR = "ActividadTobogan";
-    private static String LIFEGUARD_A_IDENTIFICATOR = "VigilanteToboganA";
-    private static String LIFEGUARD_B_IDENTIFICATOR = "VigilanteToboganB";
-    private static String LIFEGUARD_C_IDENTIFICATOR = "VigilanteToboganC";
+//    private static String IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME; //"ActividadTobogan";
+//    private static String LIFEGUARD_A_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_A_IDENTIFICATOR; //"VigilanteToboganA";
+//    private static String LIFEGUARD_B_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_B_IDENTIFICATOR; //"VigilanteToboganB";
+//    private static String LIFEGUARD_C_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_C_IDENTIFICATOR; //"VigilanteToboganC";
     private SlideTicket ticket;
     private ArrayBlockingQueue<User> slideB = new ArrayBlockingQueue<User>(ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, true);
     private ArrayBlockingQueue<User> slideC = new ArrayBlockingQueue<User>(ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, true);
     private MainPoolActivity mainPool;
     private LifeGuard lifeguardB;
     private LifeGuard lifeguardC;
-    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE;
-    private static final String ACTIVITY_AREA_A = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
-    private static final String ACTIVITY_AREA_B = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY+"B";
-    private static final String ACTIVITY_AREA_C = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY+"C";
-    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
+//    private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE;
+//    private static final String ACTIVITY_AREA_A = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
+//    private static final String ACTIVITY_AREA_B = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B;
+//    private static final String ACTIVITY_AREA_C = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C;
+//    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
 
     public SlideActivity(UserRegistry userRegistry, MainPoolActivity piscinaGrande) {
-        super(IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, userRegistry);
+        super(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME, ApplicationGlobalConfig.ACTIVITY_SLIDE_CAPACITY, userRegistry);
         this.mainPool = piscinaGrande;
-        this.lifeguardB = initLifeGuard(LIFEGUARD_B_IDENTIFICATOR, getIdentificator() + "B");
-        this.lifeguardC = initLifeGuard(LIFEGUARD_C_IDENTIFICATOR, getIdentificator() + "C");
+        this.lifeguardB = initLifeGuard(ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_B_IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_SLIDE_B_NAME);
+        this.lifeguardC = initLifeGuard(ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_C_IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_SLIDE_C_NAME);
         initOtherLifeguards();
     }
     
@@ -49,7 +49,7 @@ public class SlideActivity extends Activity {
     
     @Override
     public LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new SlideLifeGuard(LIFEGUARD_A_IDENTIFICATOR, getWaitingLine(), getRegistry());
+        LifeGuard guard = new SlideLifeGuard(ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_A_IDENTIFICATOR, getWaitingLine(), getRegistry());
         getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
@@ -57,11 +57,11 @@ public class SlideActivity extends Activity {
     @Override
     protected List<String> getActivitySubareas() {
         ArrayList<String> areas = new ArrayList<>();
-        areas.add(WAITING_LINE);
-        areas.add(ACTIVITY_AREA_A);
-        areas.add(ACTIVITY_AREA_B);
-        areas.add(ACTIVITY_AREA_C);
-        areas.add(WAITING_AREA_SUPERVISORS);
+        areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE);
+        areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY);
+        areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B);
+        areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C);
+        areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS);
         return areas;
     }
 
@@ -78,18 +78,18 @@ public class SlideActivity extends Activity {
     
     protected synchronized void goIntoWaitingLine(ChildUser user) {
     	getWaitingLine().offer(user);
-        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         user.setCurrentActivity(getIdentificator());
         user.getSupervisor().setCurrentActivity(getIdentificator());
         getPiscinaGrande().getWaitingAreaSupervisor().offer(user.getSupervisor()); // se van a la zona de espera de la piscina para que no les den permiso y se tiren por el tobogan
-        getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+        getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
     
     protected synchronized void goOutWaitingLine(ChildUser user) {
     	getWaitingLine().remove(user);
-        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         getPiscinaGrande().getWaitingAreaSupervisor().remove(user.getSupervisor());
-        getRegistry().unregisterUserFromActivity(getPiscinaGrande().getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+        getRegistry().unregisterUserFromActivity(getPiscinaGrande().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
 
     @Override
@@ -210,7 +210,7 @@ public class SlideActivity extends Activity {
     public void onGoOutSuccess(User user) {
         user.setCurrentActivity(getPiscinaGrande().getIdentificator());
         getPiscinaGrande().getActivityArea().offer(user);
-        getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), ACTIVITY_AREA_A, user.getIdentificator());
+        getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
         getPiscinaGrande().doActivity(user);
         getPiscinaGrande().goOut(user);
         user.setCurrentActivity("ParqueAcuatico");
@@ -224,10 +224,10 @@ public class SlideActivity extends Activity {
         try {
             if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
                 getActivityArea().remove(user); //Tobogan A
-                getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_A, user.getIdentificator());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
             } else {
                 getSlideB().remove(user);
-                getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_B, user.getIdentificator());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B, user.getIdentificator());
             }
             printStatus();
             
@@ -247,7 +247,7 @@ public class SlideActivity extends Activity {
         waitIfProgramIsStopped();
         try {
             getSlideC().remove(user);
-            getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_C, user.getIdentificator());
+            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C, user.getIdentificator());
             printStatus();
             
             onGoOutSuccess(user);
@@ -267,10 +267,10 @@ public class SlideActivity extends Activity {
         try {
             if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
                 getActivityArea().remove(user); //Tobogan A
-                getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_A, user.getIdentificator());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
             } else {
                 getSlideB().remove(user);
-                getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY_AREA_B, user.getIdentificator());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B, user.getIdentificator());
             }
             printStatus();
             
@@ -288,32 +288,32 @@ public class SlideActivity extends Activity {
     public void goIntoSlide(User user) throws InterruptedException{
         getPiscinaGrande().getSemaphore().acquire();
         getWaitingLine().remove(user);
-        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
             while (!getActivityArea().offer(user)) {
             }
             user.setCurrentActivity("ToboganA");
-            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_A, user.getIdentificator());
+            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
 
         } else if (user.getSlideTicket() == SlideTicket.SLIDE_B) {
             while (!getSlideB().offer(user)) {
             }
             user.setCurrentActivity("ToboganB");
-            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_B, user.getIdentificator());
+            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B, user.getIdentificator());
         } else {
             while (!getSlideC().offer(user)) {
             }
             user.setCurrentActivity("ToboganC");
-            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_C, user.getIdentificator());
+            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C, user.getIdentificator());
         }
     }
 
     public void printStatus() {
-        System.out.println(getIdentificator() + " - cola de espera: " + getWaitingLine().toString());
-        System.out.println(getIdentificator() + " - TOBOGAN A: " + getActivityArea().toString());
-        System.out.println(getIdentificator() + " - TOBOGAN B: " + getSlideB().toString());
-        System.out.println(getIdentificator() + " - TOBOGAN C: " + getSlideC().toString());
-        System.out.println(getIdentificator() + " - zona de espera de actividad: " + getPiscinaGrande().getWaitingAreaSupervisor().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE + " - " + getWaitingLine().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME + " - " + getActivityArea().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B + " - " + getSlideB().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C + " - " + getSlideC().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS + " - " + getPiscinaGrande().getWaitingAreaSupervisor().toString());
     }
 
     public SlideTicket getTicket() {

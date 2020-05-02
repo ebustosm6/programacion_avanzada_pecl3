@@ -21,12 +21,10 @@ import application.user.ChildUser;
 public class AquaticPark implements AquaticParkInterface, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private String identificator = "ParqueAcuatico";
+	private String identificator = ApplicationGlobalConfig.PARK_IDENTIFICATOR;
     private Semaphore semaphore = new Semaphore(ApplicationGlobalConfig.TOTAL_USERS_IN_PARK, true);
     private List<Activity> activities = new ArrayList<>();
-    private BlockingQueue<User> waitingLine = new ArrayBlockingQueue<>(5000, true);
-    private static final String WAITING_LINE = "-colaEspera";
-    private static final String OUTSIDE = "Fuera";
+    private BlockingQueue<User> waitingLine = new ArrayBlockingQueue<>(ApplicationGlobalConfig.TOTAL_CREATED_USERS, true);
     private UserRegistry userRegistry;
 
 	public AquaticPark(UserRegistry userRegistry) {
@@ -47,7 +45,7 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
 
     private List<String> getActivityAreas() {
         ArrayList<String> areas = new ArrayList<>();
-        areas.add(WAITING_LINE);
+        areas.add(ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE);
         return areas;
     }
 
@@ -77,28 +75,28 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
 
     private synchronized void goIntoWaitingLine(User user) {
         getWaitingLine().offer(user);
-        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         user.setCurrentActivity(getIdentificator());
     }
     
     private synchronized void goIntoWaitingLine(ChildUser user) {
         getWaitingLine().offer(user);
-        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         user.setCurrentActivity(getIdentificator());
         getWaitingLine().offer(user.getSupervisor());
-        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getSupervisor().getIdentificator());
     }
     
     private synchronized void goOutWaitingLine(User user) {
         getWaitingLine().remove(user);
-        getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(identificator, ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
     }
 
     private synchronized void goOutWaitingLine(ChildUser user) {
         getWaitingLine().remove(user);
-        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         getWaitingLine().remove(user.getSupervisor());
-        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getSupervisor().getIdentificator());
     }
     
     private boolean passFromWaitingLineToActivity(User user) throws InterruptedException {
@@ -124,7 +122,7 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
             
         } catch (Exception e) {
             goOutWaitingLine(user);
-            user.setCurrentActivity(OUTSIDE);
+            user.setCurrentActivity(ApplicationGlobalConfig.PARK_OUTSIDE);
         }
         return success;
     }
@@ -138,7 +136,7 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
             
         } catch (Exception e) {
             goOutWaitingLine(user);
-            user.setCurrentActivity(OUTSIDE);
+            user.setCurrentActivity(ApplicationGlobalConfig.PARK_OUTSIDE);
         }
         return success;
     }
@@ -154,12 +152,12 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
     }
     
     private void onGoOutSuccess(User user) {
-    	user.setCurrentActivity(OUTSIDE);
+    	user.setCurrentActivity(ApplicationGlobalConfig.PARK_OUTSIDE);
         getRegistry().removeUser(user);
     }
     
     private void onGoOutSuccess(ChildUser user) {
-    	user.setCurrentActivity(OUTSIDE);
+    	user.setCurrentActivity(ApplicationGlobalConfig.PARK_OUTSIDE);
         getRegistry().removeUser(user);
         getRegistry().removeUser(user.getSupervisor());
     }
