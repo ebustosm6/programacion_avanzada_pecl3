@@ -47,8 +47,8 @@ public class SlideActivity extends Activity {
     
     @Override
     public LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new SlideLifeGuard("VigilanteToboganA", getColaEspera(), getRegistro());
-        getRegistro().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
+        LifeGuard guard = new SlideLifeGuard("VigilanteToboganA", getWaitingLine(), getRegistry());
+        getRegistry().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
 
@@ -64,8 +64,8 @@ public class SlideActivity extends Activity {
     }
 
     public LifeGuard initLifeGuard(String identificator, String identificatorActividad) {
-        LifeGuard guard = new SlideLifeGuard(identificator, getColaEspera(), getRegistro());
-        getRegistro().registerLifeguard(identificatorActividad, "-monitor", guard.getIdentificator());
+        LifeGuard guard = new SlideLifeGuard(identificator, getWaitingLine(), getRegistry());
+        getRegistry().registerLifeguard(identificatorActividad, "-monitor", guard.getIdentificator());
         return guard;
     }
 
@@ -75,226 +75,222 @@ public class SlideActivity extends Activity {
     }
 
     @Override
-    public boolean goIn(ChildUser visitante) throws InterruptedException {
+    public boolean goIn(ChildUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
+            user.setPermisoActividad(Permission.NONE);
 
-            getColaEspera().offer(visitante);
-            getRegistro().registerUserInActivity(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
-            visitante.setCurrentActivity(getIdentificator());
-            visitante.getSupervisor().setCurrentActivity(getIdentificator());
-            getPiscinaGrande().getZonaEsperaAcompanante().offer(visitante.getSupervisor()); // se van a la zona de espera de la piscina para que no les den permiso y se tiren por el tobogan
-            getRegistro().registerUserInActivity(getPiscinaGrande().getIdentificator(), ZONA_ESPERA, visitante.getSupervisor().getIdentificator());
+            getWaitingLine().offer(user);
+            getRegistry().registerUserInActivity(getIdentificator(), COLA_ESPERA, user.getIdentificator());
+            user.setCurrentActivity(getIdentificator());
+            user.getSupervisor().setCurrentActivity(getIdentificator());
+            getPiscinaGrande().getWaitingAreaSupervisor().offer(user.getSupervisor()); // se van a la zona de espera de la piscina para que no les den permiso y se tiren por el tobogan
+            getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), ZONA_ESPERA, user.getSupervisor().getIdentificator());
 
             printStatus();
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                goIntoSlide(visitante);
+            if (user.getPermisoActividad() == Permission.ALLOWED) {
+                goIntoSlide(user);
             } else {
                 throw new SecurityException();
             }
             printStatus();
             resultado = true;
         } catch (SecurityException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
-            getPiscinaGrande().getZonaEsperaAcompanante().remove(visitante.getSupervisor());
-            getRegistro().unregisterUserFromActivity(getPiscinaGrande().getIdentificator(), ZONA_ESPERA, visitante.getSupervisor().getIdentificator());
+            getWaitingLine().remove(user);
+            getRegistry().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, user.getIdentificator());
+            getPiscinaGrande().getWaitingAreaSupervisor().remove(user.getSupervisor());
+            getRegistry().unregisterUserFromActivity(getPiscinaGrande().getIdentificator(), ZONA_ESPERA, user.getSupervisor().getIdentificator());
 
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
         }
         return resultado;
     }
 
     @Override
-    public boolean goIn(AdultUser visitante) throws InterruptedException {
+    public boolean goIn(AdultUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            getWaitingLine().offer(user);
+            user.setCurrentActivity(getIdentificator());
+            getRegistry().registerUserInActivity(getIdentificator(), COLA_ESPERA, user.getIdentificator());
 
             printStatus();
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                goIntoSlide(visitante);
+            if (user.getPermisoActividad() == Permission.ALLOWED) {
+                goIntoSlide(user);
             }
             printStatus();
             resultado = true;
         } catch (SecurityException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
+            getWaitingLine().remove(user);
+            getRegistry().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, user.getIdentificator());
 
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
 
     @Override
-    public boolean goIn(YoungUser visitante) throws InterruptedException {
+    public boolean goIn(YoungUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            getWaitingLine().offer(user);
+            user.setCurrentActivity(getIdentificator());
+            getRegistry().registerUserInActivity(getIdentificator(), COLA_ESPERA, user.getIdentificator());
 
             printStatus();
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                goIntoSlide(visitante);
+            if (user.getPermisoActividad() == Permission.ALLOWED) {
+                goIntoSlide(user);
             }
             printStatus();
             resultado = true;
         } catch (SecurityException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
+            getWaitingLine().remove(user);
+            getRegistry().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, user.getIdentificator());
 
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
     
     @Override
-    public void onGoOutSuccess(User visitante) {
-        visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
-        getPiscinaGrande().getZonaActividad().offer(visitante);
-        getRegistro().registerUserInActivity(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
-        getPiscinaGrande().doActivity(visitante);
-        getPiscinaGrande().goOut(visitante);
-        visitante.setCurrentActivity("ParqueAcuatico");
+    public void onGoOutSuccess(User user) {
+        user.setCurrentActivity(getPiscinaGrande().getIdentificator());
+        getPiscinaGrande().getActivityArea().offer(user);
+        getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, user.getIdentificator());
+        getPiscinaGrande().doActivity(user);
+        getPiscinaGrande().goOut(user);
+        user.setCurrentActivity("ParqueAcuatico");
     }
 
     @Override
-    public void goOut(ChildUser visitante) {
+    public void goOut(ChildUser user) {
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            if (visitante.getSlideTicket() == SlideTicket.SLIDE_A) {
-                getZonaActividad().remove(visitante); //Tobogan A
-                getRegistro().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
+            if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
+                getActivityArea().remove(user); //Tobogan A
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD, user.getIdentificator());
             } else {
-                getToboganB().remove(visitante);
-                getRegistro().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD_B, visitante.getIdentificator());
+                getToboganB().remove(user);
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD_B, user.getIdentificator());
             }
             printStatus();
             
-            onGoOutSuccess(visitante);
-//            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
-//            getPiscinaGrande().getZonaActividad().offer(visitante);
-//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
-//            getPiscinaGrande().doActivity(visitante);
-//            getPiscinaGrande().goOut(visitante);
-//            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(user);
+//            user.setCurrentActivity(getPiscinaGrande().getIdentificator());
+//            getPiscinaGrande().getZonaActividad().offer(user);
+//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, user.getIdentificator());
+//            getPiscinaGrande().doActivity(user);
+//            getPiscinaGrande().goOut(user);
+//            user.setCurrentActivity("ParqueAcuatico");
         } catch (Exception e) {
         }
     }
 
-    @Override
-    public void goOut(AdultUser visitante) {
+    public void goOut(AdultUser user) {
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         try {
-            getToboganC().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD_C, visitante.getIdentificator());
+            getToboganC().remove(user);
+            getRegistry().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD_C, user.getIdentificator());
             printStatus();
             
-            onGoOutSuccess(visitante);
-//            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
-//            getPiscinaGrande().getZonaActividad().offer(visitante);
-//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
-//            getPiscinaGrande().doActivity(visitante);
-//            getPiscinaGrande().goOut(visitante);
-//            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(user);
+//            user.setCurrentActivity(getPiscinaGrande().getIdentificator());
+//            getPiscinaGrande().getZonaActividad().offer(user);
+//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, user.getIdentificator());
+//            getPiscinaGrande().doActivity(user);
+//            getPiscinaGrande().goOut(user);
+//            user.setCurrentActivity("ParqueAcuatico");
         } catch (Exception e) {
         }
     }
 
-    @Override
-    public void goOut(YoungUser visitante) {
+    public void goOut(YoungUser user) {
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         try {
-            if (visitante.getSlideTicket() == SlideTicket.SLIDE_A) {
-                getZonaActividad().remove(visitante); //Tobogan A
-                getRegistro().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
+            if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
+                getActivityArea().remove(user); //Tobogan A
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD, user.getIdentificator());
             } else {
-                getToboganB().remove(visitante);
-                getRegistro().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD_B, visitante.getIdentificator());
+                getToboganB().remove(user);
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ZONA_ACTIVIDAD_B, user.getIdentificator());
             }
             printStatus();
             
-            onGoOutSuccess(visitante);
-//            visitante.setCurrentActivity(getPiscinaGrande().getIdentificator());
-//            getPiscinaGrande().getZonaActividad().offer(visitante);
-//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
-//            getPiscinaGrande().doActivity(visitante);
-//            getPiscinaGrande().goOut(visitante);
-//            visitante.setCurrentActivity("ParqueAcuatico");
+            onGoOutSuccess(user);
+//            user.setCurrentActivity(getPiscinaGrande().getIdentificator());
+//            getPiscinaGrande().getZonaActividad().offer(user);
+//            getRegistro().aniadirVisitanteZonaActividad(getPiscinaGrande().getIdentificator(), ZONA_ACTIVIDAD, user.getIdentificator());
+//            getPiscinaGrande().doActivity(user);
+//            getPiscinaGrande().goOut(user);
+//            user.setCurrentActivity("ParqueAcuatico");
         } catch (Exception e) {
         }
     }
 
-    public void goIntoSlide(User visitante) throws InterruptedException{
+    public void goIntoSlide(User user) throws InterruptedException{
         getPiscinaGrande().getSemaforo().acquire();
-        getColaEspera().remove(visitante);
-        getRegistro().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, visitante.getIdentificator());
-        if (visitante.getSlideTicket() == SlideTicket.SLIDE_A) {
-            while (!getZonaActividad().offer(visitante)) {
+        getWaitingLine().remove(user);
+        getRegistry().unregisterUserFromActivity(getIdentificator(), COLA_ESPERA, user.getIdentificator());
+        if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
+            while (!getActivityArea().offer(user)) {
                 // esperar al tobogan vacio
             }
-            visitante.setCurrentActivity("ToboganA");
-            getRegistro().registerUserInActivity(getIdentificator(), ZONA_ACTIVIDAD, visitante.getIdentificator());
+            user.setCurrentActivity("ToboganA");
+            getRegistry().registerUserInActivity(getIdentificator(), ZONA_ACTIVIDAD, user.getIdentificator());
 
-        } else if (visitante.getSlideTicket() == SlideTicket.SLIDE_B) {
-            while (!getToboganB().offer(visitante)) {
+        } else if (user.getSlideTicket() == SlideTicket.SLIDE_B) {
+            while (!getToboganB().offer(user)) {
                 // esperar al tobogan vacio
             }
-            visitante.setCurrentActivity("ToboganB");
-            getRegistro().registerUserInActivity(getIdentificator(), ZONA_ACTIVIDAD_B, visitante.getIdentificator());
+            user.setCurrentActivity("ToboganB");
+            getRegistry().registerUserInActivity(getIdentificator(), ZONA_ACTIVIDAD_B, user.getIdentificator());
         } else {
-            while (!getToboganC().offer(visitante)) {
+            while (!getToboganC().offer(user)) {
                 // esperar al tobogan vacio
             }
-            visitante.setCurrentActivity("ToboganC");
-            getRegistro().registerUserInActivity(getIdentificator(), ZONA_ACTIVIDAD_C, visitante.getIdentificator());
+            user.setCurrentActivity("ToboganC");
+            getRegistry().registerUserInActivity(getIdentificator(), ZONA_ACTIVIDAD_C, user.getIdentificator());
         }
     }
 
     public void printStatus() {
-        System.out.println("******************************");
-        System.out.println(getIdentificator() + " - cola de espera: " + getColaEspera().toString());
-        System.out.println(getIdentificator() + " - TOBOGAN A: " + getZonaActividad().toString());  //Tobogan A
+        System.out.println(getIdentificator() + " - cola de espera: " + getWaitingLine().toString());
+        System.out.println(getIdentificator() + " - TOBOGAN A: " + getActivityArea().toString());  //Tobogan A
         System.out.println(getIdentificator() + " - TOBOGAN B: " + getToboganB().toString());       //Tobogan B
         System.out.println(getIdentificator() + " - TOBOGAN C: " + getToboganC().toString());       //Tobogan C
-        System.out.println(getIdentificator() + " - zona de espera de actividad: " + getPiscinaGrande().getZonaEsperaAcompanante().toString());
-        System.out.println("******************************");
+        System.out.println(getIdentificator() + " - zona de espera de actividad: " + getPiscinaGrande().getWaitingAreaSupervisor().toString());
     }
 
     public SlideTicket getTicket() {

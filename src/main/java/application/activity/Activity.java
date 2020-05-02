@@ -60,13 +60,13 @@ public class Activity implements ActivityInterface, Serializable {
     }
     
     protected LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new LifeGuard(ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_IDENTIFICATOR, getColaEspera(), userRegistry);
+        LifeGuard guard = new LifeGuard(ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), userRegistry);
         userRegistry.registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
     
     protected void startActivityLifeguard() {
-    	getVigilante().start();
+    	getLifeguard().start();
     }
     
     protected void initActivityArea() {
@@ -83,316 +83,312 @@ public class Activity implements ActivityInterface, Serializable {
         return subAreas;
     }
 
-    public void printStatus() {
-        System.out.println(getIdentificator() + " - cola de espera: " + getColaEspera().toString());
-        System.out.println(getIdentificator() + " - zona de actividad: " + getZonaActividad().toString());
-        System.out.println(getIdentificator() + " - zona de espera de actividad: " + getZonaEsperaAcompanante().toString());
+    protected void printStatus() {
+        System.out.println(getIdentificator() + " - cola de espera: " + getWaitingLine().toString());
+        System.out.println(getIdentificator() + " - zona de actividad: " + getActivityArea().toString());
+        System.out.println(getIdentificator() + " - zona de espera de actividad: " + getWaitingAreaSupervisor().toString());
     }
 
-    public synchronized void encolarNinio(ChildUser visitante) {
-        while (!getColaEspera().offer(visitante)) {
-            //espera
-        }
-        getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-        while (!getColaEspera().offer(visitante.getSupervisor())) {
-            //espera
-        }
-
-        getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
-        visitante.setCurrentActivity(getIdentificator());
-        visitante.getSupervisor().setCurrentActivity(getIdentificator());
-    }
-
-    public synchronized void desencolarNinioColaEspera(ChildUser visitante) {
-        getColaEspera().remove(visitante);
-        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-        getColaEspera().remove(visitante.getSupervisor());
-        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
-    }
-
-    public synchronized void encolarNinioActividad(ChildUser visitante) {
-        getColaEspera().remove(visitante);
-        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-        getColaEspera().remove(visitante.getSupervisor());
-        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
-        while (!getZonaActividad().offer(visitante)) {
-            //espera
-        }
-        getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-        while (!getZonaActividad().offer(visitante.getSupervisor())) {
-            //espera
-        }
-        getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
-    }
-
-    public synchronized void desencolarNinio(ChildUser visitante) {
-        getZonaActividad().remove(visitante);
-        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-        getZonaActividad().remove(visitante.getSupervisor());
-        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
+    protected synchronized void goIntoWaitingLine(User user) {
+        getWaitingLine().offer(user);
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        user.setCurrentActivity(getIdentificator());
     }
     
-    public void waitForLifeGuardPermission(User user) throws InterruptedException {
+    protected synchronized void goIntoWaitingLine(ChildUser user) {
+        while (!getWaitingLine().offer(user)) {
+        }
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        while (!getWaitingLine().offer(user.getSupervisor())) {
+        }
+
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
+        user.setCurrentActivity(getIdentificator());
+        user.getSupervisor().setCurrentActivity(getIdentificator());
+    }
+    
+    protected synchronized void goOutWaitingLine(User user) {
+        getWaitingLine().remove(user);
+        getRegistry().unregisterUserFromActivity(identificator, WAITING_LINE, user.getIdentificator());
+    }
+
+    protected synchronized void goOutWaitingLine(ChildUser user) {
+        getWaitingLine().remove(user);
+        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getWaitingLine().remove(user.getSupervisor());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
+    }
+    
+    protected synchronized void goIntoActivityArea(User user) {
+    	getActivityArea().offer(user);
+        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+    }
+    
+    protected synchronized void goIntoActivityArea(ChildUser user) {
+    	while (!getActivityArea().offer(user)) {
+        }
+        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        while (!getActivityArea().offer(user.getSupervisor())) {
+        }
+        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
+    }
+    
+    protected synchronized boolean passFromWaitingLineToActivity(User user) throws InterruptedException {
+    	boolean success = true;
+    	goOutWaitingLine(user);
+    	goIntoActivityArea(user);
+    	return success;
+    }
+
+    protected synchronized boolean passFromWaitingLineToActivity(ChildUser user) {
+    	boolean success = true;
+    	goOutWaitingLine(user);
+    	goIntoActivityArea(user);
+    	return success;
+    }
+
+    protected synchronized void goOutActivityArea(ChildUser user) {
+        getActivityArea().remove(user);
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        getActivityArea().remove(user.getSupervisor());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
+    }
+    
+    protected void waitForLifeGuardPermission(User user) throws InterruptedException {
     	while (user.getPermisoActividad() == Permission.NONE) {
     		user.sleep(500);
         }
     }
     
     protected void waitIfProgramIsStopped() {
-    	getRegistro().waitIfProgramIsStopped();
+    	getRegistry().waitIfProgramIsStopped();
     }
 
-    public boolean goIn(ChildUser visitante) throws InterruptedException {
+    public boolean goIn(ChildUser user) throws InterruptedException {
     	boolean resultado = false;
     	waitIfProgramIsStopped();
         
-        int espaciosOcupados = 2;
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            encolarNinio(visitante);
+            user.setPermisoActividad(Permission.NONE);
+            goIntoWaitingLine(user);
+            
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.NOT_ALLOWED) {
+            if (user.getPermisoActividad() == Permission.NOT_ALLOWED) {
                 throw new SecurityException();
-            } else if (visitante.getPermisoActividad() == Permission.SUPERVISED) {
-                encolarNinioActividad(visitante);
-            } else if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                espaciosOcupados = 1;
-                desencolarNinioColaEspera(visitante);
-                getZonaActividad().offer(visitante);
-                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-                getZonaEsperaAcompanante().offer(visitante.getSupervisor());
-                getRegistro().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+            } else if (user.getPermisoActividad() == Permission.SUPERVISED) {
+                passFromWaitingLineToActivity(user);
+            } else if (user.getPermisoActividad() == Permission.ALLOWED) {
+                goOutWaitingLine(user);
+                getActivityArea().offer(user);
+                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+                getWaitingAreaSupervisor().offer(user.getSupervisor());
+                getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
             resultado = true;
         } catch (SecurityException e) {
-            desencolarNinioColaEspera(visitante);
-            
-            onGoOutSuccess(visitante);
-            
-
+            goOutWaitingLine(user);
+            onGoOutSuccess(user);
         }
         return resultado;
     }
 
-    public boolean goIn(AdultUser visitante) throws InterruptedException {
+    public boolean goIn(AdultUser user) throws InterruptedException {
     	boolean resultado = false;
     	waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            goIntoWaitingLine(user);
+//            getWaitingLine().offer(user);
+//            user.setCurrentActivity(getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+            
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                getColaEspera().remove(visitante);
-                getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-                getZonaActividad().offer(visitante);
-                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-                resultado = true;
+            if (user.getPermisoActividad() == Permission.ALLOWED) {
+            	resultado = passFromWaitingLineToActivity(user);
+//            	goOutWaitingLine(user);
+////                getWaitingLine().remove(user);
+////                getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//                goIntoActivityArea(user);
+////            	getActivityArea().offer(user);
+////                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+//                resultado = true;
             } else {
                 throw new SecurityException();
             }
 
         } catch (SecurityException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-
-            onGoOutSuccess(visitante);
-
+        	goOutWaitingLine(user);
+//            getWaitingLine().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+            onGoOutSuccess(user);
         }
         return resultado;
     }
-
-    public boolean goIn(YoungUser visitante) throws InterruptedException {
+    
+    public boolean goIn(YoungUser user) throws InterruptedException {
     	boolean resultado = false;
     	waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            goIntoWaitingLine(user);
+//            getWaitingLine().offer(user);
+//            user.setCurrentActivity(getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+            
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() != Permission.ALLOWED) {
+            if (user.getPermisoActividad() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
-
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            getZonaActividad().offer(visitante);
-            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-            resultado = true;
+            resultado = passFromWaitingLineToActivity(user);
+//            goOutWaitingLine(user);
+////            getWaitingLine().remove(user);
+////            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+//            goIntoActivityArea(user);
+////            getActivityArea().offer(user);
+////            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+//            resultado = true;
 
         } catch (SecurityException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-
-            onGoOutSuccess(visitante);
-
+        	goOutWaitingLine(user);
+//            getWaitingLine().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+            onGoOutSuccess(user);
         }
         return resultado;
     }
-
-    public void onDoActivityFail(User visitante) {
-    	if (visitante instanceof ChildUser) {
-            getZonaActividad().remove(visitante);
-            getZonaActividad().remove(visitante.getSupervisor());
+    
+    public void onDoActivityFail(User user) {
+    	if (user instanceof ChildUser) {
+            getActivityArea().remove(user);
+            getActivityArea().remove(user.getSupervisor());
         } else {
-            getZonaActividad().remove(visitante);
+            getActivityArea().remove(user);
         }
-        visitante.setCurrentActivity("ParqueAcuatico");
+        user.setCurrentActivity("ParqueAcuatico");
     }
     
-    public void doActivity(User visitante) {
+    public void doActivity(User user) {
         waitIfProgramIsStopped();
         try {
             printStatus();
-            visitante.sleep(getActivityTime());
+            user.sleep(getActivityTime());
         } catch (InterruptedException e) {
-        	onDoActivityFail(visitante);
+        	onDoActivityFail(user);
         }
     }
     
-    public void onTryGoOut(User visitante) {
-    	getZonaActividad().remove(visitante);
-        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+    public void onTryGoOut(User user) {
+    	getActivityArea().remove(user);
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
     }
     
-    public void onGoOutSuccess(User visitante) {
-    	visitante.setPermisoActividad(Permission.NONE);
+    public void onTryGoOut(ChildUser user) {
+    	if (user.getPermisoActividad() == Permission.SUPERVISED) {
+            goOutActivityArea(user);
+        } else {
+            getActivityArea().remove(user);
+            getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+            getWaitingAreaSupervisor().remove(user.getSupervisor());
+            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+        }
+    }
+    
+    public void onGoOutSuccess(User user) {
+    	user.setPermisoActividad(Permission.NONE);
         printStatus();
-        visitante.setCurrentActivity("ParqueAcuatico");
+        user.setCurrentActivity("ParqueAcuatico");
     }
     
-    public void goOut(User visitante) {
+    public void goOut(User user) {
       waitIfProgramIsStopped();
       try {
-      	onTryGoOut(visitante);
-
-          onGoOutSuccess(visitante);
+    	  onTryGoOut(user);
+          onGoOutSuccess(user);
       } catch (Exception e) {
       }
   }
     
-    public void goOut(AdultUser visitante) {
+    public void goOut(AdultUser user) {
         waitIfProgramIsStopped();
         try {
-        	onTryGoOut(visitante);
-
-            onGoOutSuccess(visitante);
+        	onTryGoOut(user);
+            onGoOutSuccess(user);
         } catch (Exception e) {
         }
     }
 
-    public void goOut(YoungUser visitante) {
+    public void goOut(YoungUser user) {
         waitIfProgramIsStopped();
-        
         try {
-        	onTryGoOut(visitante);
-
-            onGoOutSuccess(visitante);
+        	onTryGoOut(user);
+            onGoOutSuccess(user);
         } catch (Exception e) {
         }
     }
 
-    public void goOut(ChildUser visitante) {
+    public void goOut(ChildUser user) {
         waitIfProgramIsStopped();
-        
         try {
-            if (visitante.getPermisoActividad() == Permission.SUPERVISED) {
-                desencolarNinio(visitante);
-            } else {
-                getZonaActividad().remove(visitante);
-                getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-                getZonaEsperaAcompanante().remove(visitante.getSupervisor());
-                getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
-
-            }
+        	onTryGoOut(user);
+//            if (user.getPermisoActividad() == Permission.SUPERVISED) {
+//                desencolarNinio(user);
+//            } else {
+//                getActivityArea().remove(user);
+//                getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+//                getWaitingAreaSupervisor().remove(user.getSupervisor());
+//                getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+//            }
             
-            onGoOutSuccess(visitante);
+            onGoOutSuccess(user);
         } catch (Exception e) {
         }
     }
 
-    public UserRegistry getRegistro() {
+    public UserRegistry getRegistry() {
         return userRegistry;
-    }
-
-    public void setRegistro(UserRegistry userRegistry) {
-        this.userRegistry = userRegistry;
     }
 
     public String toString() {
         return this.identificator;
     }
 
-    protected void imprimirColaEspera() {
-        System.out.println("La actividad: " + identificator + " y la cola de espera es: " + waitingLine.toString());
-    }
-
     public String getIdentificator() {
         return identificator;
     }
 
-    public void setIdentificador(String identificator) {
-        this.identificator = identificator;
-    }
-
-    public ArrayBlockingQueue<User> getZonaActividad() {
+    public ArrayBlockingQueue<User> getActivityArea() {
         return this.activityArea;
     }
 
-    public void setZonaActividad(ArrayBlockingQueue<User> zonaActividad) {
-        this.activityArea = zonaActividad;
-    }
-
-    public ArrayBlockingQueue<User> getColaEspera() {
+    public ArrayBlockingQueue<User> getWaitingLine() {
         return waitingLine;
     }
 
-    public void setColaEspera(ArrayBlockingQueue<User> colaEspera) {
-        this.waitingLine = colaEspera;
-    }
-
-    public LifeGuard getVigilante() {
+    public LifeGuard getLifeguard() {
         return lifeguard;
     }
 
-    public void setVigilante(LifeGuard vigilante) {
-        this.lifeguard = vigilante;
-    }
-
-    public int getCapacidadTotal() {
+    public int getCapacityActivity() {
         return capacityActivity;
     }
 
-    public void setCapacidadTotal(int capacidadTotal) {
-        this.capacityActivity = capacidadTotal;
-    }
-
-    public int getCapacidadInterior() {
+    public int getCapacityUseActivity() {
         return capacityUseActivity;
     }
 
-    public void setCapacidadInterior(int capacidadInterior) {
-        this.capacityUseActivity = capacidadInterior;
-    }
-
-    public ArrayBlockingQueue<User> getZonaEsperaAcompanante() {
+    public ArrayBlockingQueue<User> getWaitingAreaSupervisor() {
         return waitingAreaSupervisor;
     }
 
-    public void setZonaEsperaAcompanante(ArrayBlockingQueue<User> zonaEsperaAcompanante) {
-        this.waitingAreaSupervisor = zonaEsperaAcompanante;
-    }
 }

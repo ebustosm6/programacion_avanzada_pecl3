@@ -33,242 +33,244 @@ public class MainPoolActivity extends Activity {
 
     @Override
     public LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new MainPoolLifeGuard("VigilantePiscinaGrande", getColaEspera(), getZonaActividad(), getRegistro());
-        getRegistro().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
+        LifeGuard guard = new MainPoolLifeGuard("VigilantePiscinaGrande", getWaitingLine(), getActivityArea(), getRegistry());
+        getRegistry().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
 
-    public synchronized void encolarNinioActividadSemaforo(ChildUser visitante) throws InterruptedException{
-        getColaEspera().remove(visitante);
+    public synchronized void encolarNinioActividadSemaforo(ChildUser user) throws InterruptedException{
+        getWaitingLine().remove(user);
         getSemaforo().acquire(2);
-        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-        getColaEspera().remove(visitante.getSupervisor());
-        getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getSupervisor().getIdentificator());
-        while (!getZonaActividad().offer(visitante)) {
+        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        getWaitingLine().remove(user.getSupervisor());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
+        while (!getActivityArea().offer(user)) {
             //espera
         }
-        getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-        while (!getZonaActividad().offer(visitante.getSupervisor())) {
+        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        while (!getActivityArea().offer(user.getSupervisor())) {
             //espera
         }
-        getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
+        getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
     }
     
-    public synchronized void desencolarNinio(ChildUser visitante) {
-        getZonaActividad().remove(visitante);
+    public synchronized void goOutActivityArea(ChildUser user) {
+        getActivityArea().remove(user);
         semaforo.release();
-        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-        getZonaActividad().remove(visitante.getSupervisor());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+        getActivityArea().remove(user.getSupervisor());
         semaforo.release();
-        getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getSupervisor().getIdentificator());
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getSupervisor().getIdentificator());
     }
 
     @Override
-    public boolean goIn(ChildUser visitante) throws InterruptedException {
+    public boolean goIn(ChildUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            encolarNinio(visitante);
+            user.setPermisoActividad(Permission.NONE);
+            goIntoWaitingLine(user);
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.NOT_ALLOWED) {
+            if (user.getPermisoActividad() == Permission.NOT_ALLOWED) {
                 throw new SecurityException();
-            } else if (visitante.getPermisoActividad() == Permission.SUPERVISED) {
-                encolarNinioActividadSemaforo(visitante);
-            } else if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                desencolarNinioColaEspera(visitante);
+            } else if (user.getPermisoActividad() == Permission.SUPERVISED) {
+                encolarNinioActividadSemaforo(user);
+            } else if (user.getPermisoActividad() == Permission.ALLOWED) {
+                goOutWaitingLine(user);
                 semaforo.acquire();
-                getZonaActividad().offer(visitante);
-                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-                getZonaEsperaAcompanante().offer(visitante.getSupervisor());
-                getRegistro().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+                getActivityArea().offer(user);
+                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+                getWaitingAreaSupervisor().offer(user.getSupervisor());
+                getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
             resultado = true;
         } catch (SecurityException e) {
-            desencolarNinioColaEspera(visitante);
+            goOutWaitingLine(user);
             
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
 
     @Override
-    public boolean goIn(AdultUser visitante) throws InterruptedException {
+    public boolean goIn(AdultUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            getWaitingLine().offer(user);
+            user.setCurrentActivity(getIdentificator());
+            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.ALLOWED) {
-                getColaEspera().remove(visitante);
+            if (user.getPermisoActividad() == Permission.ALLOWED) {
+                getWaitingLine().remove(user);
                 semaforo.acquire();
-                getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-                getZonaActividad().offer(visitante);
-                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+                getActivityArea().offer(user);
+                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
                 resultado = true;
             } else {
                 throw new SecurityException();
             }
 
         } catch (SecurityException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+        	goOutWaitingLine(user);
+//            getWaitingLine().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
 
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
 
     @Override
-    public boolean goIn(YoungUser visitante) throws InterruptedException {
+    public boolean goIn(YoungUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
     	waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            getWaitingLine().offer(user);
+            user.setCurrentActivity(getIdentificator());
+            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() != Permission.ALLOWED) {
+            if (user.getPermisoActividad() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
 
-            getColaEspera().remove(visitante);
+            getWaitingLine().remove(user);
             semaforo.acquire();
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
-            getZonaActividad().offer(visitante);
-            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+            getActivityArea().offer(user);
+            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
             resultado = true;
 
         } catch (SecurityException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+        	goOutWaitingLine(user);
+//            getWaitingLine().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
 
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
 
         }
         return resultado;
     }
 
     @Override
-    public void onDoActivityFail(User visitante) {
-    	if (visitante instanceof ChildUser) {
-            getZonaActividad().remove(visitante);
-            getZonaActividad().remove(visitante.getSupervisor());
+    public void onDoActivityFail(User user) {
+    	if (user instanceof ChildUser) {
+            getActivityArea().remove(user);
+            getActivityArea().remove(user.getSupervisor());
             semaforo.release(2);
         } else {
-            getZonaActividad().remove(visitante);
+            getActivityArea().remove(user);
             semaforo.release();
         }
-        visitante.setCurrentActivity("ParqueAcuatico");
+        user.setCurrentActivity("ParqueAcuatico");
     }
     
-//    public void doActivity(User visitante) {
+//    public void doActivity(User user) {
 //        getRegistro().comprobarDetenerReanudar();
 //        try {
 //            imprimirColas();
-//            visitante.sleep(getActivityTime());
+//            user.sleep(getActivityTime());
 //        } catch (InterruptedException e) {
-//            if (visitante instanceof ChildUser) {
-//                getZonaActividad().remove(visitante);
-//                getZonaActividad().remove(visitante.getSupervisor());
+//            if (user instanceof ChildUser) {
+//                getZonaActividad().remove(user);
+//                getZonaActividad().remove(user.getSupervisor());
 //                semaforo.release(2);
 //            } else {
-//                getZonaActividad().remove(visitante);
+//                getZonaActividad().remove(user);
 //                semaforo.release();
 //            }
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
 //        }
 //    }
 
-    public void onTryGoOut(User visitante) {
-    	getZonaActividad().remove(visitante);
+    public void onTryGoOut(User user) {
+    	getActivityArea().remove(user);
     	semaforo.release();
-    	getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+    	getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
     }
     
-//    public void goOut(AdultUser visitante) {
+//    public void goOut(AdultUser user) {
 ////        getRegistro().comprobarDetenerReanudar();
 //        waitIfProgramIsStopped();
 //        try {
-//        	onTryGoOut(visitante);
-////            getZonaActividad().remove(visitante);
+//        	onTryGoOut(user);
+////            getZonaActividad().remove(user);
 ////            semaforo.release();
-////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, user.getIdentificator());
 //            
-//            onGoOutSuccess(visitante);
-////            visitante.setPermisoActividad(Permission.NONE);
+//            onGoOutSuccess(user);
+////            user.setPermisoActividad(Permission.NONE);
 ////            imprimirColas();
-////            visitante.setCurrentActivity("ParqueAcuatico");
+////            user.setCurrentActivity("ParqueAcuatico");
 //        } catch (Exception e) {
 //        }
 //    }
 
-//    public void goOut(YoungUser visitante) {
+//    public void goOut(YoungUser user) {
 ////        getRegistro().comprobarDetenerReanudar();
 //        waitIfProgramIsStopped();
 //        try {
-//        	onTryGoOut(visitante);
-////            getZonaActividad().remove(visitante);
+//        	onTryGoOut(user);
+////            getZonaActividad().remove(user);
 ////            semaforo.release();
-////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, visitante.getIdentificator());
+////            getRegistro().eliminarVisitanteZonaActividad(getIdentificator(), ACTIVITY, user.getIdentificator());
 //            
-//            onGoOutSuccess(visitante);
-////            visitante.setPermisoActividad(Permission.NONE);
+//            onGoOutSuccess(user);
+////            user.setPermisoActividad(Permission.NONE);
 ////            imprimirColas();
-////            visitante.setCurrentActivity("ParqueAcuatico");
+////            user.setCurrentActivity("ParqueAcuatico");
 //        } catch (Exception e) {
 //        }
 //    }
 
-    public void goOut(ChildUser visitante) {
+    public void goOut(ChildUser user) {
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         try {
-            if (visitante.getPermisoActividad() == Permission.SUPERVISED) {
-                desencolarNinio(visitante);
+            if (user.getPermisoActividad() == Permission.SUPERVISED) {
+                goOutActivityArea(user);
             } else {
-                getZonaActividad().remove(visitante);
+                getActivityArea().remove(user);
                 semaforo.release();
-                getRegistro().unregisterUserFromActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-                getZonaEsperaAcompanante().remove(visitante.getSupervisor());
-                getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+                getWaitingAreaSupervisor().remove(user.getSupervisor());
+                getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
 
             }
             
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);// poner el permiso a false (que deambulen por ahi sin permiso)
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);// poner el permiso a false (que deambulen por ahi sin permiso)
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
         } catch (Exception e) {
         }
     }

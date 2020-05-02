@@ -75,10 +75,16 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
         return activitiesToDo;
     }
 
+    private synchronized void goIntoWaitingLine(User user) {
+        getWaitingLine().offer(user);
+        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+        user.setCurrentActivity(getIdentificator());
+    }
+    
     private synchronized void goIntoWaitingLine(ChildUser user) {
         getWaitingLine().offer(user);
         getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
-        user.setCurrentActivity(identificator);
+        user.setCurrentActivity(getIdentificator());
         getWaitingLine().offer(user.getSupervisor());
         getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getSupervisor().getIdentificator());
     }
@@ -170,12 +176,6 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
         onGoOutSuccess(user);
     }
     
-    private synchronized void goIntoWaitingLine(User user) {
-        getWaitingLine().offer(user);
-        getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
-        user.setCurrentActivity(getIdentificator());
-    }
-    
     public String getIdentificator() {
     	return this.identificator;
     }
@@ -190,10 +190,6 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
 
     public List<Activity> getActivities() {
         return activities;
-    }
-
-    public void setActivities(List<Activity> activities) { // TODO: delete this method when tests deleted
-        this.activities = activities;
     }
 
     public BlockingQueue<User> getWaitingLine() {

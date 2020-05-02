@@ -36,8 +36,8 @@ public class WavePoolActivity extends Activity {
     
     @Override
     public LifeGuard initActivityLifeguard() {
-    	LifeGuard guard = new WavePoolLifeGuard("VigilantePisinaOlas", getColaEspera(), getRegistro());
-    	getRegistro().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
+    	LifeGuard guard = new WavePoolLifeGuard("VigilantePisinaOlas", getWaitingLine(), getRegistry());
+    	getRegistry().registerLifeguard(getIdentificator(), "-monitor", guard.getIdentificator());
         return guard;
     }
     
@@ -51,39 +51,39 @@ public class WavePoolActivity extends Activity {
     }
 
     @Override
-    public boolean goIn(ChildUser visitante) {
+    public boolean goIn(ChildUser user) {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            encolarNinio(visitante);
+            user.setPermisoActividad(Permission.NONE);
+            goIntoWaitingLine(user);
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() == Permission.NOT_ALLOWED) {
+            if (user.getPermisoActividad() == Permission.NOT_ALLOWED) {
                 throw new SecurityException();
-            } else if (visitante.getPermisoActividad() == Permission.SUPERVISED) {
-                encolarNinioActividad(visitante);
-            } else if (visitante.getPermisoActividad() == Permission.ALLOWED) {
+            } else if (user.getPermisoActividad() == Permission.SUPERVISED) {
+                passFromWaitingLineToActivity(user);
+            } else if (user.getPermisoActividad() == Permission.ALLOWED) {
                 barrera.await();
-                desencolarNinioColaEspera(visitante);
-                getZonaActividad().offer(visitante);
-                getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY, visitante.getIdentificator());
-                getZonaEsperaAcompanante().offer(visitante.getSupervisor());
-                getRegistro().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, visitante.getSupervisor().getIdentificator());
+                goOutWaitingLine(user);
+                getActivityArea().offer(user);
+                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY, user.getIdentificator());
+                getWaitingAreaSupervisor().offer(user.getSupervisor());
+                getRegistry().registerUserInActivity(getIdentificator(), WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
 
             resultado = true;
         } catch (SecurityException | InterruptedException | BrokenBarrierException e) {
-            desencolarNinioColaEspera(visitante);
+            goOutWaitingLine(user);
             
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
             
 
         }
@@ -91,80 +91,87 @@ public class WavePoolActivity extends Activity {
     }
 
     @Override
-    public boolean goIn(AdultUser visitante) throws InterruptedException {
+    public boolean goIn(AdultUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            goIntoWaitingLine(user);
+//            getWaitingLine().offer(user);
+//            user.setCurrentActivity(getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+            
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() != Permission.ALLOWED) {
+            if (user.getPermisoActividad() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
             barrera.await();
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
-            getZonaActividad().offer(visitante);
-            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY,visitante.getIdentificator());
-
-
-            resultado = true;
+            resultado = passFromWaitingLineToActivity(user);
+//            goOutWaitingLine(user);
+////            getWaitingLine().remove(user);
+////            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
+//            goIntoActivityArea(user);
+////            getActivityArea().offer(user);
+////            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY,user.getIdentificator());
+//            resultado = true;
 
         } catch (SecurityException | BrokenBarrierException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
+        	goOutWaitingLine(user);
+//            getWaitingLine().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
             
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
             
         }
         return resultado;
     }
     
     @Override
-    public boolean goIn(YoungUser visitante) throws InterruptedException {
+    public boolean goIn(YoungUser user) throws InterruptedException {
     	boolean resultado = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            visitante.setPermisoActividad(Permission.NONE);
-            getColaEspera().offer(visitante);
-            visitante.setCurrentActivity(getIdentificator());
-            getRegistro().registerUserInActivity(getIdentificator(), WAITING_LINE, visitante.getIdentificator());
+            user.setPermisoActividad(Permission.NONE);
+            
+            goIntoWaitingLine(user);
+//            getWaitingLine().offer(user);
+//            user.setCurrentActivity(getIdentificator());
+//            getRegistry().registerUserInActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
+            
             printStatus();
 
-            waitForLifeGuardPermission(visitante);
+            waitForLifeGuardPermission(user);
 
-            if (visitante.getPermisoActividad() != Permission.ALLOWED) {
+            if (user.getPermisoActividad() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
             barrera.await();
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
-            getZonaActividad().offer(visitante);
-            getRegistro().registerUserInActivity(getIdentificator(), ACTIVITY,visitante.getIdentificator());
-
-
-            resultado = true;
+            resultado = passFromWaitingLineToActivity(user);
+//            getWaitingLine().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
+//            getActivityArea().offer(user);
+//            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY,user.getIdentificator());
+//            resultado = true;
 
         } catch (SecurityException | BrokenBarrierException e) {
-            getColaEspera().remove(visitante);
-            getRegistro().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,visitante.getIdentificator());
+        	goOutWaitingLine(user);
+//            getWaitingLine().remove(user);
+//            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE,user.getIdentificator());
             
-            onGoOutSuccess(visitante);
-//            visitante.setPermisoActividad(Permission.NONE);
+            onGoOutSuccess(user);
+//            user.setPermisoActividad(Permission.NONE);
 //            imprimirColas();
-//            visitante.setCurrentActivity("ParqueAcuatico");
+//            user.setCurrentActivity("ParqueAcuatico");
             
         }
         return resultado;
