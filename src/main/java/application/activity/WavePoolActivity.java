@@ -34,7 +34,7 @@ public class WavePoolActivity extends Activity {
     }
     
     @Override
-    public LifeGuard initActivityLifeguard() {
+    protected LifeGuard initActivityLifeguard() {
     	LifeGuard guard = new WavePoolLifeGuard(LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
     	getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;

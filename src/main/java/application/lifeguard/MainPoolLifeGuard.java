@@ -52,8 +52,10 @@ public class MainPoolLifeGuard extends LifeGuard {
 
     public void run() {
         User visitanteParaExpulsar;
+        int count;
         while (true) {
             try {
+            	count = 0;
                 for (User visitante : getColaEspera()) { 
                     getRegistro().waitIfProgramIsStopped();
                     sleep(getTiempoVigilancia());
@@ -64,7 +66,6 @@ public class MainPoolLifeGuard extends LifeGuard {
                         visitanteParaExpulsar.interrupt();
                         sleep(getTiempoExpulsion());
                         System.out.println("Vigilante " + getIdentificator() + " echando al visitante " + visitanteParaExpulsar.getIdentificator() + " con edad " + visitanteParaExpulsar.getAge());
-                        System.out.println("----------------------------------------------------------------------------------------------------------");
                     }
                 }
 

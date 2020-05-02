@@ -55,7 +55,7 @@ public class SlideActivity extends Activity {
     }
 
     @Override
-    public List<String> getActivitySubareas() {
+    protected List<String> getActivitySubareas() {
         ArrayList<String> areas = new ArrayList<>();
         areas.add(WAITING_LINE);
         areas.add(ACTIVITY_AREA_A);
@@ -65,13 +65,13 @@ public class SlideActivity extends Activity {
         return areas;
     }
 
-    public LifeGuard initLifeGuard(String identificator, String identificatorActividad) {
+    protected LifeGuard initLifeGuard(String identificator, String identificatorActividad) {
         LifeGuard guard = new SlideLifeGuard(identificator, getWaitingLine(), getRegistry());
         getRegistry().registerLifeguard(identificatorActividad, ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
 
-    public void initOtherLifeguards() {
+    private void initOtherLifeguards() {
         lifeguardB.start();
         lifeguardC.start();
     }

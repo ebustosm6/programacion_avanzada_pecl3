@@ -46,19 +46,21 @@ public class LifeGuard extends Thread {
     public void setRegistro(UserRegistry userRegistry) {
         this.userRegistry = userRegistry;
     }
-
+    
     public void run() {
         while (true) {
             try {
-                for (User visitante : colaEspera) {
+            	sleep(getTiempoVigilancia());
+                for (User visitante : getColaEspera()) {
                     getRegistro().waitIfProgramIsStopped();
                     sleep(getTiempoVigilancia());
                     Permission permiso = tipoPermiso(visitante);
                     visitante.setPermisoActividad(permiso);
                     if (permiso == Permission.NOT_ALLOWED) {
                         System.out.println("Vigilante " + getIdentificator() + " echando al visitante " + visitante.getIdentificator() + " con edad " + visitante.getAge());
-                        System.out.println("----------------------------------------------------------------------------------------------------------");
                     }
+                    
+                    //if condition: break
                 }
 
             } catch (InterruptedException e) {
