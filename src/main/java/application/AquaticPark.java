@@ -12,7 +12,7 @@ import application.activity.WavePoolActivity;
 import application.config.ApplicationGlobalConfig;
 import application.activity.SlideActivity;
 import application.activity.DeckChairActivity;
-import application.activity.Activity;
+import application.activity.BaseActivity;
 import application.activity.ChildPoolActivity;
 import application.activity.LockerRoomActivity;
 import application.user.User;
@@ -23,7 +23,7 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String identificator = ApplicationGlobalConfig.PARK_IDENTIFICATOR;
     private Semaphore semaphore = new Semaphore(ApplicationGlobalConfig.TOTAL_USERS_IN_PARK, true);
-    private List<Activity> activities = new ArrayList<>();
+    private List<BaseActivity> activities = new ArrayList<>();
     private BlockingQueue<User> waitingLine = new ArrayBlockingQueue<>(ApplicationGlobalConfig.TOTAL_CREATED_USERS, true);
     private UserRegistry userRegistry;
 
@@ -54,7 +54,7 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
         getRegistry().registerActivityAreas(getIdentificator(), getActivityAreas());
     }
     
-    private void randomActivities(int n, List<Activity> activitiesToDo) {
+    private void randomActivities(int n, List<BaseActivity> activitiesToDo) {
 		while (n > 0) {
             int i = (int) (((getActivities().size()-1) * Math.random()) + 1);  // skip locker room;
             activitiesToDo.add(activities.get(i));
@@ -62,8 +62,8 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
         }
 	}
 
-    public List<Activity> selectActivities(int n) {
-        List<Activity> activitiesToDo = new ArrayList<>();
+    public List<BaseActivity> selectActivities(int n) {
+        List<BaseActivity> activitiesToDo = new ArrayList<>();
         if (n < ApplicationGlobalConfig.USER_MIN_NUM_ACTIVITIES || n > ApplicationGlobalConfig.USER_MAX_NUM_ACTIVITIES) {
             n = getActivities().size();
         }
@@ -186,7 +186,7 @@ public class AquaticPark implements AquaticParkInterface, Serializable {
         return semaphore;
     }
 
-    public List<Activity> getActivities() {
+    public List<BaseActivity> getActivities() {
         return activities;
     }
 

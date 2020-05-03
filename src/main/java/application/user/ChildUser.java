@@ -1,7 +1,8 @@
 package application.user;
 
 import application.AquaticPark;
-import application.activity.Activity;
+import application.activity.BaseActivity;
+import application.config.ApplicationGlobalConfig;
 
 public class ChildUser extends User {
 	
@@ -9,33 +10,38 @@ public class ChildUser extends User {
 		super(identificator, age, supervisor, park);
 	}
 	
-	public void run() {
-		try {
-			System.out.println("Entrando al parque: " + toString());
-			boolean dentroParque = getPark().goIn(this);
-			
-			if (dentroParque) {
-				int cantidadActividades = (int) (10 * Math.random() + 5);
-				System.out.println("Escogiendo actividade del parque: " + cantidadActividades);
-				setActividades(getPark().selectActivities(cantidadActividades));
-				
-				for (Activity actividad: getActivities()) {
-					System.out.println("Entrando a la actividad "+getIdentificator()+": " + actividad.toString());
-					boolean dentro = actividad.goIn(this);				
-					if (dentro) {
-						actividad.doActivity(this);
-						actividad.goOut(this);
-						addActivity();
-					}
-				}
-				
-				System.out.println("Saliendo del parque: " + toString());
-				getPark().goOut(this);
-			}
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	protected void onEachActivity(BaseActivity activity) throws InterruptedException {
+		System.out.println(toString() + " - goes into " + activity.toString());
+		boolean isInsideActivity = activity.goIn(this);				
+		if (isInsideActivity) {
+			activity.doActivity(this);
+			activity.goOut(this);
+			addActivity();
+			System.out.println(toString() + " - goes out " + activity.toString());
 		}
 	}
+	
+//	public void run() {
+//		try {
+//			System.out.println(toString() + " - goes into " + ApplicationGlobalConfig.PARK_IDENTIFICATOR);
+//			boolean isInsidePark = getPark().goIn(this);
+//			
+//			if (isInsidePark) {
+//				int activitiesCount = getRandomActivities();
+//				System.out.println(toString() + " - chosing activities - " + activitiesCount);
+//				setActividades(getPark().selectActivities(activitiesCount));
+//				
+//				for (BaseActivity activity: getActivities()) {
+//					onEachActivity(activity);
+//				}
+//				
+//				System.out.println(toString() + " - goes out " + ApplicationGlobalConfig.PARK_IDENTIFICATOR);
+//				getPark().goOut(this);
+//			}
+//			
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 }

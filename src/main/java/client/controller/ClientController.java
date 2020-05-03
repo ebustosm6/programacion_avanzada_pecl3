@@ -21,9 +21,8 @@ public class ClientController {
 	}
 	
 	public ArrayList<String> locationCheck(String userId) throws RemoteException {
-		// returns userId, location, activitiesCout
-                ArrayList<String> res = (ArrayList<String>) controllerRmi.lookForUserAsList(userId);
-		return (ArrayList<String>) res;
+		// returns userId, location, activitiesCount
+		return (ArrayList<String>) controllerRmi.lookForUserAsList(userId);
 	}
 	
 	public int underAgeCheck() throws RemoteException {

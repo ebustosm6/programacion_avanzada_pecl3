@@ -3,31 +3,30 @@ package application.lifeguard;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import application.UserRegistry;
+import application.config.ApplicationGlobalConfig;
 import application.enums.Permission;
 import application.user.User;
 
-/**
- *
- * @author vic88
- */
-public class ChildPoolLifeGuard extends LifeGuard {
+
+public class ChildPoolLifeGuard extends BaseLifeGuard {
     
-    public ChildPoolLifeGuard(String id, ArrayBlockingQueue<User> colaEspera, UserRegistry userRegistry) {
-		super(id, colaEspera, userRegistry);
+    public ChildPoolLifeGuard(String id, ArrayBlockingQueue<User> waitingLine, UserRegistry userRegistry) {
+		super(id, waitingLine, userRegistry);
 	}
     
-    public long getTiempoVigilancia() {
-        return (long) ((int) (1000) + (500 * Math.random()));
+    public long getWatchingTime() {
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_LIFEGUARD_MIN_MILISECONDS) 
+        		+ (ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_LIFEGUARD_MIN_MILISECONDS * Math.random()));
     }
     
-    public Permission tipoPermiso(User visitante) {
-    	Permission tipoPermiso = Permission.NOT_ALLOWED;
-    	if (visitante.getAge() >= 1 && visitante.getAge() <= 5) {
-    		tipoPermiso = Permission.SUPERVISED;
-    	} else if (visitante.getAge() >= 6 && visitante.getAge() <= 10) {
-    		tipoPermiso = Permission.ALLOWED;
+    public Permission setPermissionToUser(User user) {
+    	Permission permType = Permission.NOT_ALLOWED;
+    	if (user.getAge() >= 1 && user.getAge() <= 5) {
+    		permType = Permission.SUPERVISED;
+    	} else if (user.getAge() >= 6 && user.getAge() <= 10) {
+    		permType = Permission.ALLOWED;
     	}
-        return tipoPermiso;
+        return permType;
     }
     
 }

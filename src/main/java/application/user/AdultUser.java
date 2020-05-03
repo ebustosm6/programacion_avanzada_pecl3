@@ -1,7 +1,7 @@
 package application.user;
 
 import application.AquaticPark;
-import application.activity.Activity;
+import application.activity.BaseActivity;
 
 public class AdultUser extends User {
 	
@@ -9,33 +9,44 @@ public class AdultUser extends User {
 		super(identificator, age, null, park);
 	}
 	
-	public void run() {
-		try {
-			System.out.println("Entrando al parque: " + toString());
-			boolean dentroParque = getPark().goIn(this);
-			
-			if (dentroParque) {
-				int cantidadActividades = (int) (10 * Math.random() + 5);
-				System.out.println("Escogiendo actividade del parque: " + cantidadActividades);
-				setActividades(getPark().selectActivities(cantidadActividades));
-				
-				for (Activity actividad: getActivities()) {
-					System.out.println("Entrando a la actividad "+getIdentificator()+": " + actividad.toString());
-					boolean dentro = actividad.goIn(this);
-					if (dentro) {
-						actividad.doActivity(this);
-						actividad.goOut(this);
-						addActivity();
-					}
-				}
-				
-				System.out.println("Saliendo del parque: " + toString());
-				getPark().goOut(this);
-			}
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	protected void onEachActivity(BaseActivity activity) throws InterruptedException {
+		System.out.println(toString() + " - goes into " + activity.toString());
+		boolean isInsideActivity = activity.goIn(this);				
+		if (isInsideActivity) {
+			activity.doActivity(this);
+			activity.goOut(this);
+			addActivity();
+			System.out.println(toString() + " - goes out " + activity.toString());
 		}
 	}
+	
+//	public void run() {
+//		try {
+//			System.out.println("Entrando al parque: " + toString());
+//			boolean dentroParque = getPark().goIn(this);
+//			
+//			if (dentroParque) {
+//				int cantidadActividades = getRandomActivities();
+//				System.out.println("Escogiendo actividade del parque: " + cantidadActividades);
+//				setActividades(getPark().selectActivities(cantidadActividades));
+//				
+//				for (BaseActivity actividad: getActivities()) {
+//					System.out.println("Entrando a la actividad "+getIdentificator()+": " + actividad.toString());
+//					boolean dentro = actividad.goIn(this);
+//					if (dentro) {
+//						actividad.doActivity(this);
+//						actividad.goOut(this);
+//						addActivity();
+//					}
+//				}
+//				
+//				System.out.println("Saliendo del parque: " + toString());
+//				getPark().goOut(this);
+//			}
+//			
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 }

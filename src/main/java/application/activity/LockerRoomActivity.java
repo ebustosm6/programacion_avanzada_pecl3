@@ -7,14 +7,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 import application.UserRegistry;
 import application.config.ApplicationGlobalConfig;
 import application.enums.Permission;
-import application.lifeguard.LifeGuard;
+import application.lifeguard.BaseLifeGuard;
 import application.lifeguard.LockerRoomLifeGuard;
 import application.user.AdultUser;
 import application.user.ChildUser;
 import application.user.User;
 import application.user.YoungUser;
 
-public class LockerRoomActivity extends Activity {
+public class LockerRoomActivity extends BaseActivity {
 
 //    private static String IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME;// "ActividadVestuario";
 //    private static String LIFEGUARD_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_LIFEGUARD_IDENTIFICATOR;// "VigilanteVestuarios";
@@ -36,8 +36,8 @@ public class LockerRoomActivity extends Activity {
     }
     
     @Override
-    protected LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new LockerRoomLifeGuard(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
+    protected BaseLifeGuard initActivityLifeguard() {
+        BaseLifeGuard guard = new LockerRoomLifeGuard(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
     	getRegistry().registerLifeguard(getIdentificator(),  ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
@@ -72,27 +72,27 @@ public class LockerRoomActivity extends Activity {
 
     @Override
     public boolean goIn(ChildUser user) throws InterruptedException {
-    	boolean resultado = false;
+    	boolean result = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
-            user.setPermisoActividad(Permission.NONE);
+            user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
             printStatus();
             
             waitForLifeGuardPermission(user);
             
-            if (user.getPermisoActividad() == Permission.SUPERVISED) {
-                resultado = passFromWaitingLineToActivity(user);
-            } else if (user.getPermisoActividad() == Permission.ALLOWED) {
+            if (user.getActivityPermissionType() == Permission.SUPERVISED) {
+                result = passFromWaitingLineToActivity(user);
+            } else if (user.getActivityPermissionType() == Permission.ALLOWED) {
             	goOutWaitingLine(user);
             	goIntoActivityAreaWithoutSupervisor(user);
 //            	getActivityArea().offer(user);
 //                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
 //            	getActivityAreaAdultUsers().offer(user.getSupervisor());
 //                getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_ADULT_USERS, user.getSupervisor().getIdentificator());
-            	resultado = true;
+            	result = true;
             }
 
             
@@ -104,18 +104,18 @@ public class LockerRoomActivity extends Activity {
 //            imprimirColas();
 //            user.setCurrentActivity("ParqueAcuatico");
         }
-        return resultado;
+        return result;
     }
 
     @Override
     public boolean goIn(AdultUser user) throws InterruptedException {
-    	boolean resultado = false;
+    	boolean result = false;
 //        getRegistro().comprobarDetenerReanudar();
         waitIfProgramIsStopped();
         
         try {
         	
-            user.setPermisoActividad(Permission.NONE);
+            user.setActivityPermissionType(Permission.NONE);
             
             goIntoWaitingLine(user);
 //            getWaitingLine().offer(user);
@@ -133,7 +133,7 @@ public class LockerRoomActivity extends Activity {
 //            getActivityAreaAdultUsers().offer(user);
 //            getRegistry().registerUserInActivity(getIdentificator(), ACTIVITY_AREA_ADULT_USERS, user.getIdentificator());
             
-            resultado = true;
+            result = true;
 
         } catch (SecurityException e) {
         	goOutWaitingLine(user);
@@ -146,12 +146,12 @@ public class LockerRoomActivity extends Activity {
 //            user.setCurrentActivity("ParqueAcuatico");
 
         }
-        return resultado;
+        return result;
     }
     
 //    @Override
 //    public boolean goIn(YoungUser user) throws InterruptedException {
-//    	boolean resultado = false;
+//    	boolean result = false;
 ////        getRegistro().comprobarDetenerReanudar();
 //        waitIfProgramIsStopped();
 //        
@@ -166,7 +166,7 @@ public class LockerRoomActivity extends Activity {
 //            printStatus();
 //            
 //            waitForLifeGuardPermission(user);
-//            resultado = passFromWaitingLineToActivity(user);
+//            result = passFromWaitingLineToActivity(user);
 ////            goOutWaitingLine(user);
 //////            getWaitingLine().remove(user);
 //////            getRegistry().unregisterUserFromActivity(getIdentificator(), WAITING_LINE, user.getIdentificator());
@@ -186,7 +186,7 @@ public class LockerRoomActivity extends Activity {
 ////            user.setCurrentActivity("ParqueAcuatico");
 //
 //        }
-//        return resultado;
+//        return result;
 //    }
     
     protected void onTryGoOut(AdultUser user) {

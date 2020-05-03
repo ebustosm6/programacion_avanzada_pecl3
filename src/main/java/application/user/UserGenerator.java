@@ -102,12 +102,10 @@ public class UserGenerator extends Thread {
                     visitor = new AdultUser(identificator, randomAge, park);
                 }
                 
-                System.out.println("Starting visitor: " + visitor.toString());
                 userRegistry.addUser(visitor);
                 visitor.start();
                 
                 if (supervisor != null) {
-                	System.out.println("Starting supervisor: " + supervisor.toString());
                     userRegistry.addUser(supervisor);
                     supervisor.start();
                 }

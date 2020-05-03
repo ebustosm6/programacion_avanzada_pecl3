@@ -1,7 +1,7 @@
 package application.user;
 
 import application.AquaticPark;
-import application.activity.Activity;
+import application.activity.BaseActivity;
 
 public class SupervisorUser extends User {
 	

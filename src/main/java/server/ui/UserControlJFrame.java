@@ -97,7 +97,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
             jToboganMonitorB.setText(data);
         } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B)) {
             jToboganB.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_C_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
             jToboganMonitorC.setText(data);
         } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C)) {
             jToboganC.setText(data);

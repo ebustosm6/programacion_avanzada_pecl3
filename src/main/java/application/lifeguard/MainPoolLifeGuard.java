@@ -7,65 +7,66 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import application.UserRegistry;
+import application.config.ApplicationGlobalConfig;
 import application.enums.Permission;
 import application.user.ChildUser;
 import application.user.SupervisorUser;
 import application.user.User;
 
-public class MainPoolLifeGuard extends LifeGuard {
+public class MainPoolLifeGuard extends BaseLifeGuard {
         
-	private BlockingQueue<User> zonaActividad;
+	private BlockingQueue<User> activityArea;
+	private static final String EJECT_MESAGE = "ejects user from activity area";
 
-    public MainPoolLifeGuard(String id, ArrayBlockingQueue<User> colaEspera, ArrayBlockingQueue<User> zonaActividad, UserRegistry userRegistry) {
-        super(id, colaEspera, userRegistry);
-        this.zonaActividad = zonaActividad;
+    public MainPoolLifeGuard(String id, ArrayBlockingQueue<User> waitingLine, ArrayBlockingQueue<User> activityArea, UserRegistry userRegistry) {
+        super(id, waitingLine, userRegistry);
+        this.activityArea = activityArea;
     }
 
-    public long getTiempoVigilancia() {
-        return 500;
+    public long getWatchingTime() {
+        return ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_MILISECONDS;
     }
 
-    public long getTiempoExpulsion() {
-        return (long) ((int) (500) + (500 * Math.random()));
+    public long getEjectionTime() {
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS) 
+        		+ (ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS * Math.random()));
     }
 
-    public Permission tipoPermiso(User visitante) {
-        Permission tipoPermiso = Permission.ALLOWED;
-        if (visitante instanceof ChildUser) {
-            tipoPermiso = Permission.SUPERVISED;
+    public Permission setPermissionToUser(User user) {
+        Permission permType = Permission.ALLOWED;
+        if (user instanceof ChildUser) {
+        	permType = Permission.SUPERVISED;
         }
-        return tipoPermiso;
+        return permType;
     }
 
-    private User randomVisitante() {
-        User visitante = null;
-        int n = (int) (getZonaActividad().size() * Math.random());
-        Iterator<User> iterator = getZonaActividad().iterator();
-        List<User> visitantes = new ArrayList<>();
-        iterator.forEachRemaining(visitantes::add);
-        visitante = visitantes.get(n);
-        if (visitante instanceof SupervisorUser) {
-            visitante = visitantes.get(n - 1);
+    private User selectRandomUserInArea() {
+        User user = null;
+        int n = (int) (getActivityArea().size() * Math.random());
+        Iterator<User> iterator = getActivityArea().iterator();
+        List<User> users = new ArrayList<>();
+        iterator.forEachRemaining(users::add);
+        user = users.get(n);
+        if (user instanceof SupervisorUser) {
+        	user = users.get(n - 1);
         }
-        return visitante;
+        return user;
     }
 
     public void run() {
-        User visitanteParaExpulsar;
-        int count;
+        User randomUser;
         while (true) {
             try {
-            	count = 0;
-                for (User visitante : getColaEspera()) { 
-                    getRegistro().waitIfProgramIsStopped();
-                    sleep(getTiempoVigilancia());
-                    Permission permiso = tipoPermiso(visitante);
-                    visitante.setPermisoActividad(permiso);
-                    if (getZonaActividad().remainingCapacity() == 0) {
-                        visitanteParaExpulsar = randomVisitante();
-                        visitanteParaExpulsar.interrupt();
-                        sleep(getTiempoExpulsion());
-                        System.out.println("Vigilante " + getIdentificator() + " echando al visitante " + visitanteParaExpulsar.getIdentificator() + " con edad " + visitanteParaExpulsar.getAge());
+                for (User user : getWaitingLine()) { 
+                    getRegistry().waitIfProgramIsStopped();
+                    sleep(getWatchingTime());
+                    Permission perm = setPermissionToUser(user);
+                    user.setActivityPermissionType(perm);
+                    if (getActivityArea().remainingCapacity() == 0) {
+                    	randomUser = selectRandomUserInArea();
+                    	randomUser.interrupt();
+                        sleep(getEjectionTime());
+                        System.out.println(getIdentificator() + " - " + EJECT_MESAGE + " - " + user.getIdentificator() + " - " + user.getAge());
                     }
                 }
 
@@ -76,12 +77,9 @@ public class MainPoolLifeGuard extends LifeGuard {
         }
     }
 
-    public BlockingQueue<User> getZonaActividad() {
-        return zonaActividad;
+    public BlockingQueue<User> getActivityArea() {
+        return activityArea;
     }
 
-    public void setZonaActividad(BlockingQueue<User> zonaActividad) {
-        this.zonaActividad = zonaActividad;
-    }
 
 }

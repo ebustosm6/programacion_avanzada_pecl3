@@ -8,13 +8,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import application.UserRegistry;
 import application.config.ApplicationGlobalConfig;
 import application.enums.Permission;
-import application.lifeguard.LifeGuard;
+import application.lifeguard.BaseLifeGuard;
 import application.user.User;
 import application.user.AdultUser;
 import application.user.YoungUser;
 import application.user.ChildUser;
 
-public class Activity implements ActivityInterface, Serializable {
+public class BaseActivity implements ActivityInterface, Serializable {
 
 //	private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
 //    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
@@ -26,10 +26,10 @@ public class Activity implements ActivityInterface, Serializable {
     private ArrayBlockingQueue<User> waitingLine;
     private ArrayBlockingQueue<User> activityArea;
     private ArrayBlockingQueue<User> waitingAreaSupervisor;
-    private LifeGuard lifeguard;
+    private BaseLifeGuard lifeguard;
     private UserRegistry userRegistry;
     
-    public Activity(String identificator, int capacity, UserRegistry userRegistry) {
+    public BaseActivity(String identificator, int capacity, UserRegistry userRegistry) {
         this.identificator = identificator;
         this.capacityActivity = capacity;
         this.capacityUseActivity = capacity;
@@ -42,7 +42,7 @@ public class Activity implements ActivityInterface, Serializable {
         startActivityLifeguard();
     }
 
-    public Activity(String identificator, int capacityActivity, int capacityUseActivity, boolean colaFifo, UserRegistry userRegistry) {
+    public BaseActivity(String identificator, int capacityActivity, int capacityUseActivity, boolean colaFifo, UserRegistry userRegistry) {
         this.identificator = identificator;
         this.capacityActivity = capacityActivity;
         this.capacityUseActivity = capacityUseActivity;
@@ -60,8 +60,8 @@ public class Activity implements ActivityInterface, Serializable {
         		(ApplicationGlobalConfig.ACTIVITY_MIN_MILISECONDS * Math.random()));
     }
     
-    protected LifeGuard initActivityLifeguard() {
-        LifeGuard guard = new LifeGuard(ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), userRegistry);
+    protected BaseLifeGuard initActivityLifeguard() {
+        BaseLifeGuard guard = new BaseLifeGuard(ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), userRegistry);
         userRegistry.registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
@@ -171,7 +171,7 @@ public class Activity implements ActivityInterface, Serializable {
     }
     
     protected void waitForLifeGuardPermission(User user) throws InterruptedException {
-    	while (user.getPermisoActividad() == Permission.NONE) {
+    	while (user.getActivityPermissionType() == Permission.NONE) {
     		user.sleep(500);
         }
     }
@@ -181,22 +181,22 @@ public class Activity implements ActivityInterface, Serializable {
     }
 
     public boolean goIn(ChildUser user) throws InterruptedException {
-    	boolean resultado = false;
+    	boolean result = false;
     	waitIfProgramIsStopped();
         
         try {
-            user.setPermisoActividad(Permission.NONE);
+            user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
             
             printStatus();
 
             waitForLifeGuardPermission(user);
 
-            if (user.getPermisoActividad() == Permission.NOT_ALLOWED) {
+            if (user.getActivityPermissionType() == Permission.NOT_ALLOWED) {
                 throw new SecurityException();
-            } else if (user.getPermisoActividad() == Permission.SUPERVISED) {
+            } else if (user.getActivityPermissionType() == Permission.SUPERVISED) {
                 passFromWaitingLineToActivity(user);
-            } else if (user.getPermisoActividad() == Permission.ALLOWED) {
+            } else if (user.getActivityPermissionType() == Permission.ALLOWED) {
                 goOutWaitingLine(user);
                 goIntoActivityAreaWithoutSupervisor(user);
 //                getActivityArea().offer(user);
@@ -204,20 +204,20 @@ public class Activity implements ActivityInterface, Serializable {
 //                getWaitingAreaSupervisor().offer(user.getSupervisor());
 //                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
-            resultado = true;
+            result = true;
         } catch (SecurityException e) {
             goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
-        return resultado;
+        return result;
     }
     
     public boolean goIn(AdultUser user) throws InterruptedException {
-    	boolean resultado = false;
+    	boolean result = false;
     	waitIfProgramIsStopped();
         
         try {
-            user.setPermisoActividad(Permission.NONE);
+            user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
 //            getWaitingLine().offer(user);
 //            user.setCurrentActivity(getIdentificator());
@@ -227,15 +227,15 @@ public class Activity implements ActivityInterface, Serializable {
 
             waitForLifeGuardPermission(user);
 
-            if (user.getPermisoActividad() == Permission.ALLOWED) {
-            	resultado = passFromWaitingLineToActivity(user);
+            if (user.getActivityPermissionType() == Permission.ALLOWED) {
+            	result = passFromWaitingLineToActivity(user);
 //            	goOutWaitingLine(user);
 ////                getWaitingLine().remove(user);
 ////                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
 //                goIntoActivityArea(user);
 ////            	getActivityArea().offer(user);
 ////                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-//                resultado = true;
+//                result = true;
             } else {
                 throw new SecurityException();
             }
@@ -246,15 +246,15 @@ public class Activity implements ActivityInterface, Serializable {
 //            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             onGoOutSuccess(user);
         }
-        return resultado;
+        return result;
     }
     
     public boolean goIn(YoungUser user) throws InterruptedException {
-    	boolean resultado = false;
+    	boolean result = false;
     	waitIfProgramIsStopped();
         
         try {
-            user.setPermisoActividad(Permission.NONE);
+            user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
 //            getWaitingLine().offer(user);
 //            user.setCurrentActivity(getIdentificator());
@@ -264,17 +264,17 @@ public class Activity implements ActivityInterface, Serializable {
 
             waitForLifeGuardPermission(user);
 
-            if (user.getPermisoActividad() != Permission.ALLOWED) {
+            if (user.getActivityPermissionType() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
-            resultado = passFromWaitingLineToActivity(user);
+            result = passFromWaitingLineToActivity(user);
 //            goOutWaitingLine(user);
 ////            getWaitingLine().remove(user);
 ////            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
 //            goIntoActivityArea(user);
 ////            getActivityArea().offer(user);
 ////            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-//            resultado = true;
+//            result = true;
 
         } catch (SecurityException e) {
         	goOutWaitingLine(user);
@@ -282,7 +282,7 @@ public class Activity implements ActivityInterface, Serializable {
 //            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             onGoOutSuccess(user);
         }
-        return resultado;
+        return result;
     }
     
     protected void onDoActivityFail(User user) {
@@ -292,7 +292,7 @@ public class Activity implements ActivityInterface, Serializable {
         } else {
             getActivityArea().remove(user);
         }
-        user.setCurrentActivity("ParqueAcuatico");
+        user.setCurrentActivity(ApplicationGlobalConfig.PARK_IDENTIFICATOR);
     }
     
     public void doActivity(User user) {
@@ -311,7 +311,7 @@ public class Activity implements ActivityInterface, Serializable {
     }
     
     protected void onTryGoOut(ChildUser user) {
-    	if (user.getPermisoActividad() == Permission.SUPERVISED) {
+    	if (user.getActivityPermissionType() == Permission.SUPERVISED) {
             goOutActivityArea(user);
         } else {
         	goOutActivityAreaWithoutSupervisor(user);
@@ -323,9 +323,9 @@ public class Activity implements ActivityInterface, Serializable {
     }
     
     protected void onGoOutSuccess(User user) {
-    	user.setPermisoActividad(Permission.NONE);
+    	user.setActivityPermissionType(Permission.NONE);
         printStatus();
-        user.setCurrentActivity("ParqueAcuatico");
+        user.setCurrentActivity(ApplicationGlobalConfig.PARK_IDENTIFICATOR);
     }
     
     public void goOut(User user) {
@@ -393,7 +393,7 @@ public class Activity implements ActivityInterface, Serializable {
         return waitingLine;
     }
 
-    public LifeGuard getLifeguard() {
+    public BaseLifeGuard getLifeguard() {
         return lifeguard;
     }
 

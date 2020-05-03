@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import application.AquaticPark;
-import application.activity.Activity;
+import application.activity.BaseActivity;
 import application.config.ApplicationGlobalConfig;
 import application.enums.Permission;
 import application.enums.SlideTicket;
@@ -15,9 +15,9 @@ public class User extends Thread implements Serializable{
     private int age;
     private User supervisor;
     private AquaticPark park;
-    private String currentActivity = "Exterior"; //Activities.OUTSIDE
+    private String currentActivity = ApplicationGlobalConfig.PARK_OUTSIDE;
     private int totalActivitiesDone = 0;
-	private List<Activity> activities;
+	private List<BaseActivity> activities;
     private Permission activityPermissionType = Permission.NONE;
     private SlideTicket slideTicket;
             
@@ -35,6 +35,33 @@ public class User extends Thread implements Serializable{
     			(ApplicationGlobalConfig.USER_MAX_NUM_ACTIVITIES - ApplicationGlobalConfig.USER_MIN_NUM_ACTIVITIES) * Math.random() 
     			+ ApplicationGlobalConfig.USER_MIN_NUM_ACTIVITIES);
     }
+    
+    protected void onEachActivity(BaseActivity activity) throws InterruptedException {
+		throw new AbstractMethodError();
+	}
+    
+    public void run() {
+		try {
+			System.out.println(toString() + " - goes into " + ApplicationGlobalConfig.PARK_IDENTIFICATOR);
+			boolean isInsidePark = getPark().goIn(this);
+			
+			if (isInsidePark) {
+				int activitiesCount = getRandomActivities();
+				System.out.println(toString() + " - chosing activities - " + activitiesCount);
+				setActividades(getPark().selectActivities(activitiesCount));
+				
+				for (BaseActivity activity: getActivities()) {
+					onEachActivity(activity);
+				}
+				
+				System.out.println(toString() + " - goes out " + ApplicationGlobalConfig.PARK_IDENTIFICATOR);
+				getPark().goOut(this);
+			}
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
     public SlideTicket getSlideTicket() {
         return slideTicket;
@@ -81,19 +108,19 @@ public class User extends Thread implements Serializable{
         return park;
     }
 
-    public List<Activity> getActivities() {
+    public List<BaseActivity> getActivities() {
         return activities;
     }
 
-    public void setActividades(List<Activity> value) {
+    public void setActividades(List<BaseActivity> value) {
         this.activities = value;
     }
     
-    public synchronized Permission getPermisoActividad() {
+    public synchronized Permission getActivityPermissionType() {
         return activityPermissionType;
     }
 
-    public synchronized void setPermisoActividad(Permission value) {
+    public synchronized void setActivityPermissionType(Permission value) {
         this.activityPermissionType = value;
     }
 
