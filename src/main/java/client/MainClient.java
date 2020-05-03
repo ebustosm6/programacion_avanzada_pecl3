@@ -11,7 +11,6 @@ public class MainClient {
 	public static void main(String args[]) throws RemoteException, MalformedURLException, NotBoundException {
 		
 		ClientControlJFrame clientUI = new ClientControlJFrame();
-		
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

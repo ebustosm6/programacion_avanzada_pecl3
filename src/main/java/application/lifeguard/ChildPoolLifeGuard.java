@@ -14,12 +14,14 @@ public class ChildPoolLifeGuard extends BaseLifeGuard {
 		super(id, waitingLine, userRegistry);
 	}
     
-    public long getWatchingTime() {
+    @Override
+    protected long getWatchingTime() {
         return (long) ((ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_LIFEGUARD_MIN_MILISECONDS) 
         		+ (ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_LIFEGUARD_MIN_MILISECONDS * Math.random()));
     }
     
-    public Permission setPermissionToUser(User user) {
+    @Override
+    protected Permission setPermissionToUser(User user) {
     	Permission permType = Permission.NOT_ALLOWED;
     	if (user.getAge() >= 1 && user.getAge() <= 5) {
     		permType = Permission.SUPERVISED;

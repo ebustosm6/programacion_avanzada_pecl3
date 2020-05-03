@@ -1,7 +1,6 @@
 package application.user;
 
 import application.AquaticPark;
-import application.activity.BaseActivity;
 
 public class SupervisorUser extends User {
 	
@@ -10,6 +9,7 @@ public class SupervisorUser extends User {
 	}
 	
 	public void run() {
+		// do nothing, it is slave to her fatherhood
 	}
 
 }

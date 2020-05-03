@@ -13,12 +13,14 @@ public class DeckChairLifeGuard extends BaseLifeGuard {
 		super(id, waitingLine, userRegistry);
 	}
 	
-	public long getWatchingTime() {
+	@Override
+	protected long getWatchingTime() {
         return (long) ((ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_LIFEGUARD_MIN_MILISECONDS) 
         		+ (ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_LIFEGUARD_MIN_MILISECONDS * Math.random()));
     }
 	
-	public Permission setPermissionToUser(User user) {
+	@Override
+	protected Permission setPermissionToUser(User user) {
     	Permission permType = Permission.NOT_ALLOWED;
     	if (user.getAge() >= 15) {
     		permType = Permission.ALLOWED;

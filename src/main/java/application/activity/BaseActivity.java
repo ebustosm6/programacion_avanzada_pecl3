@@ -1,6 +1,5 @@
 package application.activity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -14,12 +13,8 @@ import application.user.AdultUser;
 import application.user.YoungUser;
 import application.user.ChildUser;
 
-public class BaseActivity implements ActivityInterface, Serializable {
+public class BaseActivity implements ActivityInterface {
 
-//	private static final String WAITING_LINE = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE; 
-//    private static final String ACTIVITY = ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY; 
-//    private static final String WAITING_AREA_SUPERVISORS = ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS;
-	
     private String identificator;
     private int capacityActivity = ApplicationGlobalConfig.ACTIVITY_DEFAULT_CAPACITY;
     private int capacityUseActivity = ApplicationGlobalConfig.ACTIVITY_DEFAULT_CAPACITY;
@@ -55,7 +50,7 @@ public class BaseActivity implements ActivityInterface, Serializable {
         startActivityLifeguard();
     }
     
-    public long getActivityTime() {
+    protected long getActivityTime() {
         return (long) ((ApplicationGlobalConfig.ACTIVITY_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_MIN_MILISECONDS) + 
         		(ApplicationGlobalConfig.ACTIVITY_MIN_MILISECONDS * Math.random()));
     }
@@ -187,9 +182,7 @@ public class BaseActivity implements ActivityInterface, Serializable {
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
-            
             printStatus();
-
             waitForLifeGuardPermission(user);
 
             if (user.getActivityPermissionType() == Permission.NOT_ALLOWED) {
@@ -199,10 +192,6 @@ public class BaseActivity implements ActivityInterface, Serializable {
             } else if (user.getActivityPermissionType() == Permission.ALLOWED) {
                 goOutWaitingLine(user);
                 goIntoActivityAreaWithoutSupervisor(user);
-//                getActivityArea().offer(user);
-//                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-//                getWaitingAreaSupervisor().offer(user.getSupervisor());
-//                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
             }
             result = true;
         } catch (SecurityException e) {
@@ -219,31 +208,17 @@ public class BaseActivity implements ActivityInterface, Serializable {
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
-//            getWaitingLine().offer(user);
-//            user.setCurrentActivity(getIdentificator());
-//            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
-            
             printStatus();
-
             waitForLifeGuardPermission(user);
 
             if (user.getActivityPermissionType() == Permission.ALLOWED) {
             	result = passFromWaitingLineToActivity(user);
-//            	goOutWaitingLine(user);
-////                getWaitingLine().remove(user);
-////                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
-//                goIntoActivityArea(user);
-////            	getActivityArea().offer(user);
-////                getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-//                result = true;
             } else {
                 throw new SecurityException();
             }
 
         } catch (SecurityException e) {
         	goOutWaitingLine(user);
-//            getWaitingLine().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             onGoOutSuccess(user);
         }
         return result;
@@ -256,30 +231,16 @@ public class BaseActivity implements ActivityInterface, Serializable {
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
-//            getWaitingLine().offer(user);
-//            user.setCurrentActivity(getIdentificator());
-//            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
-            
             printStatus();
-
             waitForLifeGuardPermission(user);
 
             if (user.getActivityPermissionType() != Permission.ALLOWED) {
                 throw new SecurityException();
             }
             result = passFromWaitingLineToActivity(user);
-//            goOutWaitingLine(user);
-////            getWaitingLine().remove(user);
-////            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
-//            goIntoActivityArea(user);
-////            getActivityArea().offer(user);
-////            getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-//            result = true;
 
         } catch (SecurityException e) {
         	goOutWaitingLine(user);
-//            getWaitingLine().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
             onGoOutSuccess(user);
         }
         return result;
@@ -315,10 +276,6 @@ public class BaseActivity implements ActivityInterface, Serializable {
             goOutActivityArea(user);
         } else {
         	goOutActivityAreaWithoutSupervisor(user);
-//            getActivityArea().remove(user);
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-//            getWaitingAreaSupervisor().remove(user.getSupervisor());
-//            getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
         }
     }
     
@@ -359,15 +316,6 @@ public class BaseActivity implements ActivityInterface, Serializable {
         waitIfProgramIsStopped();
         try {
         	onTryGoOut(user);
-//            if (user.getPermisoActividad() == Permission.SUPERVISED) {
-//                desencolarNinio(user);
-//            } else {
-//                getActivityArea().remove(user);
-//                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-//                getWaitingAreaSupervisor().remove(user.getSupervisor());
-//                getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
-//            }
-            
             onGoOutSuccess(user);
         } catch (Exception e) {
         }

@@ -1,6 +1,5 @@
 package application;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +10,8 @@ import application.user.User;
 import application.user.YoungUser;
 import application.user.ChildUser;
 
-public class UserRegistry implements Serializable{
+public class UserRegistry {
 
-	private static final long serialVersionUID = 1L;
 	private Map<String, User> users = new HashMap<>();
     private Map<String, String> lifeguardsInAreas = new ConcurrentHashMap<>();
     private Map<String, Integer> usersInAreas = new ConcurrentHashMap<>();

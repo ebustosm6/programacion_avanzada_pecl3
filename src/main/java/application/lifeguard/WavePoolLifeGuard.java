@@ -13,11 +13,13 @@ public class WavePoolLifeGuard extends BaseLifeGuard {
 		super(id, waitingLine, userRegistry);
 	}
 	
-	public long getWatchingTime() {
+	@Override
+	protected long getWatchingTime() {
         return ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_LIFEGUARD_MILISECONDS;
     }
 	
-	public Permission setPermissionToUser(User user) {
+	@Override
+	protected Permission setPermissionToUser(User user) {
     	Permission permType = Permission.NOT_ALLOWED;
     	if (user.getAge() >= 6 && user.getAge() <= 10) {
     		permType = Permission.SUPERVISED;

@@ -13,11 +13,13 @@ public class LockerRoomLifeGuard extends BaseLifeGuard {
         super(id, waitingLine, userRegistry);
     }
     
-    public long getWatchingTime() {
+    @Override
+    protected long getWatchingTime() {
         return ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_LIFEGUARD_MILISECONDS;
     }
 
-    public Permission setPermissionToUser(User user) {
+    @Override
+    protected Permission setPermissionToUser(User user) {
         Permission permType = Permission.ALLOWED;
         if (user.getAge() <= 10) {
         	permType = Permission.SUPERVISED;

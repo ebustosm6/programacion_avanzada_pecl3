@@ -9,10 +9,10 @@ import application.UserRegistry;
 import application.user.User;
 
 
-
 public class ServerController extends UnicastRemoteObject implements ServerControllerRMI {
     
-    UserRegistry userRegistry;
+	private static final long serialVersionUID = 1L;
+	UserRegistry userRegistry;
 
     public ServerController(UserRegistry userRegistry)throws RemoteException{
         this.userRegistry = userRegistry;
@@ -34,25 +34,21 @@ public class ServerController extends UnicastRemoteObject implements ServerContr
     @Override
     public int getAdultsCount() {
         return userRegistry.getAdultsCount();
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getChildCount() {
         return userRegistry.getUnderAgeCount();
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getUserCountInArea(String identificator) {
         return userRegistry.getUsersInActivity(identificator);
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public int getUserTotalCountInArea(String identificator) {
          return userRegistry.getUsersInActivityTotal(identificator);
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override

@@ -9,6 +9,7 @@ public class YoungUser extends User {
 		super(identificator, age, null, park);
 	}
 	
+	@Override
 	protected void onEachActivity(BaseActivity activity) throws InterruptedException {
 		System.out.println(toString() + " - goes into " + activity.toString());
 		boolean isInsideActivity = activity.goIn(this);				
@@ -20,33 +21,5 @@ public class YoungUser extends User {
 		}
 	}
 	
-//	public void run() {
-//		try {
-//			System.out.println("Entrando al parque: " + toString());
-//			boolean dentroParque = getPark().goIn(this);
-//			
-//			if (dentroParque) {
-//				int cantidadActividades = getRandomActivities();
-//				System.out.println("Escogiendo actividade del parque: " + cantidadActividades);
-//				setActividades(getPark().selectActivities(cantidadActividades));
-//				
-//				for (BaseActivity actividad: getActivities()) {
-//					System.out.println("Entrando a la actividad "+getIdentificator()+": " + actividad.toString());
-//					boolean dentro = actividad.goIn(this);
-//					if (dentro) {
-//						actividad.doActivity(this);
-//						actividad.goOut(this);
-//						addActivity();
-//					}
-//				}
-//				
-//				System.out.println("Saliendo del parque: " + toString());
-//				getPark().goOut(this);
-//			}
-//			
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 }

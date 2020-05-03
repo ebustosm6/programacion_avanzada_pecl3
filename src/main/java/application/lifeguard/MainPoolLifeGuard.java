@@ -23,16 +23,18 @@ public class MainPoolLifeGuard extends BaseLifeGuard {
         this.activityArea = activityArea;
     }
 
-    public long getWatchingTime() {
+    @Override
+    protected long getWatchingTime() {
         return ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_MILISECONDS;
     }
 
-    public long getEjectionTime() {
+    protected long getEjectionTime() {
         return (long) ((ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS) 
         		+ (ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS * Math.random()));
     }
 
-    public Permission setPermissionToUser(User user) {
+    @Override
+    protected Permission setPermissionToUser(User user) {
         Permission permType = Permission.ALLOWED;
         if (user instanceof ChildUser) {
         	permType = Permission.SUPERVISED;
@@ -53,6 +55,7 @@ public class MainPoolLifeGuard extends BaseLifeGuard {
         return user;
     }
 
+    @Override
     public void run() {
         User randomUser;
         while (true) {

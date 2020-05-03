@@ -22,25 +22,25 @@ public class UserGenerator extends Thread {
         return age >= 0 && age < ApplicationGlobalConfig.USER_ADULT_AGE;
     }
     
-    public int randomAge() {
+    private int randomAge() {
     	return (int) ((ApplicationGlobalConfig.USER_SUPERVISOR_LIMIT_AGE) * Math.random() + 1);
     }
     
-    public int randomSupervisorAge() {
+    private int randomSupervisorAge() {
     	return (int) (
         		(ApplicationGlobalConfig.USER_SUPERVISOR_LIMIT_AGE - ApplicationGlobalConfig.USER_ADULT_AGE) * Math.random()
         		+ ApplicationGlobalConfig.USER_ADULT_AGE);
     }
     
-    public String generateSimpleId(int count, int age) {
+    private String generateSimpleId(int count, int age) {
     	return  "ID" + count + "-" + age;
     }
     
-    public String generateChildId(int count, int age) {
+    private String generateChildId(int count, int age) {
     	return  "ID" + count + "-" + age + "-" + (count + 1);
     }
     
-    public String generateSupervisorId(int count, int age, int childId) {
+    private String generateSupervisorId(int count, int age, int childId) {
     	return  "ID" + count + "-" + age + "-" + childId;
     }
     
@@ -66,12 +66,13 @@ public class UserGenerator extends Thread {
         return new ChildUser(identificator, age, supervisor, park);
     }
     
-    public void sleepStepGeneration() throws InterruptedException {
+    private void sleepStepGeneration() throws InterruptedException {
     	sleep((long) (
     			(ApplicationGlobalConfig.USER_GENERATION_MAX_MILISECONDS - ApplicationGlobalConfig.USER_GENERATION_MIN_MILISECONDS) + 
     			(ApplicationGlobalConfig.USER_GENERATION_MIN_MILISECONDS * Math.random())));
     }
 
+    @Override
     public void run() {
         int count = 1;
 

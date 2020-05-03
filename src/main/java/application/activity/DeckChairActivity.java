@@ -7,17 +7,13 @@ import application.lifeguard.DeckChairLifeGuard;
 
 public class DeckChairActivity extends BaseActivity {
 
-//    private static String IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME; //"ActividadTumbonas";
-//    private static String LIFEGUARD_IDENTIFICATOR = ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_LIFEGUARD_IDENTIFICATOR;// "VigilanteTumbonas";
-//    private static boolean IS_FAIR_QUEUE = false;
-    
     public DeckChairActivity(UserRegistry userRegistry) {
         super(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, 
         		ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_CAPACITY, ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_QUEUE_IS_FAIR, userRegistry);
     }
 
     @Override
-    public long getActivityTime() {
+    protected long getActivityTime() {
     	return (long) ((ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_MIN_MILISECONDS) + 
         		(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_MIN_MILISECONDS * Math.random()));
     }

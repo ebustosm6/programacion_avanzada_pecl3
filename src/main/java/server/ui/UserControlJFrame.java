@@ -8,7 +8,8 @@ import application.config.ApplicationGlobalConfig;
 
 public class UserControlJFrame extends javax.swing.JFrame {
 
-    private boolean detenerReanudar = false;
+	private static final long serialVersionUID = 1L;
+	private boolean detenerReanudar = false;
     private Lock l = new ReentrantLock();
     public Condition c = l.newCondition();
 
@@ -647,7 +648,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
 
         jLabel25.setText("COLA DE ENTRADA");
 
-        jLabel30.setText("TOBOGÁN C");
+        jLabel30.setText("TOBOGAN C");
 
         jLabel33.setText("Monitor");
 
@@ -699,7 +700,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
         jToboganesCola.setRows(1);
         jScrollPane14.setViewportView(jToboganesCola);
 
-        jLabel35.setText("TOBOGÁN A");
+        jLabel35.setText("TOBOGAN A");
 
         jLabel37.setText("Monitor");
 
@@ -746,7 +747,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel39.setText("TOBOGÁN B");
+        jLabel39.setText("TOBOGAN B");
 
         jLabel40.setText("Monitor");
 

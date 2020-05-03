@@ -1,6 +1,5 @@
 package application.user;
 
-import java.io.Serializable;
 import java.util.List;
 
 import application.AquaticPark;
@@ -9,7 +8,7 @@ import application.config.ApplicationGlobalConfig;
 import application.enums.Permission;
 import application.enums.SlideTicket;
 
-public class User extends Thread implements Serializable{
+public class User extends Thread {
 
     private String identificator;
     private int age;
@@ -30,7 +29,7 @@ public class User extends Thread implements Serializable{
         this.slideTicket = null;
     }
     
-    public int getRandomActivities() {
+    protected int getRandomActivities() {
     	return (int) (
     			(ApplicationGlobalConfig.USER_MAX_NUM_ACTIVITIES - ApplicationGlobalConfig.USER_MIN_NUM_ACTIVITIES) * Math.random() 
     			+ ApplicationGlobalConfig.USER_MIN_NUM_ACTIVITIES);
@@ -40,6 +39,7 @@ public class User extends Thread implements Serializable{
 		throw new AbstractMethodError();
 	}
     
+    @Override
     public void run() {
 		try {
 			System.out.println(toString() + " - goes into " + ApplicationGlobalConfig.PARK_IDENTIFICATOR);
@@ -71,6 +71,7 @@ public class User extends Thread implements Serializable{
         this.slideTicket = value;
     }
 
+    @Override
     public String toString() {
         return this.identificator;
     }
@@ -78,7 +79,6 @@ public class User extends Thread implements Serializable{
     public String getIdentificator() {
         return identificator;
     }
-
 
     public int getAge() {
         return age;

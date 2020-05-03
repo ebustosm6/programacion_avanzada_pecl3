@@ -14,11 +14,13 @@ public class SlideLifeGuard extends BaseLifeGuard {
         super(id, waitingLine, userRegistry);
     }
 
-    public long getWatchingTime() {
+    @Override
+    protected long getWatchingTime() {
         return (long) ((ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MIN_MILISECONDS) 
         		+ (ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MIN_MILISECONDS * Math.random()));
     }
 
+    @Override
     public Permission setPermissionToUser(User user) {
         Permission permType = Permission.NOT_ALLOWED;
         if (user.getAge() >= 11 && user.getAge() <= 14) {
