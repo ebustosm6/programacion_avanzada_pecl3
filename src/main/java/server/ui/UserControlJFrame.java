@@ -206,7 +206,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 0, 204));
-        jLabel1.setText("                                                    PARQUE ACU√?TICO");
+        jLabel1.setText("                                                    PARQUE ACUATICO");
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 255));
 
@@ -225,7 +225,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("VESTUARIO DE NI√ëOS");
+        jLabel4.setText("VESTUARIO DE NINOS");
 
         jVestuarioCola.setEditable(false);
         jVestuarioCola.setColumns(20);
@@ -337,7 +337,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(255, 204, 255));
 
-        jLabel7.setText("PISCINA DE NI√ëOS");
+        jLabel7.setText("PISCINA DE NINOS");
 
         jLabel8.setText("COLA DE ENTRADA");
 
@@ -647,7 +647,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
 
         jLabel25.setText("COLA DE ENTRADA");
 
-        jLabel30.setText("TOBOG√?N C");
+        jLabel30.setText("TOBOG√ÅN C");
 
         jLabel33.setText("Monitor");
 
@@ -699,7 +699,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
         jToboganesCola.setRows(1);
         jScrollPane14.setViewportView(jToboganesCola);
 
-        jLabel35.setText("TOBOG√?N A");
+        jLabel35.setText("TOBOG√ÅN A");
 
         jLabel37.setText("Monitor");
 
@@ -746,7 +746,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel39.setText("TOBOG√?N B");
+        jLabel39.setText("TOBOG√ÅN B");
 
         jLabel40.setText("Monitor");
 
@@ -880,8 +880,8 @@ public class UserControlJFrame extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
