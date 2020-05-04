@@ -5,6 +5,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import application.AquaticPark;
+import application.StopResume;
 import application.UserRegistry;
 import application.user.UserGenerator;
 import common.config.NetworkConfig;
@@ -16,8 +17,9 @@ public class MainServer {
 
     public static void main(String[] args) throws Exception {
         
-        UserControlJFrame userControlUI = new UserControlJFrame();
-        UserRegistry userRegistry = new UserRegistry(userControlUI);
+    	StopResume stopResume = new StopResume();
+    	UserControlJFrame userControlUI = new UserControlJFrame(stopResume);
+        UserRegistry userRegistry = new UserRegistry(userControlUI, stopResume);
         AquaticPark park = new AquaticPark(userRegistry);
         ServerController serverController = new ServerController(userRegistry);
         startServer(serverController);

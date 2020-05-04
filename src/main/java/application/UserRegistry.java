@@ -20,25 +20,20 @@ public class UserRegistry {
     private int adultUsersCount = 0;
     private int underAgeUsersCount = 0;
     private UserControlJFrame userControl;
+    private StopResume stopResume;
 
 
-    public UserRegistry(UserControlJFrame userControl) {
+    public UserRegistry(UserControlJFrame userControl,  StopResume stopResume) {
         this.userControl = userControl;
+        this.stopResume = stopResume;
     }
     
-    public void waitIfProgramIsStopped(){
-        try {
-            userControl.getL().lock();
-            while (userControl.getDetenerReanudar()) {
-                try {
-                    userControl.getC().await();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-        } finally {
-            userControl.getL().unlock();
-        } 
+    public void waitIfProgramIsStopped() {
+    	try {
+    		getStopResume().stopResume();
+    	} catch (InterruptedException e) {
+    		
+    	}
     }
 
     public void registerActivity(String activityId) {
@@ -122,6 +117,10 @@ public class UserRegistry {
 
     public int getUsersInActivityTotal(String activityId) {
         return this.totalUsersInAreas.get(activityId);
+    }
+    
+    public StopResume getStopResume() {
+        return stopResume;
     }
 
 }
