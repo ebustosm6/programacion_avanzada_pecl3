@@ -2,6 +2,7 @@ package application.user;
 
 import application.AquaticPark;
 import application.activity.BaseActivity;
+import application.config.ApplicationGlobalConfig;
 
 public class ChildUser extends User {
 	
@@ -18,6 +19,30 @@ public class ChildUser extends User {
 			activity.goOut(this);
 			addActivity();
 			System.out.println(toString() + " - goes out " + activity.toString());
+		}
+	}
+	
+	@Override
+    public void run() {
+		try {
+			System.out.println(toString() + " - goes into " + ApplicationGlobalConfig.PARK_IDENTIFICATOR);
+			boolean isInsidePark = getPark().goIn(this);
+			
+			if (isInsidePark) {
+				int activitiesCount = getRandomActivities();
+				System.out.println(toString() + " - chosing activities - " + activitiesCount);
+				setActividades(getPark().selectActivities(activitiesCount));
+				
+				for (BaseActivity activity: getActivities()) {
+					onEachActivity(activity);
+				}
+				
+				System.out.println(toString() + " - goes out " + ApplicationGlobalConfig.PARK_IDENTIFICATOR);
+				getPark().goOut(this);
+			}
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	
