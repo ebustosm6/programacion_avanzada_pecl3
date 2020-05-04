@@ -7,19 +7,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
 import client.controller.ClientController;
-
 
 public class ClientControlJFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Cliente
-     */
-    private ClientController controladorCliente;
+    private ClientController clientController;
 
     public ClientControlJFrame() throws RemoteException, NotBoundException, MalformedURLException {
-        this.controladorCliente = new ClientController();
+        this.clientController = new ClientController();
         initComponents();
 
     }
@@ -38,25 +33,25 @@ public class ClientControlJFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButtonControlUbicacion = new javax.swing.JButton();
-        jTextFieldUsuario = new javax.swing.JTextField();
-        jTextFieldUbicacion = new javax.swing.JTextField();
-        jTextFieldActividades = new javax.swing.JTextField();
+        jButtonUbicationControl = new javax.swing.JButton();
+        jTextFieldUser = new javax.swing.JTextField();
+        jTextFieldUbication = new javax.swing.JTextField();
+        jTextFieldActivities = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jTextFieldNumeroMenores = new javax.swing.JTextField();
-        jButtonControlMenores = new javax.swing.JButton();
+        jTextFieldChildrenNumber = new javax.swing.JTextField();
+        jButtonChildControl = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        jButtonControlToboganes = new javax.swing.JButton();
+        jButtonSlidesControl = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jTextFieldToboganA = new javax.swing.JTextField();
-        jTextFieldToboganB = new javax.swing.JTextField();
-        jTextFieldToboganC = new javax.swing.JTextField();
+        jTextFieldSlideA = new javax.swing.JTextField();
+        jTextFieldSlideB = new javax.swing.JTextField();
+        jTextFieldSlideC = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -65,42 +60,42 @@ public class ClientControlJFrame extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
-        jButtonControlAforo = new javax.swing.JButton();
-        jTextFieldVestuarios = new javax.swing.JTextField();
-        jTextFieldPiscinaOlas = new javax.swing.JTextField();
-        jTextFieldPiscinaNinios = new javax.swing.JTextField();
-        jTextFieldTumbonas = new javax.swing.JTextField();
-        jTextFieldToboganes = new javax.swing.JTextField();
-        jTextFieldPiscinaGrande = new javax.swing.JTextField();
+        jButtonGaugingControl = new javax.swing.JButton();
+        jTextFieldChangingRooms = new javax.swing.JTextField();
+        jTextFieldWavePool = new javax.swing.JTextField();
+        jTextFieldChildPool = new javax.swing.JTextField();
+        jTextFieldSunLoungers = new javax.swing.JTextField();
+        jTextFieldSlides = new javax.swing.JTextField();
+        jTextFieldBigPool = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(255, 204, 255));
+        jPanel1.setBackground(new java.awt.Color(153, 204, 255));
 
-        jLabel2.setText("CONTROL DE UBICACIÓN");
+        jLabel2.setText("UBICATION CONTROL");
 
-        jLabel3.setText("Usuario");
+        jLabel3.setText("User");
 
-        jLabel4.setText("Ubicación");
+        jLabel4.setText("Ubication");
 
-        jLabel5.setText("Actividades");
+        jLabel5.setText("Activities");
 
-        jButtonControlUbicacion.setText("Buscar");
-        jButtonControlUbicacion.addActionListener(new java.awt.event.ActionListener() {
+        jButtonUbicationControl.setText("Search");
+        jButtonUbicationControl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonControlUbicacionActionPerformed(evt);
+                jButtonUbicationControlActionPerformed(evt);
             }
         });
 
-        jTextFieldUsuario.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldUsuarioActionPerformed(evt);
+                jTextFieldUserActionPerformed(evt);
             }
         });
 
-        jTextFieldUbicacion.setEditable(false);
+        jTextFieldUbication.setEditable(false);
 
-        jTextFieldActividades.setEditable(false);
+        jTextFieldActivities.setEditable(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -112,22 +107,22 @@ public class ClientControlJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldUbication, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldActividades, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextFieldActivities, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(46, 46, 46)
-                .addComponent(jButtonControlUbicacion)
+                .addComponent(jButtonUbicationControl)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -138,36 +133,35 @@ public class ClientControlJFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextFieldUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextFieldUbicacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldUbication, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jTextFieldActividades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldActivities, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonControlUbicacion)
+                .addComponent(jButtonUbicationControl)
                 .addContainerGap())
         );
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 51, 255));
-        jLabel1.setText("AQUATIC PARK");
+        jLabel1.setText("WATER PARK");
 
-        jPanel3.setBackground(new java.awt.Color(255, 204, 255));
+        jPanel3.setBackground(new java.awt.Color(153, 204, 255));
 
-        jLabel6.setText("CONTROL DE MENORES");
+        jLabel6.setText("CHILD CONTROL");
 
-        jLabel7.setText("Número de menores");
+        jLabel7.setText("Children number");
 
-        jTextFieldNumeroMenores.setEditable(false);
+        jTextFieldChildrenNumber.setEditable(false);
 
-        jButtonControlMenores.setText("Buscar");
-        jButtonControlMenores.addActionListener(new java.awt.event.ActionListener() {
+        jButtonChildControl.setText("Search");
+        jButtonChildControl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonControlMenoresActionPerformed(evt);
+                jButtonChildControlActionPerformed(evt);
             }
         });
 
@@ -176,21 +170,16 @@ public class ClientControlJFrame extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(27, 27, 27)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel6)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(jLabel6)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldNumeroMenores, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButtonControlMenores)
-                .addGap(63, 63, 63))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonChildControl)
+                            .addComponent(jTextFieldChildrenNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -198,66 +187,65 @@ public class ClientControlJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldNumeroMenores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextFieldChildrenNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonControlMenores)
+                .addComponent(jButtonChildControl)
                 .addContainerGap())
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 204, 255));
+        jPanel2.setBackground(new java.awt.Color(153, 204, 255));
 
-        jLabel8.setText("CONTROL DE TOBOGANES");
+        jLabel8.setText("SLIDES CONTROL");
 
-        jButtonControlToboganes.setText("Buscar");
-        jButtonControlToboganes.addActionListener(new java.awt.event.ActionListener() {
+        jButtonSlidesControl.setText("Search");
+        jButtonSlidesControl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonControlToboganesActionPerformed(evt);
+                jButtonSlidesControlActionPerformed(evt);
             }
         });
 
-        jLabel9.setText("Togogán A");
+        jLabel9.setText("Slide A");
 
-        jLabel10.setText("Tobogán B");
+        jLabel10.setText("Slide B");
 
-        jLabel11.setText("Tobogán C");
+        jLabel11.setText("Slide C");
 
-        jTextFieldToboganA.setEditable(false);
+        jTextFieldSlideA.setEditable(false);
 
-        jTextFieldToboganB.setEditable(false);
-        jTextFieldToboganB.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldSlideB.setEditable(false);
+        jTextFieldSlideB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldToboganBActionPerformed(evt);
+                jTextFieldSlideBActionPerformed(evt);
             }
         });
 
-        jTextFieldToboganC.setEditable(false);
+        jTextFieldSlideC.setEditable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonSlidesControl)
+                .addGap(44, 44, 44))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(25, 25, 25)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel8)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(jButtonControlToboganes))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel8)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextFieldToboganA, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldToboganB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldToboganC, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(28, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldSlideA, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldSlideB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldSlideC, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,64 +255,69 @@ public class ClientControlJFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
-                    .addComponent(jTextFieldToboganA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldSlideA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jTextFieldToboganB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldSlideB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(jTextFieldToboganC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldSlideC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonControlToboganes)
+                .addComponent(jButtonSlidesControl)
                 .addContainerGap())
         );
 
-        jPanel4.setBackground(new java.awt.Color(255, 204, 255));
+        jPanel4.setBackground(new java.awt.Color(153, 204, 255));
 
-        jLabel12.setText("CONTROL DE AFORO");
+        jLabel12.setText("GAUGING CONTROL");
 
-        jLabel13.setText("Vestuarios");
+        jLabel13.setText("Changing rooms");
 
-        jLabel14.setText("Piscina olas");
+        jLabel14.setText("Wave pool");
 
-        jLabel15.setText("Tumbonas");
+        jLabel15.setText("Sun loungers");
 
-        jLabel16.setText("Piscina niños");
+        jLabel16.setText("Child pool");
 
-        jLabel17.setText("Toboganes");
+        jLabel17.setText("Slides");
 
-        jLabel18.setText("Piscina grande");
+        jLabel18.setText("Big pool");
 
-        jButtonControlAforo.setText("Buscar");
-        jButtonControlAforo.addActionListener(new java.awt.event.ActionListener() {
+        jButtonGaugingControl.setText("Search");
+        jButtonGaugingControl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonControlAforoActionPerformed(evt);
+                jButtonGaugingControlActionPerformed(evt);
             }
         });
 
-        jTextFieldVestuarios.setEditable(false);
-        jTextFieldVestuarios.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldChangingRooms.setEditable(false);
+        jTextFieldChangingRooms.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldVestuariosActionPerformed(evt);
+                jTextFieldChangingRoomsActionPerformed(evt);
             }
         });
 
-        jTextFieldPiscinaOlas.setEditable(false);
+        jTextFieldWavePool.setEditable(false);
 
-        jTextFieldPiscinaNinios.setEditable(false);
-
-        jTextFieldTumbonas.setEditable(false);
-        jTextFieldTumbonas.addActionListener(new java.awt.event.ActionListener() {
+        jTextFieldChildPool.setEditable(false);
+        jTextFieldChildPool.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldTumbonasActionPerformed(evt);
+                jTextFieldChildPoolActionPerformed(evt);
             }
         });
 
-        jTextFieldToboganes.setEditable(false);
+        jTextFieldSunLoungers.setEditable(false);
+        jTextFieldSunLoungers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSunLoungersActionPerformed(evt);
+            }
+        });
 
-        jTextFieldPiscinaGrande.setEditable(false);
+        jTextFieldSlides.setEditable(false);
+
+        jTextFieldBigPool.setEditable(false);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -333,44 +326,41 @@ public class ClientControlJFrame extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel13))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(44, 44, 44)
-                                .addComponent(jLabel12)))
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel12)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextFieldPiscinaNinios, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel18)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                                .addComponent(jTextFieldPiscinaGrande, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextFieldBigPool, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextFieldPiscinaOlas, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jTextFieldVestuarios, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextFieldWavePool, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextFieldChildPool, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel15)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextFieldTumbonas, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextFieldSunLoungers, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel17)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextFieldToboganes, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jTextFieldSlides, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextFieldChangingRooms, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButtonControlAforo)
+                .addComponent(jButtonGaugingControl)
                 .addGap(63, 63, 63))
         );
         jPanel4Layout.setVerticalGroup(
@@ -381,29 +371,29 @@ public class ClientControlJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(jTextFieldVestuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldChangingRooms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
-                    .addComponent(jTextFieldPiscinaOlas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldWavePool, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(3, 3, 3)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
-                    .addComponent(jTextFieldPiscinaNinios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldChildPool, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
-                    .addComponent(jTextFieldTumbonas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldSunLoungers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(jTextFieldToboganes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldSlides, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
-                    .addComponent(jTextFieldPiscinaGrande, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldBigPool, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonControlAforo)
+                .addComponent(jButtonGaugingControl)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -414,9 +404,6 @@ public class ClientControlJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(386, 386, 386)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(30, 30, 30)
@@ -424,8 +411,11 @@ public class ClientControlJFrame extends javax.swing.JFrame {
                         .addGap(31, 31, 31)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(30, Short.MAX_VALUE))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(316, 316, 316)
+                        .addComponent(jLabel1)))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -442,79 +432,82 @@ public class ClientControlJFrame extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonControlUbicacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonControlUbicacionActionPerformed
+    private void jButtonUbicationControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUbicationControlActionPerformed
         try {
-            ArrayList<String> resultado = controladorCliente.locationCheck(jTextFieldUsuario.getText());
+            ArrayList<String> resultado = clientController.locationCheck(jTextFieldUser.getText());
             if (resultado.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "El usuario introducido no esta en el parque", "Error en la busqueda", JOptionPane.ERROR_MESSAGE);
-            }else{
-                jTextFieldUbicacion.setText(resultado.get(1));
-                jTextFieldActividades.setText(resultado.get(2));
-           }
+                JOptionPane.showMessageDialog(null, "User not found. Please, try aganin.", "Error 404", JOptionPane.ERROR_MESSAGE);
+            } else {
+                jTextFieldUbication.setText(resultado.get(1));
+                jTextFieldActivities.setText(resultado.get(2));
+            }
         } catch (RemoteException ex) {
             Logger.getLogger(ClientControlJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButtonControlUbicacionActionPerformed
+    }//GEN-LAST:event_jButtonUbicationControlActionPerformed
 
-    private void jButtonControlMenoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonControlMenoresActionPerformed
+    private void jButtonChildControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChildControlActionPerformed
         try {
-            jTextFieldNumeroMenores.setText(controladorCliente.underAgeCheck() + "");
+            jTextFieldChildrenNumber.setText(clientController.underAgeCheck() + "");
         } catch (RemoteException ex) {
             Logger.getLogger(ClientControlJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButtonControlMenoresActionPerformed
+    }//GEN-LAST:event_jButtonChildControlActionPerformed
 
-    private void jButtonControlToboganesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonControlToboganesActionPerformed
+    private void jButtonSlidesControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSlidesControlActionPerformed
         // TODO add your handling code here:
-        try {
-            // TODO add your handling code here:
-            ArrayList<String> resultado = controladorCliente.slidesCheck();
-            jTextFieldToboganA.setText(resultado.get(0));
-            jTextFieldToboganB.setText(resultado.get(1));
-            jTextFieldToboganC.setText(resultado.get(2));
-        } catch (RemoteException ex) {
-            Logger.getLogger(ClientControlJFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButtonControlToboganesActionPerformed
-
-    private void jTextFieldToboganBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldToboganBActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldToboganBActionPerformed
-
-    private void jButtonControlAforoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonControlAforoActionPerformed
         try {
             // TODO add your handling code here:
-            ArrayList<String> resultado = controladorCliente.countPeopleCheck();
-            jTextFieldVestuarios.setText(resultado.get(0));
-            jTextFieldPiscinaOlas.setText(resultado.get(1));
-            jTextFieldPiscinaNinios.setText(resultado.get(2));
-            jTextFieldTumbonas.setText(resultado.get(3));
-            jTextFieldToboganes.setText(resultado.get(4));
-            jTextFieldPiscinaGrande.setText(resultado.get(5));
-            
-            
+            ArrayList<String> resultado = clientController.slidesCheck();
+            jTextFieldSlideA.setText(resultado.get(0));
+            jTextFieldSlideB.setText(resultado.get(1));
+            jTextFieldSlideC.setText(resultado.get(2));
         } catch (RemoteException ex) {
             Logger.getLogger(ClientControlJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+    }//GEN-LAST:event_jButtonSlidesControlActionPerformed
 
-
-    }//GEN-LAST:event_jButtonControlAforoActionPerformed
-
-    private void jTextFieldVestuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldVestuariosActionPerformed
+    private void jTextFieldSlideBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSlideBActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldVestuariosActionPerformed
+    }//GEN-LAST:event_jTextFieldSlideBActionPerformed
 
-    private void jTextFieldTumbonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTumbonasActionPerformed
+    private void jButtonGaugingControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGaugingControlActionPerformed
+        try {
+            // TODO add your handling code here:
+            ArrayList<String> resultado = clientController.countPeopleCheck();
+            jTextFieldChangingRooms.setText(resultado.get(0));
+            jTextFieldWavePool.setText(resultado.get(1));
+            jTextFieldChildPool.setText(resultado.get(2));
+            jTextFieldSunLoungers.setText(resultado.get(3));
+            jTextFieldSlides.setText(resultado.get(4));
+            jTextFieldBigPool.setText(resultado.get(5));
+
+        } catch (RemoteException ex) {
+            Logger.getLogger(ClientControlJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }//GEN-LAST:event_jButtonGaugingControlActionPerformed
+
+    private void jTextFieldChangingRoomsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldChangingRoomsActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTumbonasActionPerformed
+    }//GEN-LAST:event_jTextFieldChangingRoomsActionPerformed
 
-    private void jTextFieldUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldUsuarioActionPerformed
+    private void jTextFieldSunLoungersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSunLoungersActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldSunLoungersActionPerformed
+
+    private void jTextFieldUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldUserActionPerformed
         // TODO add your handling code here:
 
-    }//GEN-LAST:event_jTextFieldUsuarioActionPerformed
+    }//GEN-LAST:event_jTextFieldUserActionPerformed
+
+    private void jTextFieldChildPoolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldChildPoolActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldChildPoolActionPerformed
 
     /**
      * @param args the command line arguments
@@ -545,6 +538,18 @@ public class ClientControlJFrame extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -563,10 +568,10 @@ public class ClientControlJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonControlAforo;
-    private javax.swing.JButton jButtonControlMenores;
-    private javax.swing.JButton jButtonControlToboganes;
-    private javax.swing.JButton jButtonControlUbicacion;
+    private javax.swing.JButton jButtonChildControl;
+    private javax.swing.JButton jButtonGaugingControl;
+    private javax.swing.JButton jButtonSlidesControl;
+    private javax.swing.JButton jButtonUbicationControl;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -589,18 +594,18 @@ public class ClientControlJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JTextField jTextFieldActividades;
-    private javax.swing.JTextField jTextFieldNumeroMenores;
-    private javax.swing.JTextField jTextFieldPiscinaGrande;
-    private javax.swing.JTextField jTextFieldPiscinaNinios;
-    private javax.swing.JTextField jTextFieldPiscinaOlas;
-    private javax.swing.JTextField jTextFieldToboganA;
-    private javax.swing.JTextField jTextFieldToboganB;
-    private javax.swing.JTextField jTextFieldToboganC;
-    private javax.swing.JTextField jTextFieldToboganes;
-    private javax.swing.JTextField jTextFieldTumbonas;
-    private javax.swing.JTextField jTextFieldUbicacion;
-    private javax.swing.JTextField jTextFieldUsuario;
-    private javax.swing.JTextField jTextFieldVestuarios;
+    private javax.swing.JTextField jTextFieldActivities;
+    private javax.swing.JTextField jTextFieldBigPool;
+    private javax.swing.JTextField jTextFieldChangingRooms;
+    private javax.swing.JTextField jTextFieldChildPool;
+    private javax.swing.JTextField jTextFieldChildrenNumber;
+    private javax.swing.JTextField jTextFieldSlideA;
+    private javax.swing.JTextField jTextFieldSlideB;
+    private javax.swing.JTextField jTextFieldSlideC;
+    private javax.swing.JTextField jTextFieldSlides;
+    private javax.swing.JTextField jTextFieldSunLoungers;
+    private javax.swing.JTextField jTextFieldUbication;
+    private javax.swing.JTextField jTextFieldUser;
+    private javax.swing.JTextField jTextFieldWavePool;
     // End of variables declaration//GEN-END:variables
 }
