@@ -37,7 +37,6 @@ public class BaseLifeGuard extends Thread {
     public void run() {
         while (true) {
             try {
-            	sleep(getWatchingTime());
                 for (User user : getWaitingLine()) {
                     getRegistry().waitIfProgramIsStopped();
                     sleep(getWatchingTime());

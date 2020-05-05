@@ -73,16 +73,16 @@ public class SlideActivity extends BaseActivity {
         getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         user.setCurrentActivity(getIdentificator());
         user.getSupervisor().setCurrentActivity(getIdentificator());
-        getPiscinaGrande().getWaitingAreaSupervisor().offer(user.getSupervisor());
-        getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+        getMainPool().getWaitingAreaSupervisor().offer(user.getSupervisor());
+        getRegistry().registerUserInActivity(getMainPool().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
     
     @Override
     protected synchronized void goOutWaitingLine(ChildUser user) {
     	getWaitingLine().remove(user);
         getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
-        getPiscinaGrande().getWaitingAreaSupervisor().remove(user.getSupervisor());
-        getRegistry().unregisterUserFromActivity(getPiscinaGrande().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
+        getMainPool().getWaitingAreaSupervisor().remove(user.getSupervisor());
+        getRegistry().unregisterUserFromActivity(getMainPool().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
 
     @Override
@@ -158,11 +158,11 @@ public class SlideActivity extends BaseActivity {
     
     @Override
     public void onGoOutSuccess(User user) {
-        user.setCurrentActivity(getPiscinaGrande().getIdentificator());
-        getPiscinaGrande().getActivityArea().offer(user);
-        getRegistry().registerUserInActivity(getPiscinaGrande().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
-        getPiscinaGrande().doActivity(user);
-        getPiscinaGrande().goOut(user);
+        user.setCurrentActivity(getMainPool().getIdentificator());
+        getMainPool().getActivityArea().offer(user);
+        getRegistry().registerUserInActivity(getMainPool().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
+        getMainPool().doActivity(user);
+        getMainPool().goOut(user);
         user.setCurrentActivity(ApplicationGlobalConfig.PARK_IDENTIFICATOR);
     }
 
@@ -217,7 +217,7 @@ public class SlideActivity extends BaseActivity {
     }
 
     public void goIntoSlide(User user) throws InterruptedException{
-        getPiscinaGrande().getSemaphore().acquire();
+        getMainPool().getSemaphore().acquire();
         getWaitingLine().remove(user);
         getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
@@ -245,7 +245,7 @@ public class SlideActivity extends BaseActivity {
         System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME + " - " + getActivityArea().toString());
         System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B + " - " + getSlideB().toString());
         System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C + " - " + getSlideC().toString());
-        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS + " - " + getPiscinaGrande().getWaitingAreaSupervisor().toString());
+        System.out.println(getIdentificator() + " - " + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS + " - " + getMainPool().getWaitingAreaSupervisor().toString());
     }
 
     public SlideTicket getTicket() {
@@ -260,7 +260,7 @@ public class SlideActivity extends BaseActivity {
         return slideB;
     }
 
-    public MainPoolActivity getPiscinaGrande() {
+    public MainPoolActivity getMainPool() {
         return mainPool;
     }
 
