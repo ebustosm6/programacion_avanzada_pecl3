@@ -7,10 +7,10 @@ import java.rmi.RemoteException;
 import client.ui.ClientControlJFrame;
 
 public class MainClient {
-	
-	public static void main(String args[]) throws RemoteException, MalformedURLException, NotBoundException {
-		
-		ClientControlJFrame clientUI = new ClientControlJFrame();
+
+    public static void main(String args[]) throws RemoteException, MalformedURLException, NotBoundException {
+
+        ClientControlJFrame clientUI = new ClientControlJFrame();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -9,7 +9,7 @@ import application.config.ApplicationGlobalConfig;
 
 public class UserControlJFrame extends javax.swing.JFrame {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private StopResume stopResume;
 
     public UserControlJFrame(StopResume stopResume) {
@@ -17,58 +17,57 @@ public class UserControlJFrame extends javax.swing.JFrame {
         this.stopResume = stopResume;
     }
 
-
     public void setData(String place, String data) {
 
-        if (place.equals(ApplicationGlobalConfig.PARK_IDENTIFICATOR+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
-        	jParkInputQueue.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
-        	jChangingRoomInputQueue.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
-        	jChangingRoomVigilant.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS)) {
-        	jAdultChangingRoom.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
-        	jChangingRoomChild.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
-        	jChildPoolInputQueue.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
-        	jChildPoolVigilant.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
-        	jChildPoolPool.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS)) {
-        	jChildPoolAdultWaitingArea.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
-        	jWavePoolInputQueue.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
-        	jWavePoolVigilant.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
-        	jWavePoolPool.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
-        	jBigPoolInputQueue.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+        if (place.equals(ApplicationGlobalConfig.PARK_IDENTIFICATOR + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jParkInputQueue.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jChangingRoomInputQueue.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jChangingRoomVigilant.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME + ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_AREA_ACTIVITY_ADULT_USERS)) {
+            jAdultChangingRoom.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_LOCKER_ROOM_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jChangingRoomChild.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jChildPoolInputQueue.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jChildPoolVigilant.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jChildPoolPool.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_CHILD_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS)) {
+            jChildPoolAdultWaitingArea.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jWavePoolInputQueue.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jWavePoolVigilant.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jWavePoolPool.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jBigPoolInputQueue.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
             jBigPoolVigilant.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
-        	jBigPoolPool.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
-        	jSunLoungersInputQueue.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
-        	jSunLoungersVigilant.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
-        	jSunLoungers.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
-        	jSlidesInputQueue.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
-        	jSlideVigilantA.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
-        	jSlideA.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_B_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
-        	jSlideVigilantB.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B)) {
-        	jSlideB.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_C_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
-        	jToboganVigilantC.setText(data);
-        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME+ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C)) {
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jBigPoolPool.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jSunLoungersInputQueue.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jSunLoungersVigilant.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_DECK_CHAIR_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jSunLoungers.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE)) {
+            jSlidesInputQueue.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jSlideVigilantA.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY)) {
+            jSlideA.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_B_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jSlideVigilantB.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B)) {
+            jSlideB.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_C_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD)) {
+            jToboganVigilantC.setText(data);
+        } else if (place.equals(ApplicationGlobalConfig.ACTIVITY_SLIDE_NAME + ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C)) {
             jSlideC.setText(data);
         }
     }
@@ -232,14 +231,14 @@ public class UserControlJFrame extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jChangingRoomVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jChangingRoomVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(107, 107, 107))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(158, 158, 158)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel36)
-                        .addGap(147, 147, 147)))
+                        .addGap(166, 166, 166)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
@@ -353,7 +352,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addGap(27, 27, 27)
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE))
+                        .addComponent(jScrollPane7))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
@@ -364,7 +363,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                             .addComponent(jScrollPane6)
                             .addComponent(jScrollPane5)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jChildPoolVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jChildPoolVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -437,7 +436,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                     .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                     .addComponent(jScrollPane9, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jWavePoolVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jWavePoolVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
@@ -508,10 +507,10 @@ public class UserControlJFrame extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
+                    .addComponent(jScrollPane10)
                     .addComponent(jScrollPane11)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jBigPoolVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jBigPoolVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel5Layout.createSequentialGroup()
@@ -580,7 +579,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                     .addComponent(jScrollPane12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
                     .addComponent(jScrollPane13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jSunLoungersVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jSunLoungersVigilant, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
@@ -639,7 +638,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToboganVigilantC, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToboganVigilantC, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(jLabel34)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -676,6 +675,11 @@ public class UserControlJFrame extends javax.swing.JFrame {
         jLabel38.setText("Slide");
 
         jSlideVigilantA.setEditable(false);
+        jSlideVigilantA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSlideVigilantAActionPerformed(evt);
+            }
+        });
 
         jSlideA.setEditable(false);
 
@@ -689,7 +693,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSlideVigilantA, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSlideVigilantA, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(jLabel38)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -734,7 +738,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSlideVigilantB, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSlideVigilantB, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(jLabel41)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -891,6 +895,10 @@ public class UserControlJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonStopResumeActionPerformed
 
+    private void jSlideVigilantAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSlideVigilantAActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSlideVigilantAActionPerformed
+
     public StopResume getStopResume() {
         return stopResume;
     }
@@ -927,6 +935,7 @@ public class UserControlJFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea jAdultChangingRoom;
     private javax.swing.JTextArea jBigPoolInputQueue;
     private javax.swing.JTextArea jBigPoolPool;
+    private javax.swing.JTextField jBigPoolVigilant;
     private javax.swing.JButton jButtonStopResume;
     private javax.swing.JTextArea jChangingRoomChild;
     private javax.swing.JTextArea jChangingRoomInputQueue;
@@ -981,7 +990,6 @@ public class UserControlJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JTextArea jParkInputQueue;
-    private javax.swing.JTextField jBigPoolVigilant;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
@@ -999,13 +1007,13 @@ public class UserControlJFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTextField jSlideA;
     private javax.swing.JTextField jSlideB;
+    private javax.swing.JTextField jSlideC;
     private javax.swing.JTextField jSlideVigilantA;
     private javax.swing.JTextField jSlideVigilantB;
     private javax.swing.JTextArea jSlidesInputQueue;
     private javax.swing.JTextArea jSunLoungers;
     private javax.swing.JTextArea jSunLoungersInputQueue;
     private javax.swing.JTextField jSunLoungersVigilant;
-    private javax.swing.JTextField jSlideC;
     private javax.swing.JTextField jToboganVigilantC;
     private javax.swing.JTextArea jWavePoolInputQueue;
     private javax.swing.JTextArea jWavePoolPool;

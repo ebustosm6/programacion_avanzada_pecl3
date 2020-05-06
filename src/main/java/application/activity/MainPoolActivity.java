@@ -19,11 +19,11 @@ public class MainPoolActivity extends BaseActivity {
         super(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_NAME, ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_CAPACITY, userRegistry);
         this.semaphore = new Semaphore(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_CAPACITY, true);
     }
-    
+
     @Override
     public long getActivityTime() {
-    	return (long) ((ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_MIN_MILISECONDS) + 
-        		(ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_MIN_MILISECONDS * Math.random()));
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_MIN_MILISECONDS)
+                + (ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_MIN_MILISECONDS * Math.random()));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class MainPoolActivity extends BaseActivity {
         getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
-    
+
     @Override
     protected synchronized void goOutActivityArea(ChildUser user) {
         getActivityArea().remove(user);
@@ -41,7 +41,7 @@ public class MainPoolActivity extends BaseActivity {
         getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getSupervisor().getIdentificator());
         getSemaphore().release(2);
     }
-    
+
     @Override
     protected synchronized void goOutActivityAreaWithoutSupervisor(ChildUser user) {
         getActivityArea().remove(user);
@@ -50,12 +50,12 @@ public class MainPoolActivity extends BaseActivity {
         getWaitingAreaSupervisor().remove(user.getSupervisor());
         getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
-    
+
     @Override
     public boolean goIn(ChildUser user) throws InterruptedException {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -65,23 +65,23 @@ public class MainPoolActivity extends BaseActivity {
             if (user.getActivityPermissionType() == Permission.NOT_ALLOWED) {
                 throw new SecurityException();
             } else if (user.getActivityPermissionType() == Permission.SUPERVISED) {
-            	getSemaphore().acquire(2);
-            	passFromWaitingLineToActivity(user);
-            	result = true;
+                getSemaphore().acquire(2);
+                passFromWaitingLineToActivity(user);
+                result = true;
             }
-            
+
         } catch (SecurityException e) {
             goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
         return result;
     }
-    
+
     @Override
     public boolean goIn(AdultUser user) throws InterruptedException {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -89,7 +89,7 @@ public class MainPoolActivity extends BaseActivity {
             waitForLifeGuardPermission(user);
 
             if (user.getActivityPermissionType() == Permission.ALLOWED) {
-            	getSemaphore().acquire();
+                getSemaphore().acquire();
                 goOutWaitingLine(user);
                 goIntoActivityArea(user);
                 result = true;
@@ -98,7 +98,7 @@ public class MainPoolActivity extends BaseActivity {
             }
 
         } catch (SecurityException e) {
-        	goOutWaitingLine(user);
+            goOutWaitingLine(user);
             onGoOutSuccess(user);
 
         }
@@ -107,9 +107,9 @@ public class MainPoolActivity extends BaseActivity {
 
     @Override
     public boolean goIn(YoungUser user) throws InterruptedException {
-    	boolean result = false;
-    	waitIfProgramIsStopped();
-        
+        boolean result = false;
+        waitIfProgramIsStopped();
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -125,7 +125,7 @@ public class MainPoolActivity extends BaseActivity {
             result = true;
 
         } catch (SecurityException e) {
-        	goOutWaitingLine(user);
+            goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
         return result;
@@ -133,7 +133,7 @@ public class MainPoolActivity extends BaseActivity {
 
     @Override
     protected void onDoActivityFail(User user) {
-    	if (user instanceof ChildUser) {
+        if (user instanceof ChildUser) {
             getActivityArea().remove(user);
             getActivityArea().remove(user.getSupervisor());
             getSemaphore().release(2);
@@ -143,14 +143,14 @@ public class MainPoolActivity extends BaseActivity {
         }
         user.setCurrentActivity(ApplicationGlobalConfig.PARK_IDENTIFICATOR);
     }
-    
+
     @Override
     protected void onTryGoOut(User user) {
-    	getActivityArea().remove(user);
-    	getSemaphore().release();
-    	getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
+        getActivityArea().remove(user);
+        getSemaphore().release();
+        getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY, user.getIdentificator());
     }
-    
+
     public Semaphore getSemaphore() {
         return semaphore;
     }

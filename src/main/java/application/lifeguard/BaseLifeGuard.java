@@ -24,14 +24,14 @@ public class BaseLifeGuard extends Thread {
     protected Permission setPermissionToUser(User user) {
         Permission permType = Permission.NOT_ALLOWED;
         if (user.getAge() > 0) {
-        	permType = Permission.ALLOWED;
+            permType = Permission.ALLOWED;
         }
         return permType;
     }
 
     protected long getWatchingTime() {
-        return (long) ((ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_MIN_MILISECONDS )
-        		+ (ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_MIN_MILISECONDS * Math.random()));
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_MIN_MILISECONDS)
+                + (ApplicationGlobalConfig.ACTIVITY_DEFAULT_LIFEGUARD_MIN_MILISECONDS * Math.random()));
     }
 
     public void run() {
@@ -43,7 +43,7 @@ public class BaseLifeGuard extends Thread {
                     Permission perm = setPermissionToUser(user);
                     user.setActivityPermissionType(perm);
                     if (perm == Permission.NOT_ALLOWED) {
-                    	System.out.println(getIdentificator() + " - " + EJECT_MESAGE + " - " + user.getIdentificator() + " - " + user.getAge());
+                        System.out.println(getIdentificator() + " - " + EJECT_MESAGE + " - " + user.getIdentificator() + " - " + user.getAge());
                     }
                 }
 
@@ -52,7 +52,7 @@ public class BaseLifeGuard extends Thread {
             }
         }
     }
-    
+
     public UserRegistry getRegistry() {
         return userRegistry;
     }

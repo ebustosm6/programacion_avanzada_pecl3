@@ -8,13 +8,12 @@ import java.util.List;
 import application.UserRegistry;
 import application.user.User;
 
-
 public class ServerController extends UnicastRemoteObject implements ServerControllerRMI {
-    
-	private static final long serialVersionUID = 1L;
-	UserRegistry userRegistry;
 
-    public ServerController(UserRegistry userRegistry)throws RemoteException{
+    private static final long serialVersionUID = 1L;
+    UserRegistry userRegistry;
+
+    public ServerController(UserRegistry userRegistry) throws RemoteException {
         this.userRegistry = userRegistry;
     }
 
@@ -23,11 +22,11 @@ public class ServerController extends UnicastRemoteObject implements ServerContr
         List<String> result = new ArrayList<>();
         User visitante = userRegistry.searchUser(identificator);
         if (visitante != null) {
-        	result.add(visitante.getIdentificator());
-        	result.add(visitante.getCurrentActivity());
-        	result.add(String.valueOf(visitante.getTotalActivitiesDone()));
+            result.add(visitante.getIdentificator());
+            result.add(visitante.getCurrentActivity());
+            result.add(String.valueOf(visitante.getTotalActivitiesDone()));
         }
-        
+
         return result;
     }
 
@@ -48,11 +47,11 @@ public class ServerController extends UnicastRemoteObject implements ServerContr
 
     @Override
     public int getUserTotalCountInArea(String identificator) {
-         return userRegistry.getUsersInActivityTotal(identificator);
+        return userRegistry.getUsersInActivityTotal(identificator);
     }
-    
+
     @Override
-    public List<String> getUserIdsInArea(String identificatorActividad, String identificatorArea){
+    public List<String> getUserIdsInArea(String identificatorActividad, String identificatorArea) {
         return userRegistry.getUserIdsInActivity(identificatorActividad, identificatorArea);
     }
 }

@@ -16,8 +16,8 @@ public class SlideLifeGuard extends BaseLifeGuard {
 
     @Override
     protected long getWatchingTime() {
-        return (long) ((ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MIN_MILISECONDS) 
-        		+ (ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MIN_MILISECONDS * Math.random()));
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MIN_MILISECONDS)
+                + (ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_MIN_MILISECONDS * Math.random()));
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SlideLifeGuard extends BaseLifeGuard {
         } else if (user.getAge() >= 15 && user.getAge() <= 17) {
             permType = Permission.ALLOWED;
             user.setSlideTicket(SlideTicket.SLIDE_B);
-        }else if(user.getAge() > 17){
+        } else if (user.getAge() > 17) {
             permType = Permission.ALLOWED;
             user.setSlideTicket(SlideTicket.SLIDE_C);
         }

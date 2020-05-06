@@ -12,7 +12,7 @@ import application.user.ChildUser;
 
 public class UserRegistry {
 
-	private Map<String, User> users = new HashMap<>();
+    private Map<String, User> users = new HashMap<>();
     private Map<String, String> lifeguardsInAreas = new ConcurrentHashMap<>();
     private Map<String, Integer> usersInAreas = new ConcurrentHashMap<>();
     private Map<String, Integer> totalUsersInAreas = new ConcurrentHashMap<>();
@@ -22,18 +22,17 @@ public class UserRegistry {
     private UserControlJFrame userControl;
     private StopResume stopResume;
 
-
-    public UserRegistry(UserControlJFrame userControl,  StopResume stopResume) {
+    public UserRegistry(UserControlJFrame userControl, StopResume stopResume) {
         this.userControl = userControl;
         this.stopResume = stopResume;
     }
-    
+
     public void waitIfProgramIsStopped() {
-    	try {
-    		getStopResume().stopResume();
-    	} catch (InterruptedException e) {
-    		
-    	}
+        try {
+            getStopResume().stopResume();
+        } catch (InterruptedException e) {
+
+        }
     }
 
     public void registerActivity(String activityId) {
@@ -65,7 +64,7 @@ public class UserRegistry {
         usersInActivity.add(userId);
         usersInActivity.remove(null);
         this.usersIdsInAreas.put(activityId + areaId, usersInActivity);
-        userControl.setData(activityId+areaId ,usersInActivity.toString());
+        userControl.setData(activityId + areaId, usersInActivity.toString());
     }
 
     public synchronized void unregisterUserFromActivity(String identificatorActividad, String identificatorArea, String identificatorUsuario) {
@@ -73,27 +72,27 @@ public class UserRegistry {
         this.usersInAreas.put(identificatorActividad, countNow);
         ArrayList<String> usersInActivity = this.usersIdsInAreas.get(identificatorActividad + identificatorArea);
         usersInActivity.remove(identificatorUsuario);
-        this.usersIdsInAreas.put(identificatorActividad + identificatorArea,usersInActivity);
-        userControl.setData(identificatorActividad+identificatorArea,usersInActivity.toString());
+        this.usersIdsInAreas.put(identificatorActividad + identificatorArea, usersInActivity);
+        userControl.setData(identificatorActividad + identificatorArea, usersInActivity.toString());
     }
 
     public User searchUser(String userId) {
         User user = null;
         if (this.users.containsKey(userId)) {
-        	user = this.users.get(userId);
+            user = this.users.get(userId);
         }
         return user;
     }
-    
+
     public void addUser(User user) {
         this.users.put(user.getIdentificator(), user);
-        if (user instanceof ChildUser|| user instanceof YoungUser) {
+        if (user instanceof ChildUser || user instanceof YoungUser) {
             underAgeUsersCount++;
         } else {
             adultUsersCount++;
         }
     }
-    
+
     public void removeUser(User user) {
         this.users.put(user.getIdentificator(), user);
         if (user instanceof ChildUser || user instanceof YoungUser) {
@@ -118,7 +117,7 @@ public class UserRegistry {
     public int getUsersInActivityTotal(String activityId) {
         return this.totalUsersInAreas.get(activityId);
     }
-    
+
     public StopResume getStopResume() {
         return stopResume;
     }

@@ -14,9 +14,9 @@ import application.user.SupervisorUser;
 import application.user.User;
 
 public class MainPoolLifeGuard extends BaseLifeGuard {
-        
-	private BlockingQueue<User> activityArea;
-	private static final String EJECT_MESAGE = "ejects user from activity area";
+
+    private BlockingQueue<User> activityArea;
+    private static final String EJECT_MESAGE = "ejects user from activity area";
 
     public MainPoolLifeGuard(String id, ArrayBlockingQueue<User> waitingLine, ArrayBlockingQueue<User> activityArea, UserRegistry userRegistry) {
         super(id, waitingLine, userRegistry);
@@ -29,15 +29,15 @@ public class MainPoolLifeGuard extends BaseLifeGuard {
     }
 
     protected long getEjectionTime() {
-        return (long) ((ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS) 
-        		+ (ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS * Math.random()));
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS)
+                + (ApplicationGlobalConfig.ACTIVITY_MAIN_POOL_LIFEGUARD_EJECTION_MIN_MILISECONDS * Math.random()));
     }
 
     @Override
     protected Permission setPermissionToUser(User user) {
         Permission permType = Permission.ALLOWED;
         if (user instanceof ChildUser) {
-        	permType = Permission.SUPERVISED;
+            permType = Permission.SUPERVISED;
         }
         return permType;
     }
@@ -50,7 +50,7 @@ public class MainPoolLifeGuard extends BaseLifeGuard {
         iterator.forEachRemaining(users::add);
         user = users.get(n);
         if (user instanceof SupervisorUser) {
-        	user = users.get(n - 1);
+            user = users.get(n - 1);
         }
         return user;
     }
@@ -60,14 +60,14 @@ public class MainPoolLifeGuard extends BaseLifeGuard {
         User randomUser;
         while (true) {
             try {
-                for (User user : getWaitingLine()) { 
+                for (User user : getWaitingLine()) {
                     getRegistry().waitIfProgramIsStopped();
                     sleep(getWatchingTime());
                     Permission perm = setPermissionToUser(user);
                     user.setActivityPermissionType(perm);
                     if (getActivityArea().remainingCapacity() == 0) {
-                    	randomUser = selectRandomUserInArea();
-                    	randomUser.interrupt();
+                        randomUser = selectRandomUserInArea();
+                        randomUser.interrupt();
                         sleep(getEjectionTime());
                         System.out.println(getIdentificator() + " - " + EJECT_MESAGE + " - " + user.getIdentificator() + " - " + user.getAge());
                     }
@@ -83,6 +83,5 @@ public class MainPoolLifeGuard extends BaseLifeGuard {
     public BlockingQueue<User> getActivityArea() {
         return activityArea;
     }
-
 
 }

@@ -31,13 +31,13 @@ public class SlideActivity extends BaseActivity {
         this.lifeguardC = initLifeGuard(ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_C_IDENTIFICATOR, ApplicationGlobalConfig.ACTIVITY_SLIDE_C_NAME);
         initOtherLifeguards();
     }
-    
+
     @Override
     public long getActivityTime() {
-    	return (long) ((ApplicationGlobalConfig.ACTIVITY_SLIDE_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_SLIDE_MIN_MILISECONDS) + 
-        		(ApplicationGlobalConfig.ACTIVITY_SLIDE_MIN_MILISECONDS * Math.random()));
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_SLIDE_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_SLIDE_MIN_MILISECONDS)
+                + (ApplicationGlobalConfig.ACTIVITY_SLIDE_MIN_MILISECONDS * Math.random()));
     }
-    
+
     @Override
     protected BaseLifeGuard initActivityLifeguard() {
         BaseLifeGuard guard = new SlideLifeGuard(ApplicationGlobalConfig.ACTIVITY_SLIDE_LIFEGUARD_A_IDENTIFICATOR, getWaitingLine(), getRegistry());
@@ -66,20 +66,20 @@ public class SlideActivity extends BaseActivity {
         lifeguardB.start();
         lifeguardC.start();
     }
-    
+
     @Override
     protected synchronized void goIntoWaitingLine(ChildUser user) {
-    	getWaitingLine().offer(user);
+        getWaitingLine().offer(user);
         getRegistry().registerUserInActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         user.setCurrentActivity(getIdentificator());
         user.getSupervisor().setCurrentActivity(getIdentificator());
         getMainPool().getWaitingAreaSupervisor().offer(user.getSupervisor());
         getRegistry().registerUserInActivity(getMainPool().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
     }
-    
+
     @Override
     protected synchronized void goOutWaitingLine(ChildUser user) {
-    	getWaitingLine().remove(user);
+        getWaitingLine().remove(user);
         getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
         getMainPool().getWaitingAreaSupervisor().remove(user.getSupervisor());
         getRegistry().unregisterUserFromActivity(getMainPool().getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_AREA_SUPERVISORS, user.getSupervisor().getIdentificator());
@@ -87,9 +87,9 @@ public class SlideActivity extends BaseActivity {
 
     @Override
     public boolean goIn(ChildUser user) throws InterruptedException {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -104,7 +104,7 @@ public class SlideActivity extends BaseActivity {
             printStatus();
             result = true;
         } catch (SecurityException e) {
-        	goOutWaitingLine(user);
+            goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
         return result;
@@ -112,9 +112,9 @@ public class SlideActivity extends BaseActivity {
 
     @Override
     public boolean goIn(AdultUser user) throws InterruptedException {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -127,7 +127,7 @@ public class SlideActivity extends BaseActivity {
             printStatus();
             result = true;
         } catch (SecurityException e) {
-        	goOutWaitingLine(user);
+            goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
         return result;
@@ -135,9 +135,9 @@ public class SlideActivity extends BaseActivity {
 
     @Override
     public boolean goIn(YoungUser user) throws InterruptedException {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -150,12 +150,12 @@ public class SlideActivity extends BaseActivity {
             printStatus();
             result = true;
         } catch (SecurityException e) {
-        	goOutWaitingLine(user);
+            goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
         return result;
     }
-    
+
     @Override
     public void onGoOutSuccess(User user) {
         user.setCurrentActivity(getMainPool().getIdentificator());
@@ -169,7 +169,7 @@ public class SlideActivity extends BaseActivity {
     @Override
     public void goOut(ChildUser user) {
         waitIfProgramIsStopped();
-        
+
         try {
             if (user.getSlideTicket() == SlideTicket.SLIDE_A) {
                 getActivityArea().remove(user); //Tobogan A
@@ -179,7 +179,7 @@ public class SlideActivity extends BaseActivity {
                 getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B, user.getIdentificator());
             }
             printStatus();
-            
+
             onGoOutSuccess(user);
         } catch (Exception e) {
         }
@@ -192,7 +192,7 @@ public class SlideActivity extends BaseActivity {
             getSlideC().remove(user);
             getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_C, user.getIdentificator());
             printStatus();
-            
+
             onGoOutSuccess(user);
         } catch (Exception e) {
         }
@@ -210,13 +210,13 @@ public class SlideActivity extends BaseActivity {
                 getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_ACTIVITY_B, user.getIdentificator());
             }
             printStatus();
-            
+
             onGoOutSuccess(user);
         } catch (Exception e) {
         }
     }
 
-    public void goIntoSlide(User user) throws InterruptedException{
+    public void goIntoSlide(User user) throws InterruptedException {
         getMainPool().getSemaphore().acquire();
         getWaitingLine().remove(user);
         getRegistry().unregisterUserFromActivity(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_WAITING_LINE, user.getIdentificator());
@@ -263,6 +263,5 @@ public class SlideActivity extends BaseActivity {
     public MainPoolActivity getMainPool() {
         return mainPool;
     }
-
 
 }

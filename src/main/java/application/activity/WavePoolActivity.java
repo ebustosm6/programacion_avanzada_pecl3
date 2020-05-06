@@ -19,25 +19,25 @@ public class WavePoolActivity extends BaseActivity {
     public WavePoolActivity(UserRegistry userRegistry) {
         super(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_NAME, ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_CAPACITY, userRegistry);
     }
-    
+
     @Override
     protected long getActivityTime() {
-    	return (long) ((ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MIN_MILISECONDS) + 
-        		(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MIN_MILISECONDS * Math.random()));
+        return (long) ((ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MAX_MILISECONDS - ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MIN_MILISECONDS)
+                + (ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_MIN_MILISECONDS * Math.random()));
     }
-    
+
     @Override
     protected BaseLifeGuard initActivityLifeguard() {
-    	BaseLifeGuard guard = new WavePoolLifeGuard(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
-    	getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
+        BaseLifeGuard guard = new WavePoolLifeGuard(ApplicationGlobalConfig.ACTIVITY_WAVE_POOL_LIFEGUARD_IDENTIFICATOR, getWaitingLine(), getRegistry());
+        getRegistry().registerLifeguard(getIdentificator(), ApplicationGlobalConfig.ACTIVITY_AREA_LIFEGUARD, guard.getIdentificator());
         return guard;
     }
-    
+
     @Override
     public boolean goIn(ChildUser user) {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -50,7 +50,7 @@ public class WavePoolActivity extends BaseActivity {
             } else if (user.getActivityPermissionType() == Permission.SUPERVISED) {
                 passFromWaitingLineToActivity(user);
             } else if (user.getActivityPermissionType() == Permission.ALLOWED) {
-            	getEnteringBarrier().await();
+                getEnteringBarrier().await();
                 goOutWaitingLine(user);
                 goIntoActivityAreaWithoutSupervisor(user);
             }
@@ -65,9 +65,9 @@ public class WavePoolActivity extends BaseActivity {
 
     @Override
     public boolean goIn(AdultUser user) throws InterruptedException {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -81,17 +81,17 @@ public class WavePoolActivity extends BaseActivity {
             result = passFromWaitingLineToActivity(user);
 
         } catch (SecurityException | BrokenBarrierException e) {
-        	goOutWaitingLine(user);
+            goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
         return result;
     }
-    
+
     @Override
     public boolean goIn(YoungUser user) throws InterruptedException {
-    	boolean result = false;
+        boolean result = false;
         waitIfProgramIsStopped();
-        
+
         try {
             user.setActivityPermissionType(Permission.NONE);
             goIntoWaitingLine(user);
@@ -105,14 +105,14 @@ public class WavePoolActivity extends BaseActivity {
             result = passFromWaitingLineToActivity(user);
 
         } catch (SecurityException | BrokenBarrierException e) {
-        	goOutWaitingLine(user);
+            goOutWaitingLine(user);
             onGoOutSuccess(user);
         }
         return result;
     }
-    
+
     public CyclicBarrier getEnteringBarrier() {
-		return enteringBarrier;
-	}
+        return enteringBarrier;
+    }
 
 }
