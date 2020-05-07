@@ -126,7 +126,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jScrollPane3" min="-2" pref="437" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jChangingRoomVigilant" min="-2" pref="112" max="-2" attributes="0"/>
+                          <Component id="jChangingRoomVigilant" min="-2" pref="150" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="107" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
@@ -134,7 +134,7 @@
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="jLabel36" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="147" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="166" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -352,7 +352,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                          <Component id="jScrollPane7" pref="530" max="32767" attributes="0"/>
+                          <Component id="jScrollPane7" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -365,7 +365,7 @@
                               <Component id="jScrollPane6" alignment="0" max="32767" attributes="0"/>
                               <Component id="jScrollPane5" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jChildPoolVigilant" min="-2" pref="104" max="-2" attributes="0"/>
+                                  <Component id="jChildPoolVigilant" min="-2" pref="150" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -530,7 +530,7 @@
                       <Component id="jScrollPane8" pref="607" max="32767" attributes="0"/>
                       <Component id="jScrollPane9" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jWavePoolVigilant" min="-2" pref="98" max="-2" attributes="0"/>
+                          <Component id="jWavePoolVigilant" min="-2" pref="150" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -666,10 +666,10 @@
                       </Group>
                   </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane10" pref="583" max="32767" attributes="0"/>
+                      <Component id="jScrollPane10" max="32767" attributes="0"/>
                       <Component id="jScrollPane11" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jPiscinaGrandeMonitor" min="-2" pref="121" max="-2" attributes="0"/>
+                          <Component id="jBigPoolVigilant" min="-2" pref="150" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -693,7 +693,7 @@
                           <Component id="jScrollPane10" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jPiscinaGrandeMonitor" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jBigPoolVigilant" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel28" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -723,7 +723,7 @@
             <Property name="text" type="java.lang.String" value="Pool"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jPiscinaGrandeMonitor">
+        <Component class="javax.swing.JTextField" name="jBigPoolVigilant">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
@@ -800,7 +800,7 @@
                       <Component id="jScrollPane12" alignment="1" pref="559" max="32767" attributes="0"/>
                       <Component id="jScrollPane13" alignment="1" pref="559" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jSunLoungersVigilant" min="-2" pref="101" max="-2" attributes="0"/>
+                          <Component id="jSunLoungersVigilant" min="-2" pref="150" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -1004,11 +1004,11 @@
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                       <Component id="jLabel33" min="-2" pref="48" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jToboganVigilantC" min="-2" pref="72" max="-2" attributes="0"/>
+                      <Component id="jToboganVigilantC" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                       <Component id="jLabel34" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jToboganC" min="-2" pref="72" max="-2" attributes="0"/>
+                      <Component id="jSlideC" min="-2" pref="72" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="15" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -1022,7 +1022,7 @@
                           <Component id="jLabel33" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel30" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel34" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jToboganC" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jSlideC" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="14" max="32767" attributes="0"/>
                   </Group>
@@ -1059,7 +1059,7 @@
                 <Property name="editable" type="boolean" value="false"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jToboganC">
+            <Component class="javax.swing.JTextField" name="jSlideC">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
               </Properties>
@@ -1098,7 +1098,7 @@
                       <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                       <Component id="jLabel37" min="-2" pref="48" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jSlideVigilantA" min="-2" pref="72" max="-2" attributes="0"/>
+                      <Component id="jSlideVigilantA" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                       <Component id="jLabel38" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
@@ -1152,6 +1152,9 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jSlideVigilantAActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="jSlideA">
               <Properties>
@@ -1176,7 +1179,7 @@
                       <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                       <Component id="jLabel40" min="-2" pref="48" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jSlideVigilantB" min="-2" pref="72" max="-2" attributes="0"/>
+                      <Component id="jSlideVigilantB" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                       <Component id="jLabel41" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
